@@ -17,7 +17,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export const useTechStack = () => {
@@ -28,9 +28,13 @@ export const useTechStack = () => {
   useEffect(() => {
     const fetchTechStack = async () => {
       try {
-        const q = query(collection(db, 'technologies'), orderBy('order', 'asc'));
+        // No usamos orderBy para evitar errores si "order" es string en Firestore
+        const q = query(collection(db, 'technologies'));
         const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const data = snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          // Ordenamos en cliente para tolerar order como string o number
+          .sort((a, b) => Number(a.order ?? 99) - Number(b.order ?? 99));
         console.log(`✅ useTechStack: ${data.length} tecnología(s) cargada(s)`);
         setTechStack(data);
       } catch (err) {

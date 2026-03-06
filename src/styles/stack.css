@@ -8,15 +8,64 @@
   overflow: hidden;
 }
 
+/* ─── section-label y section-title heredados de portfolio.css ───
+   Aquí los forzamos visibles porque el observer de StackSection
+   los anima, pero si no dispara los dejamos siempre visibles. */
+#tecnologias .section-label,
+#tecnologias .section-title {
+  /* Arranca visible — el observer añade .vis igualmente */
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ─── cat-header: empieza oculto, el observer le da .vis ─── */
+.cat-header {
+  display: flex; align-items: center; gap: .8rem; margin-bottom: 1.2rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.cat-header.vis { opacity: 1; transform: translateY(0); }
+
+.cat-icon { font-size: 1.1rem; }
+.cat-name {
+  font-family: var(--mono, 'JetBrains Mono', monospace);
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; color: #fff;
+  position: relative;
+}
+.cat-name::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, #ff3b30, #007bff);
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.cat-header.vis .cat-name::after { width: 100%; }
+
+.cat-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,.12), transparent);
+  position: relative; overflow: hidden;
+}
+.cat-count {
+  font-family: var(--mono, monospace); font-size: .58rem;
+  color: rgba(255,255,255,.28); white-space: nowrap; letter-spacing: 1px;
+  display: flex; align-items: center; gap: 4px;
+}
+.cat-count-num { color: #007bff; font-weight: 700; font-size: .65rem; }
+
+.tech-cat { margin-bottom: 2rem; }
+
+/* ─── GRID: SIN opacity propia — las cards animan individualmente ─── */
 .tc-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 1rem;
-  opacity: 0; transform: translateY(16px);
-  transition: opacity .6s ease, transform .6s ease;
+  /* ✅ FIX: antes tenía opacity:0 aquí y nunca se mostraba
+     porque nadie le añadía .vis al grid.
+     Las cards hijas (.tc) tienen su propia animación. */
 }
-.tc-grid.vis { opacity: 1; transform: translateY(0); }
 
+/* ─── CARD ─── */
 .tc {
   position: relative;
   background: linear-gradient(145deg, #0c1422, #070c17);
@@ -24,14 +73,24 @@
   border-radius: 14px; padding: .9rem .6rem;
   display: flex; flex-direction: column; align-items: center; gap: .5rem;
   cursor: pointer;
-  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease,
+              opacity .45s ease;
   opacity: 0; transform: translateY(12px) scale(.96);
 }
 .tc.vis { opacity: 1; transform: translateY(0) scale(1); }
 .tc:hover {
-  border-color: var(--tc, rgba(255,255,255,.3));
-  box-shadow: 0 8px 28px rgba(0,0,0,.4), 0 0 0 1px var(--tc, rgba(255,255,255,.1));
-  transform: translateY(-4px) scale(1.04);
+  border-color: var(--hc, rgba(255,255,255,.3));
+  box-shadow: 0 8px 28px rgba(0,0,0,.4), 0 0 18px var(--hg, rgba(0,123,255,.15));
+  transform: translateY(-4px) scale(1.06) !important;
+}
+
+/* float animation para .floating (se añade 500ms después de .vis) */
+@keyframes tcFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-5px) scale(1); }
+}
+.tc.floating:not(:hover) {
+  animation: tcFloat var(--fd, 4s) var(--fdel, 0s) ease-in-out infinite;
 }
 
 .tc-logo {
@@ -42,7 +101,7 @@
 .tc-logo svg, .tc-logo img { width: 100%; height: 100%; }
 .tc:hover .tc-logo {
   transform: translateY(-2px) scale(1.12);
-  filter: drop-shadow(0 4px 8px var(--tg, rgba(255,255,255,.2)));
+  filter: drop-shadow(0 4px 8px var(--hg, rgba(0,123,255,.3)));
 }
 
 .tc-name {
@@ -51,12 +110,12 @@
   text-transform: uppercase;
 }
 .tc-level {
-  font-family: var(--mono); font-size: .48rem;
-  color: var(--tc, rgba(255,255,255,.3));
+  font-family: var(--mono, monospace); font-size: .48rem;
+  color: var(--hc, rgba(255,255,255,.3));
   letter-spacing: .5px; text-transform: uppercase;
 }
 
-/* popup */
+/* ─── POPUP ─── */
 .tc-popup-overlay {
   position: fixed; inset: 0; z-index: 1000;
   display: flex; align-items: center; justify-content: center;
@@ -87,15 +146,15 @@
 .tc-popup-close:hover { background: rgba(255,59,48,.15); border-color: rgba(255,59,48,.3); color: #ff3b30; }
 
 .tc-popup-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-.tc-popup-icon { width: 44px; height: 44px; }
+.tc-popup-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
 .tc-popup-icon svg, .tc-popup-icon img { width: 100%; height: 100%; }
 .tc-popup-name { font-size: 1.05rem; font-weight: 800; color: #fff; margin-bottom: .15rem; }
-.tc-popup-cat { font-family: var(--mono); font-size: .55rem; letter-spacing: 1.5px; color: rgba(255,255,255,.3); }
+.tc-popup-cat { font-family: var(--mono, monospace); font-size: .55rem; letter-spacing: 1.5px; color: rgba(255,255,255,.3); }
 .tc-popup-desc { font-size: .78rem; color: rgba(255,255,255,.45); line-height: 1.7; margin-bottom: 1rem; }
-.tc-popup-label { font-family: var(--mono); font-size: .52rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.25); margin-bottom: .4rem; }
+.tc-popup-label { font-family: var(--mono, monospace); font-size: .52rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.25); margin-bottom: .4rem; }
 .tc-popup-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .9rem; }
 .tc-popup-tag {
-  font-family: var(--mono); font-size: .52rem; letter-spacing: .3px;
+  font-family: var(--mono, monospace); font-size: .52rem; letter-spacing: .3px;
   padding: .18rem .5rem; border-radius: 5px;
   background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
   color: rgba(255,255,255,.35);
@@ -107,4 +166,6 @@
   background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
 }
 
-@media(max-width:640px) { .tc-grid { grid-template-columns: repeat(auto-fill, minmax(80px,1fr)); gap: .7rem; } }
+@media(max-width:640px) {
+  .tc-grid { grid-template-columns: repeat(auto-fill, minmax(80px,1fr)); gap: .7rem; }
+}

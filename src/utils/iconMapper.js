@@ -22,7 +22,7 @@
 //        SiDocker, SiNodedotjs, SiPython, SiMongodb, SiMysql, SiGit,
 //        SiPostman, SiJira, SiAngular, SiGithub, SiPhp, SiJavascript,
 //        SiHtml5, SiTailwindcss, SiVuedotjs, SiNextdotjs, SiKotlin, SiSwift,
-//        SiCss (nueva), SiGitlab, SiLinux, SiWindows, SiAndroid
+//        SiCss (nueva), SiGitlab, SiLinux, SiAndroid
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── react-icons/si ──
@@ -53,11 +53,10 @@ import {
   SiSwift,
   SiGitlab,
   SiLinux,
-  SiWindows,
 } from 'react-icons/si';
 
-// ── react-icons/fa — AWS y CSS3 no existen en /si ──
-import { FaAws, FaCss3Alt } from 'react-icons/fa';
+// ── react-icons/fa — AWS, CSS3 y Windows no existen en /si ──
+import { FaAws, FaCss3Alt, FaWindows } from 'react-icons/fa';
 
 // ── react-icons/tb — VSCode y Azure no existen en /si ni /fa ──
 import { TbBrandVscode, TbBrandAzure } from 'react-icons/tb';
@@ -110,7 +109,7 @@ export const iconMap = {
 
   // OS
   SiLinux,
-  SiWindows,
+  FaWindows,         // usa "FaWindows" como iconName en Firestore (SiWindows no existe)
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
