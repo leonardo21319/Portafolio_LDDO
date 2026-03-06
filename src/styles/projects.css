@@ -8,11 +8,23 @@
   overflow: hidden;
 }
 
+/* ✅ FIX: antes opacity:0 + useIntersection = nunca visible porque
+   el observer se disparaba ANTES de que Firebase cargara los proyectos.
+   Ahora entra con una animación CSS directa al montar. */
 .pj-wrap {
-  opacity: 0; transform: translateY(20px);
-  transition: opacity .65s ease, transform .65s ease;
+  animation: pjWrapIn .65s .1s ease both;
 }
-.pj-wrap.vis { opacity: 1; transform: translateY(0); }
+@keyframes pjWrapIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* También forzamos section-label/title visibles en proyectos */
+#proyectos .section-label,
+#proyectos .section-title {
+  opacity: 1 !important;
+  transform: none !important;
+}
 
 .pj-viewport {
   overflow: visible;

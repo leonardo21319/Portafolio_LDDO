@@ -1,12 +1,10 @@
 // src/components/sections/ProjectsSection.jsx
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useProjects } from '../../hooks/useProjects';
-import { useIntersection } from '../../hooks/useIntersection';
 import '../../styles/projects.css';
 
 export default function ProjectsSection() {
   const { projects, loading } = useProjects();
-  const sectionRef = useIntersection(['.section-label', '.section-title', '.pj-wrap']);
 
   const trackRef    = useRef(null);
   const viewportRef = useRef(null);
@@ -53,6 +51,7 @@ export default function ProjectsSection() {
     liveOff.current = Math.max(-40, Math.min(startOff.current - (e.clientX - startX.current), max + 40));
     if (trackRef.current) trackRef.current.style.transform = `translateX(-${liveOff.current}px)`;
   }, [projects.length, cardW]);
+
   const onMouseUp = useCallback(e => {
     if (!dragging.current) return;
     dragging.current = false;
@@ -111,7 +110,9 @@ export default function ProjectsSection() {
   if (loading) return (
     <section id="proyectos">
       <div className="section">
-        <p style={{ color: 'rgba(255,255,255,.3)', fontFamily: 'var(--mono)', fontSize: '.7rem' }}>
+        <div className="section-label">// proyectos</div>
+        <h2 className="section-title">Mi <span>Trabajo</span></h2>
+        <p style={{ color: 'rgba(255,255,255,.3)', fontFamily: 'var(--mono)', fontSize: '.7rem', marginTop: '2rem' }}>
           // cargando proyectos...
         </p>
       </div>
@@ -123,7 +124,7 @@ export default function ProjectsSection() {
       <div className="section">
         <div className="section-label">// proyectos</div>
         <h2 className="section-title">Mi <span>Trabajo</span></h2>
-        <p style={{ color: 'rgba(255,255,255,.3)', fontFamily: 'var(--mono)', fontSize: '.7rem' }}>
+        <p style={{ color: 'rgba(255,255,255,.3)', fontFamily: 'var(--mono)', fontSize: '.7rem', marginTop: '2rem' }}>
           // sin proyectos aún — agrégalos desde el panel admin
         </p>
       </div>
@@ -131,7 +132,7 @@ export default function ProjectsSection() {
   );
 
   return (
-    <section id="proyectos" ref={sectionRef}>
+    <section id="proyectos">
       <div className="section">
         <div className="section-label">// proyectos</div>
         <h2 className="section-title">Mi <span>Trabajo</span></h2>
@@ -176,18 +177,30 @@ export default function ProjectsSection() {
                       <div className="pj-desc">{p.description || p.descripcion}</div>
                       <div className="pj-footer">
                         <div className="pj-tags">
-                          {(p.tags || []).slice(0, 3).map(t => (
+                          {(p.tags || p.technologies || []).slice(0, 3).map(t => (
                             <span key={t} className="pj-tag">{t}</span>
                           ))}
                         </div>
                         <div className="pj-links">
-                          {p.liveUrl && (
-                            <a className="pj-btn live" href={p.liveUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                          {(p.liveUrl || p.demoUrl) && (
+                            <a
+                              className="pj-btn live"
+                              href={p.liveUrl || p.demoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                            >
                               Live ↗
                             </a>
                           )}
-                          {p.repoUrl && (
-                            <a className="pj-btn repo" href={p.repoUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                          {(p.repoUrl || p.githubUrl) && (
+                            <a
+                              className="pj-btn repo"
+                              href={p.repoUrl || p.githubUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                            >
                               <svg viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                               </svg>
