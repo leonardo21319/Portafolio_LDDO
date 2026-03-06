@@ -8,10 +8,16 @@
   overflow: hidden;
 }
 
-/* ✅ FIX: antes opacity:0 + useIntersection = nunca visible porque
-   el observer se disparaba ANTES de que Firebase cargara los proyectos.
-   Ahora entra con una animación CSS directa al montar. */
+/* Título y label siempre visibles */
+#proyectos .section-label,
+#proyectos .section-title {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Wrap entra animado al montar — sin depender de .vis */
 .pj-wrap {
+  margin-top: 2.5rem;
   animation: pjWrapIn .65s .1s ease both;
 }
 @keyframes pjWrapIn {
@@ -19,185 +25,238 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* También forzamos section-label/title visibles en proyectos */
-#proyectos .section-label,
-#proyectos .section-title {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
+/* ── Viewport ── */
 .pj-viewport {
-  overflow: visible;
+  overflow: hidden;                /* ✅ hidden: la primera card no se corta */
   cursor: grab;
   touch-action: pan-y;
-  padding: 14px 0 18px;
-  margin: -14px 0 -18px;
-  -webkit-mask-image:
-    linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%),
-    linear-gradient(180deg, transparent 0%, black 10%, black 90%, transparent 100%);
-  -webkit-mask-composite: destination-in;
-  mask-image:
-    linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%),
-    linear-gradient(180deg, transparent 0%, black 10%, black 90%, transparent 100%);
-  mask-composite: intersect;
+  padding: 14px 0 20px;
+  margin: -14px 0 -20px;
 }
 .pj-viewport.is-dragging { cursor: grabbing; }
 .pj-viewport.is-dragging .pj { pointer-events: none; }
 
+/* ── Track ── */
 .pj-track {
-  display: flex; gap: 1.4rem;
+  display: flex;
+  gap: 1.4rem;
   transition: transform .46s cubic-bezier(.25,.46,.45,.94);
   will-change: transform;
   padding: .6rem .2rem 1rem;
   user-select: none; -webkit-user-select: none;
 }
 
+/* ── Card ── */
 .pj {
-  flex: 0 0 clamp(260px, 42vw, 320px);
+  flex: 0 0 clamp(280px, 44vw, 340px);
   border-radius: 18px;
   background: linear-gradient(145deg, #0d1525, #070c18);
   border: 1px solid rgba(255,255,255,.09);
   overflow: visible;
-  position: relative; cursor: pointer;
-  transition: transform .3s cubic-bezier(.34,1.18,.64,1), box-shadow .3s ease, border-color .3s ease;
+  position: relative;
+  cursor: pointer;
+  transition: transform .3s cubic-bezier(.34,1.18,.64,1),
+              box-shadow .3s ease,
+              border-color .3s ease;
   box-shadow: 0 4px 20px rgba(0,0,0,.4);
   -webkit-tap-highlight-color: transparent;
 }
 .pj-inner { border-radius: 18px; overflow: hidden; position: relative; }
 .pj:hover {
   transform: translateY(-8px) scale(1.012);
-  box-shadow: 0 24px 56px rgba(0,0,0,.65), 0 0 0 1px var(--pcolor, rgba(0,123,255,.45));
+  box-shadow: 0 24px 56px rgba(0,0,0,.65),
+              0 0 0 1px var(--pcolor, rgba(0,123,255,.45));
   border-color: var(--pcolor, rgba(0,123,255,.4));
   z-index: 10;
 }
 
+/* ── BANNER ── */
 .pj-banner {
-  height: 168px; position: relative; overflow: hidden;
-  background: var(--pbg, linear-gradient(135deg,#0d1f40,#0a0d1a));
-  display: flex; align-items: center; justify-content: center;
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Fondo gradiente (cuando no hay imagen) */
+.pj-banner-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Imagen del proyecto */
+.pj-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Radar giratorio sutil */
+.pj-radar {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.pj-radar::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--pglow, rgba(0,123,255,.12)) 30deg,
+    transparent 60deg
+  );
+  animation: radarRotate var(--rdur,5s) var(--rdel,0s) linear infinite;
+  will-change: transform;
+}
 @keyframes radarRotate {
   from { transform: translate(-50%,-50%) rotate(0deg); }
   to   { transform: translate(-50%,-50%) rotate(360deg); }
 }
-@keyframes radarFade {
-  0%   { transform: translate(-50%,-50%) scale(.5); opacity: .7; }
-  100% { transform: translate(-50%,-50%) scale(1.5); opacity: 0; }
-}
 
-.pj-radar { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.pj-radar::before {
-  content: ''; position: absolute; top: 50%; left: 50%;
-  width: 200%; height: 200%;
-  background: conic-gradient(from 0deg, transparent 0deg, var(--pglow, rgba(0,123,255,.15)) 30deg, transparent 60deg);
-  animation: radarRotate var(--rdur,5s) var(--rdel,0s) linear infinite;
-  will-change: transform;
+/* Icono central grande */
+.pj-center-icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.pj-radar::after {
-  content: ''; position: absolute; top: 50%; left: 50%;
-  width: 60px; height: 60px; border-radius: 50%;
-  border: 2px solid var(--pglow, rgba(0,123,255,.3));
-  animation: radarFade var(--rdur,5s) var(--rdel,0s) ease-out infinite;
-  will-change: transform, opacity;
-}
-
-.pj-mock {
-  position: relative; z-index: 3;
-  width: 96px; height: 72px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 8px; overflow: hidden;
-  box-shadow: 0 8px 28px rgba(0,0,0,.5);
+.pj-emoji {
+  font-size: 3rem;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.6));
   transition: transform .3s ease;
 }
-.pj:hover .pj-mock { transform: scale(1.12); }
+.pj:hover .pj-emoji { transform: scale(1.15); }
 
-.pj-mock-bar {
-  height: 14px; background: rgba(0,0,0,.3);
-  display: flex; align-items: center; gap: 3px; padding: 0 5px;
-}
-.pj-mock-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.pj-mock-screen {
-  height: 58px; display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem;
-}
-
+/* Badge categoría — top right */
 .pj-type {
-  position: absolute; top: 10px; right: 10px; z-index: 4;
-  font-family: var(--mono); font-size: .5rem; font-weight: 700;
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  font-family: var(--mono, monospace);
+  font-size: .48rem; font-weight: 700;
   letter-spacing: 1.5px; text-transform: uppercase;
-  padding: .2rem .55rem; border-radius: 5px;
-  background: rgba(0,0,0,.6);
+  padding: .22rem .6rem; border-radius: 5px;
+  background: rgba(0,0,0,.65);
   border: 1px solid var(--pcolor, rgba(0,123,255,.4));
   color: var(--pcolor, rgba(100,180,255,.9));
 }
 
-.pj-stack-chips { position: absolute; bottom: 8px; left: 10px; z-index: 4; display: flex; gap: 4px; }
-.pj-chip {
-  width: 22px; height: 22px; border-radius: 6px;
-  background: rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.12);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .75rem; transition: transform .25s ease;
+/* Badge status — bottom left */
+.pj-status {
+  position: absolute; bottom: 10px; left: 10px; z-index: 3;
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--mono, monospace); font-size: .48rem; font-weight: 600;
+  letter-spacing: .5px;
+  background: rgba(0,0,0,.65);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: .2rem .55rem; border-radius: 5px;
 }
-.pj:hover .pj-chip:nth-child(1) { transform: translateY(-3px); }
-.pj:hover .pj-chip:nth-child(2) { transform: translateY(-5px); }
-.pj:hover .pj-chip:nth-child(3) { transform: translateY(-3px); }
+.pj-status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
 
+/* ── BODY ── */
 .pj-body { padding: 1rem 1.1rem 1.1rem; }
-.pj-name { font-size: .96rem; font-weight: 800; letter-spacing: -.3px; color: #fff; margin-bottom: .35rem; }
+
+.pj-name {
+  font-size: .96rem; font-weight: 800;
+  letter-spacing: -.3px; color: #fff;
+  margin-bottom: .2rem;
+}
+.pj-subtitle {
+  font-family: var(--mono, monospace);
+  font-size: .58rem; color: var(--pcolor, rgba(0,123,255,.8));
+  letter-spacing: .5px; margin-bottom: .5rem;
+}
 .pj-desc {
-  font-size: .75rem; color: rgba(255,255,255,.4); line-height: 1.65; margin-bottom: .75rem;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: .75rem; color: rgba(255,255,255,.4);
+  line-height: 1.65; margin-bottom: .65rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.pj-footer { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
-.pj-tags { display: flex; gap: .3rem; flex-wrap: wrap; flex: 1; }
+.pj-tags {
+  display: flex; gap: .3rem; flex-wrap: wrap;
+  margin-bottom: .75rem;
+}
 .pj-tag {
-  font-family: var(--mono); font-size: .48rem; letter-spacing: .3px;
+  font-family: var(--mono, monospace);
+  font-size: .48rem; letter-spacing: .3px;
   padding: .15rem .42rem; border-radius: 4px;
-  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
-  color: rgba(255,255,255,.3);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.09);
+  color: rgba(255,255,255,.35);
 }
-.pj-links { display: flex; gap: .4rem; flex-shrink: 0; }
+.pj-footer { display: flex; align-items: center; }
+.pj-links  { display: flex; gap: .4rem; }
 .pj-btn {
-  font-family: var(--mono); font-size: .55rem; font-weight: 700;
-  padding: .28rem .7rem; border-radius: 6px; text-decoration: none;
-  transition: all .2s ease; display: flex; align-items: center; gap: .3rem;
+  font-family: var(--mono, monospace);
+  font-size: .55rem; font-weight: 700;
+  padding: .3rem .75rem; border-radius: 6px;
+  text-decoration: none;
+  transition: all .2s ease;
+  display: flex; align-items: center; gap: .35rem;
 }
-.pj-btn.live { background: linear-gradient(135deg,var(--red),var(--blue)); color: #fff; }
+.pj-btn.live {
+  background: linear-gradient(135deg, #ff3b30, #007bff);
+  color: #fff;
+}
 .pj-btn.live:hover { opacity: .85; transform: translateY(-1px); }
 .pj-btn.repo {
-  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
   color: rgba(255,255,255,.55);
 }
 .pj-btn.repo:hover { background: rgba(255,255,255,.1); color: #fff; }
-.pj-btn.repo svg { width: 11px; height: 11px; }
 
+/* ── Navegación ── */
 .pj-nav {
   display: flex; align-items: center; justify-content: center;
-  gap: 1rem; margin-top: 1.6rem;
+  gap: 1rem; margin-top: 1.8rem;
 }
 .pj-arrow {
   width: 38px; height: 38px; border-radius: 50%;
-  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-  color: rgba(255,255,255,.6); font-size: 1rem; cursor: pointer;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.6);
+  font-size: 1rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all .2s ease;
 }
-.pj-arrow:hover:not(:disabled) { background: rgba(0,123,255,.2); border-color: rgba(0,123,255,.4); color: #fff; transform: scale(1.1); }
+.pj-arrow:hover:not(:disabled) {
+  background: rgba(0,123,255,.2);
+  border-color: rgba(0,123,255,.4);
+  color: #fff; transform: scale(1.1);
+}
 .pj-arrow:disabled { opacity: .25; cursor: not-allowed; }
+
 .pj-dots { display: flex; gap: .5rem; align-items: center; }
 .pj-dot {
   width: 6px; height: 6px; border-radius: 50%;
   background: rgba(255,255,255,.2); cursor: pointer;
   transition: all .25s ease;
 }
-.pj-dot.on { width: 18px; border-radius: 3px; background: var(--blue); }
+.pj-dot.on {
+  width: 18px; border-radius: 3px;
+  background: #007bff;
+}
 .pj-counter {
-  font-family: var(--mono); font-size: .65rem;
+  font-family: var(--mono, monospace); font-size: .65rem;
   color: rgba(255,255,255,.3); min-width: 3rem; text-align: center;
 }
 .pj-counter span { color: #fff; font-weight: 700; }
 
-@media(max-width:700px) { .pj { flex: 0 0 82vw; } .pj-banner { height: 148px; } }
+@media(max-width:700px) { .pj { flex: 0 0 82vw; } .pj-banner { height: 150px; } }
 @media(max-width:400px) { .pj { flex: 0 0 88vw; } }
