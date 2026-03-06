@@ -1,23 +1,5 @@
-// src/hooks/useTechStack.js
-//
-// ─────────────────────────────────────────────────────────────────────────────
-//  HOOK — useTechStack
-//  Lee la colección "technologies" de Firestore.
-//
-//  Estructura esperada de cada documento:
-//  {
-//    name:        string,    // "React.js"
-//    iconName:    string,    // "SiReact"  ← debe coincidir con iconMapper.js
-//    category:    string,    // "Frontend" | "Mobile" | "Backend" | "Cloud" | "Herramientas"
-//    level:       string,    // "Avanzado" | "Intermedio" | "Básico"
-//    color:       string,    // "#61DAFB"
-//    description: string,
-//    order:       number
-//  }
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { useState, useEffect } from 'react';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export const useTechStack = () => {
@@ -28,14 +10,41 @@ export const useTechStack = () => {
   useEffect(() => {
     const fetchTechStack = async () => {
       try {
-        // No usamos orderBy para evitar errores si "order" es string en Firestore
-        const q = query(collection(db, 'technologies'));
+        // =============================================
+        // 📝 CÓDIGO DE DEPURACIÓN TEMPORAL (AGREGA ESTO)
+        // =============================================
+        console.log('🔍 VERIFICACIÓN COMPLETA DE FIREBASE:');
+        const todosLosDocs = await getDocs(collection(db, 'technologies'));
+        console.log('📊 TOTAL documentos en Firebase:', todosLosDocs.size);
+        todosLosDocs.forEach(doc => {
+          console.log('Documento:', doc.id, {
+            name: doc.data().name,
+            active: doc.data().active,
+            category: doc.data().category,
+            // Muestra todos los campos del documento
+            data: doc.data()
+          });
+        });
+        // =============================================
+        // FIN DEL CÓDIGO DE DEPURACIÓN
+        // =============================================
+
+        console.log('🔍 Fetching technologies con filtro active=true...');
+        
+        // 🔥 Filtrar SOLO las activas (active = true)
+        const q = query(
+          collection(db, 'technologies'),
+          where('active', '==', true)
+        );
+        
         const snapshot = await getDocs(q);
+        console.log('📦 Documentos activos encontrados:', snapshot.size);
+        
         const data = snapshot.docs
           .map(doc => ({ id: doc.id, ...doc.data() }))
-          // Ordenamos en cliente para tolerar order como string o number
           .sort((a, b) => Number(a.order ?? 99) - Number(b.order ?? 99));
-        console.log(`✅ useTechStack: ${data.length} tecnología(s) cargada(s)`);
+        
+        console.log(`✅ useTechStack: ${data.length} tecnología(s) activa(s) cargada(s)`);
         setTechStack(data);
       } catch (err) {
         console.error('❌ useTechStack error:', err.message);
