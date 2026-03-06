@@ -6,6 +6,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext'; // ← Crearemos esto
 import './index.css';
 import AppRouter from './AppRouter.jsx';
+import './debug-env.jsx'
+import './verificar-env.js'
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
