@@ -1,0 +1,69 @@
+/* src/styles/portfolio.css
+   Importar PRIMERO en main.jsx:
+   import './styles/portfolio.css'
+   
+   ⚠️  NO incluye box-model reset (* {}) porque Navbar/Footer/Hero/About
+       manejan sus propios estilos. Solo expone variables y clases compartidas.
+*/
+
+:root {
+  --red:  #ff3b30;
+  --blue: #007bff;
+  --cyan: #00d4ff;
+  --bg:   #050912;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+/* body base — no duplicar si index.css ya lo tiene */
+body {
+  background: var(--bg);
+  color: #fff;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Contenedor centrado para secciones nuevas ── */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── Labels y títulos con animación de scroll ── */
+.section-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(0,123,255,.8);
+  margin-bottom: .6rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.section-label.vis { opacity: 1; transform: translateY(0); }
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: #fff;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .6s .1s ease, transform .6s .1s ease;
+}
+.section-title.vis { opacity: 1; transform: translateY(0); }
+
+.section-title span {
+  background: linear-gradient(135deg, var(--red), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Secciones: padding uniforme ── */
+#proyectos, #tecnologias, #certificaciones, #experiencia, #contacto, #about {
+  padding: 6rem 0;
+  border-top: 1px solid rgba(255,255,255,.05);
+}

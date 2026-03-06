@@ -1,0 +1,3448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Leonardo Daniel – Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --dark:#0A0A0A;
+  --blue:#007BFF; --red:#FF3B30; --cyan:#00d4ff;
+  --txt:#FFFFFF;  --txt2:#9CA3AF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--txt);overflow-x:hidden;min-height:100vh;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:#111;}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:3px;}
+
+/* ══ FONDO ══ */
+.bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,123,255,.09) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,123,255,.09) 1px,transparent 1px);
+  background-size:55px 55px;animation:gridShift 20s linear infinite;}
+@keyframes gridShift{0%{background-position:0 0;}100%{background-position:55px 55px;}}
+.orb-blue{position:absolute;top:-15%;right:-8%;width:680px;height:680px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,123,255,.18) 0%,transparent 65%);animation:orbP 6s ease-in-out infinite;}
+.orb-red{position:absolute;bottom:-10%;left:-8%;width:540px;height:540px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,59,48,.13) 0%,transparent 65%);animation:orbP 7s 1s ease-in-out infinite;}
+.orb-cyan{position:absolute;top:35%;right:15%;width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,212,255,.08) 0%,transparent 65%);animation:orbP 5s 2s ease-in-out infinite;}
+@keyframes orbP{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:1;transform:scale(1.1);}}
+.particle{position:absolute;border-radius:50%;pointer-events:none;animation:pDrift linear infinite;}
+@keyframes pDrift{
+  0%{transform:translateY(105vh) translateX(0);opacity:0;}
+  8%{opacity:1;} 92%{opacity:.8;}
+  100%{transform:translateY(-15vh) translateX(var(--dx,0px));opacity:0;}
+}
+.code-fly{position:absolute;font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  white-space:nowrap;pointer-events:none;animation:flyUp linear infinite;}
+@keyframes flyUp{
+  0%{transform:translateY(105vh);opacity:0;}
+  6%{opacity:1;} 94%{opacity:.7;}
+  100%{transform:translateY(-10vh);opacity:0;}
+}
+
+/* ══ NAVBAR ══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:70px;padding:0 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;transition:all .3s ease;}
+nav.scrolled{background:rgba(10,10,10,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);}
+
+.logo{display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .3s ease;font-size:1.6rem;font-weight:900;letter-spacing:-2px;
+  user-select:none;text-decoration:none;padding:4px;}
+.logo .l{color:#fff;transition:color .3s ease;}
+.logo .d{color:var(--blue);transition:color .3s ease;}
+.logo:hover .l{color:var(--blue);}
+.logo:hover .d{color:#fff;}
+
+.nav-links{display:flex;align-items:center;gap:1.8rem;}
+.nav-links a{color:var(--txt2);text-decoration:none;font-size:.84rem;font-weight:500;
+  position:relative;padding:2px 0;transition:color .3s ease;white-space:nowrap;}
+.nav-links a::after{content:'';position:absolute;bottom:-1px;left:0;
+  width:0;height:2px;background:var(--blue);border-radius:2px;transition:width .3s ease;}
+.nav-links a:hover{color:#fff;}
+.nav-links a:hover::after{width:100%;}
+
+/* Botón Contacto en navbar — rojo sólido, igual que el btn-cv original */
+.btn-contact-nav{
+  display:flex;align-items:center;gap:6px;
+  background:var(--red);color:#fff!important;
+  padding:.55rem 1.2rem;border-radius:8px;
+  font-size:.84rem;font-weight:600;text-decoration:none;
+  transition:all .3s ease;
+  box-shadow:0 0 16px rgba(255,59,48,.25);
+}
+.btn-contact-nav:hover{transform:scale(1.04);box-shadow:0 0 28px rgba(255,59,48,.5);}
+.btn-contact-nav::after{display:none!important;}
+
+/* ══ HERO ══ */
+.hero{min-height:100vh;display:flex;align-items:center;padding:7rem 2.5rem 4rem;
+  position:relative;z-index:1;max-width:1240px;margin:0 auto;}
+.hero-inner{display:grid;grid-template-columns:1fr 520px;gap:2.5rem;align-items:center;width:100%;}
+
+/* NOMBRE */
+.hero-name{font-size:clamp(2.8rem,5vw,4.8rem);font-weight:900;
+  line-height:1.05;letter-spacing:-3px;margin-bottom:.7rem;
+  opacity:0;animation:fadeUp .7s .2s ease forwards;}
+.n-white{color:#fff;}
+.n-grad{background:linear-gradient(90deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ROL + línea de luz */
+.hero-role-wrap{
+  position:relative;display:inline-flex;
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp .7s .4s ease forwards;
+}
+.role-underline{position:absolute;bottom:-4px;left:0;height:2px;width:100%;overflow:hidden;border-radius:2px;}
+.role-underline::after{
+  content:'';position:absolute;top:0;left:-60%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(0,123,255,.0) 20%,rgba(0,212,255,.9) 45%,rgba(255,59,48,.9) 55%,rgba(0,123,255,.0) 80%,transparent);
+  animation:scanLine 3s ease-in-out infinite;
+}
+@keyframes scanLine{0%{left:-60%;}100%{left:110%;}}
+
+.hero-role{font-family:'JetBrains Mono',monospace;
+  font-size:clamp(.82rem,1.6vw,1.08rem);font-weight:700;
+  display:flex;align-items:center;flex-wrap:wrap;gap:4px;}
+
+.r-br {color:rgba(0,212,255,.28);font-weight:400;font-size:.95em;}
+.r-fe {color:#FFFFFF;letter-spacing:-.5px;}
+.r-amp{color:rgba(255,255,255,.18);font-weight:300;margin:0 3px;}
+.r-mob{color:#4DA6FF;letter-spacing:-.5px;}
+.r-sep{color:rgba(255,255,255,.13);margin:0 6px;font-weight:300;}
+.r-ux {color:#FF6B5E;}
+.r-dot{color:rgba(255,255,255,.13);margin:0 3px;font-weight:300;}
+.r-qa {color:#FF9B93;font-weight:500;}
+
+/* Barra divisor rojo→azul */
+.role-divider{width:52px;height:3px;margin-bottom:1.6rem;border-radius:2px;
+  background:linear-gradient(90deg,var(--red),var(--blue));
+  opacity:0;animation:fadeUp .7s .55s ease forwards;}
+
+.hero-desc{font-size:.97rem;color:var(--txt2);line-height:1.8;max-width:440px;margin-bottom:2rem;
+  opacity:0;animation:fadeUp .7s .6s ease forwards;}
+.hero-desc strong{color:#fff;font-weight:600;}
+
+/* ══ CTAs ══
+   Ver Proyectos: gradiente diagonal rojo→azul, llamativo
+   Contacto:      outline azul
+*/
+.cta-group{display:flex;gap:.9rem;flex-wrap:wrap;margin-bottom:2.2rem;
+  opacity:0;animation:fadeUp .7s .8s ease forwards;}
+
+.btn-projects{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--red) 0%,#c0392b 30%,#5B3FE8 70%,var(--blue) 100%);
+  background-size:200% 200%;
+  color:#fff;padding:.75rem 1.7rem;border-radius:10px;font-weight:700;font-size:.92rem;
+  border:none;cursor:pointer;transition:all .4s ease;
+  box-shadow:0 0 22px rgba(255,59,48,.3),0 0 22px rgba(0,123,255,.2);
+  position:relative;overflow:hidden;
+  animation:gradShift 4s ease-in-out infinite;
+}
+@keyframes gradShift{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.btn-projects::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s ease;}
+.btn-projects:hover::before{left:100%;}
+.btn-projects:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(255,59,48,.4),0 0 32px rgba(0,123,255,.35);}
+
+.btn-contact{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:#fff;
+  padding:.75rem 1.7rem;border-radius:10px;font-weight:600;font-size:.92rem;
+  border:1.5px solid rgba(0,123,255,.5);cursor:pointer;transition:all .3s ease;
+}
+.btn-contact:hover{border-color:var(--blue);background:rgba(0,123,255,.1);transform:translateY(-2px);
+  box-shadow:0 0 18px rgba(0,123,255,.25);}
+
+/* ══ TECH GRID — 16 iconos ══ */
+.tech-grid{display:grid;grid-template-columns:repeat(8,36px);
+  grid-template-rows:repeat(2,36px);gap:.65rem;
+  opacity:0;animation:fadeUp .7s 1.0s ease forwards;}
+.ti{display:flex;align-items:center;justify-content:center;
+  animation:techFloat var(--dur,3.5s) var(--del,0s) ease-in-out infinite;}
+@keyframes techFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.ti-icon{width:36px;height:36px;padding:2px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .35s ease,filter .35s ease;
+  position:relative;}
+.ti:hover .ti-icon{transform:translateY(-4px) scale(1.2);
+  filter:drop-shadow(0 4px 10px var(--ig,rgba(255,255,255,.25)));}
+.ti-icon svg{width:100%;height:100%;}
+
+/* ══ MONITOR ══ */
+.hero-right{position:relative;display:flex;align-items:center;justify-content:center;
+  opacity:0;animation:slideLeft .9s .5s ease forwards;}
+@keyframes slideLeft{from{opacity:0;transform:translateX(50px);}to{opacity:1;transform:translateX(0);}}
+
+.mon-glow{position:absolute;width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,123,255,.07) 0%,transparent 65%);
+  animation:orbP 4s ease-in-out infinite;pointer-events:none;}
+
+.scene{position:relative;width:460px;height:440px;animation:floatAll 5s ease-in-out infinite;}
+@keyframes floatAll{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+
+.mon-wrap{position:absolute;top:0;left:50%;transform:translateX(-50%);perspective:1000px;}
+.mon-3d{transform:rotateX(6deg) rotateY(-14deg);transform-style:preserve-3d;transition:transform .6s ease;}
+.mon-3d:hover{transform:rotateX(2deg) rotateY(-5deg);}
+
+.mon-screen{width:315px;height:215px;
+  background:linear-gradient(160deg,#2e3a4e 0%,#323f55 60%,#2a3648 100%);
+  border-radius:10px 10px 0 0;border:1.5px solid rgba(120,160,255,.5);overflow:hidden;position:relative;
+  box-shadow:0 0 0 1px rgba(140,180,255,.12),0 0 22px rgba(0,100,255,.18),
+    0 30px 75px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.1);}
+.mon-screen::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:10;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 3px,rgba(0,0,0,.025) 3px,rgba(0,0,0,.025) 4px);}
+
+.ide-top{height:26px;background:rgba(0,0,0,.2);border-bottom:1px solid rgba(120,160,255,.2);
+  display:flex;align-items:center;padding:0 9px;gap:5px;position:relative;z-index:2;}
+.dot2{width:8px;height:8px;border-radius:50%;}
+.dr{background:#FF5F57;}.dy{background:#FFBD2E;}.dg{background:#28CA41;}
+.ide-tabs{display:flex;gap:2px;margin-left:9px;}
+.tab2{font-family:'JetBrains Mono',monospace;font-size:.57rem;padding:2px 8px;border-radius:3px 3px 0 0;color:rgba(255,255,255,.25);}
+.tab-a{color:rgba(160,215,255,.9);background:rgba(60,120,255,.18);border-top:2px solid var(--blue);}
+
+.ide-body{display:flex;height:calc(100% - 40px);position:relative;z-index:2;}
+.lnums{width:26px;background:rgba(0,0,0,.1);border-right:1px solid rgba(255,255,255,.06);
+  padding:7px 5px 7px 0;font-family:'JetBrains Mono',monospace;font-size:.57rem;
+  color:rgba(255,255,255,.22);text-align:right;line-height:1.78;user-select:none;}
+.ide-code{flex:1;padding:7px 9px;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:.6rem;line-height:1.78;white-space:pre;}
+
+/* Líneas de código — se renderizan como spans */
+.cl{display:flex;min-height:1em;white-space:pre;}
+.cl.aline{background:rgba(0,123,255,.1);border-radius:2px;margin:0 -9px;padding:0 9px;}
+
+/* colores syntax */
+.cb{color:#79b8ff;}.cg{color:#85e89d;}.co{color:#ffab70;}
+.cp{color:#b392f0;}.cgr{color:rgba(255,255,255,.32);}.cr2{color:#f97583;}
+.cw{color:rgba(255,255,255,.82);}.cy{color:#e3c260;}
+
+/* cursor parpadeante */
+.cursor{display:inline-block;width:1.5px;height:11px;background:#fff;
+  border-radius:1px;animation:blink .9s step-end infinite;vertical-align:text-bottom;margin-left:1px;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.ide-status{position:absolute;bottom:0;left:0;right:0;height:13px;
+  background:rgba(10,15,25,.7);border-top:1px solid rgba(120,160,255,.18);
+  display:flex;align-items:center;justify-content:space-between;padding:0 7px;z-index:5;
+  font-family:'JetBrains Mono',monospace;font-size:.45rem;color:rgba(255,255,255,.5);}
+.s-err{color:var(--red);font-weight:700;}
+.s-br{color:rgba(160,215,255,.8);}
+
+.mon-neck{width:32px;height:13px;margin:0 auto;background:linear-gradient(180deg,#323f55,#28354a);
+  border-left:1px solid rgba(120,160,255,.18);border-right:1px solid rgba(120,160,255,.18);}
+.mon-base{width:115px;height:7px;margin:0 auto;background:linear-gradient(180deg,#323f55,#1e2a3a);
+  border-radius:0 0 8px 8px;border:1px solid rgba(120,160,255,.22);box-shadow:0 3px 12px rgba(0,0,0,.5);}
+
+/* ══ ESCRITORIO ══ */
+.desk-surface{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:430px;height:10px;background:linear-gradient(180deg,#1e2840,#141c2d);
+  border-radius:3px 3px 0 0;border-top:1px solid rgba(120,160,255,.18);box-shadow:0 -2px 18px rgba(0,0,0,.5);}
+.d-lamp{position:absolute;top:4px;left:16px;animation:lampF 6s ease-in-out infinite;}
+@keyframes lampF{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-7px) rotate(1deg);}}
+.lamp-cone{position:absolute;top:32px;left:-4px;width:50px;height:22px;
+  background:radial-gradient(ellipse,rgba(255,220,80,.28) 0%,transparent 70%);
+  border-radius:50%;animation:lampG 2.5s ease-in-out infinite;}
+@keyframes lampG{0%,100%{opacity:.5;}50%{opacity:1;}}
+.d-hp{position:absolute;top:6px;right:18px;animation:hpF 4.8s .4s ease-in-out infinite;}
+@keyframes hpF{0%,100%{transform:translateY(0) rotate(3deg);}50%{transform:translateY(-8px) rotate(-2deg);}}
+.d-sticky{position:absolute;top:115px;left:12px;animation:stF 5.5s 1s ease-in-out infinite;}
+@keyframes stF{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-5px) rotate(-2deg);}}
+.d-phone{position:absolute;top:105px;right:14px;animation:phF 4.2s .7s ease-in-out infinite;}
+@keyframes phF{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.d-plant{position:absolute;bottom:10px;left:62px;animation:plF 5.5s .5s ease-in-out infinite;}
+@keyframes plF{0%,100%{transform:translateY(0) rotate(-1.5deg);}50%{transform:translateY(-9px) rotate(2deg);}}
+.d-mug{position:absolute;bottom:10px;right:62px;animation:mgF 4s .2s ease-in-out infinite;}
+@keyframes mgF{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.stgrp{position:absolute;top:-22px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+.st{width:3px;border-radius:3px;background:linear-gradient(to top,rgba(255,255,255,.35),transparent);animation:stUp 2s ease-in-out infinite;}
+.st:nth-child(1){height:18px;}.st:nth-child(2){height:13px;animation-delay:.35s;}.st:nth-child(3){height:16px;animation-delay:.7s;}
+@keyframes stUp{0%{opacity:0;transform:translateY(0);}50%{opacity:.7;transform:translateY(-9px) scaleX(1.4);}100%{opacity:0;transform:translateY(-18px);}}
+.d-kbd{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  width:165px;height:36px;background:linear-gradient(160deg,#222d40,#1a2235);
+  border-radius:5px;border:1px solid rgba(120,160,255,.22);
+  box-shadow:0 4px 18px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);
+  display:grid;grid-template-columns:repeat(13,1fr);grid-template-rows:repeat(3,1fr);
+  gap:2px;padding:4px;animation:kbdF 4.5s 1s ease-in-out infinite;}
+@keyframes kbdF{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-6px);}}
+.key{background:rgba(255,255,255,.07);border-radius:2px;border-bottom:1px solid rgba(0,0,0,.45);}
+.key-lit{background:rgba(0,123,255,.28);border-bottom:1px solid rgba(0,123,255,.15);}
+.key-red{background:rgba(255,59,48,.24);border-bottom:1px solid rgba(255,59,48,.14);}
+.d-bug{position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  font-size:1rem;filter:drop-shadow(0 2px 6px rgba(255,59,48,.5));animation:bugB 3.2s ease-in-out infinite;}
+.d-bugx{position:absolute;top:-16px;left:calc(50% + 10px);
+  font-size:.6rem;font-weight:900;color:var(--red);text-shadow:0 0 8px rgba(255,59,48,.7);
+  animation:bugB 3.2s .3s ease-in-out infinite;}
+@keyframes bugB{0%,100%{transform:translateX(-50%) translateY(0);opacity:.5;}50%{transform:translateX(-50%) translateY(-10px);opacity:1;}}
+
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  opacity:0;animation:fadeUp .6s 1.8s ease forwards;cursor:pointer;}
+.sh-t{font-size:.6rem;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;}
+.sh-a{width:24px;height:24px;border:1px solid rgba(255,255,255,.12);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.22);font-size:.7rem;
+  animation:bounce 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr;text-align:center;}
+  .hero-right{order:-1;}.scene{transform:scale(.76);height:350px;}
+  .hero-role,.cta-group,.tech-grid{justify-content:center;}
+  .hero-desc{margin:0 auto 2rem;}
+  .nav-links{gap:1rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-canvas" id="bgCanvas">
+  <div class="bg-grid"></div>
+  <div class="orb-blue"></div>
+  <div class="orb-red"></div>
+  <div class="orb-cyan"></div>
+</div>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="nav">
+  <a href="#" class="logo"><span class="l">L</span><span class="d">D</span></a>
+  <div class="nav-links">
+    <a href="#sobre-mi">Sobre Mí</a>
+    <a href="#tecnologias">Tecnologías</a>
+    <a href="#certificaciones">Certificaciones</a>
+    <a href="#proyectos">Proyectos</a>
+    <a href="#experiencia">Experiencia</a>
+    <a href="#contacto" class="btn-contact-nav">Contacto ↗</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="home" style="position:relative;z-index:1;">
+<div class="hero">
+<div class="hero-inner">
+
+  <!-- LEFT -->
+  <div>
+    <h1 class="hero-name">
+      <span class="n-white">Leonardo </span><span class="n-grad">Daniel</span>
+    </h1>
+
+    <div class="hero-role-wrap">
+      <div class="hero-role">
+        <span class="r-br">&lt;</span>
+        <span class="r-fe">Frontend</span>
+        <span class="r-amp">&amp;</span>
+        <span class="r-mob">Mobile Dev</span>
+        <span class="r-sep">·</span>
+        <span class="r-ux">UX</span>
+        <span class="r-dot">·</span>
+        <span class="r-qa">QA</span>
+        <span class="r-br">/&gt;</span>
+      </div>
+      <div class="role-underline"></div>
+    </div>
+
+    <div class="role-divider"></div>
+
+    <p class="hero-desc">
+      Apasionado por crear experiencias digitales que combinan <strong>estética</strong> y <strong>funcionalidad</strong>.
+      Especializado en <strong>React</strong>, <strong>Flutter</strong> y <strong>AWS</strong>,
+      con enfoque en calidad y detalle pixel a pixel.
+    </p>
+
+    <!-- CTAs: Ver Proyectos con gradiente rojo→azul · Contacto con outline azul -->
+    <div class="cta-group">
+      <button class="btn-projects">🚀 Ver Proyectos</button>
+      <button class="btn-contact">✉ Contacto</button>
+    </div>
+
+    <!-- ══ 16 TECH ICONS ══ -->
+    <div class="tech-grid" id="techGrid">
+      <!-- fila 1: React Flutter AWS Firebase Azure TS Figma Docker -->
+      <div class="ti" style="--dur:3.4s;--del:0s;--ic:rgba(97,218,251,.5);--ig:rgba(97,218,251,.18);"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2.05" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none" transform="rotate(120 12 12)"/></svg></div></div>
+      <div class="ti" style="--dur:3.8s;--del:.25s;--ic:rgba(84,197,248,.5);--ig:rgba(84,197,248,.18);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M14.314 0L2.3 12 6 15.7 21.684.012z" fill="#54C5F8"/><path d="M14.314 11.986L6.3 20l3.71 3.7 1.34-1.36 5.66-5.66z" fill="#01579B"/><path d="M6.3 20l5.67-5.67 2.7 2.7L11.99 20l-2.7 2.7z" fill="#29B6F6"/></svg></div></div>
+      <div class="ti" style="--dur:3.2s;--del:.5s;--ic:rgba(255,153,0,.5);--ig:rgba(255,153,0,.15);"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="#FF9900"><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 01-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 01-.287-.375 6.18 6.18 0 01-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.03-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 01-.28.104.488.488 0 01-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 01.224-.167c.279-.144.614-.264 1.005-.36A4.84 4.84 0 013.8 7.52c.95 0 1.644.216 2.091.647.439.43.662 1.085.662 1.963v2.586zm-3.24 1.214c.263 0 .534-.048.822-.144.287-.096.543-.271.758-.51.128-.152.224-.32.272-.512.047-.191.08-.423.08-.694v-.335a6.66 6.66 0 00-.735-.136 6.02 6.02 0 00-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.917 0 .375.095.655.295.846.191.2.47.296.838.296zm6.41.862c-.144 0-.24-.024-.304-.08-.064-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 01-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.151-.312a.549.549 0 01.32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 01.311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 01-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 01-.303.08h-.687c-.151 0-.255-.024-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.14c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 01-.048-.224v-.407c0-.167.064-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 00.415-.758.777.777 0 00-.215-.559c-.144-.151-.416-.287-.806-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.813a1.902 1.902 0 01-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.415.32-.096.655-.136 1.006-.136.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.311.088.455.136.144.048.256.096.336.144a.69.69 0 01.24.2.43.43 0 01.071.263v.375c0 .168-.064.256-.184.256a.83.83 0 01-.303-.096 3.652 3.652 0 00-1.532-.311c-.455 0-.815.071-1.062.223-.248.152-.375.383-.375.71 0 .224.08.416.24.567.159.152.454.304.877.44l1.134.358c.574.184.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.655-.207.926-.144.272-.336.511-.583.703-.248.2-.543.343-.886.447-.36.111-.734.167-1.142.167z"/></svg></div></div>
+      <div class="ti" style="--dur:4.1s;--del:.75s;--ic:rgba(255,202,40,.5);--ig:rgba(255,202,40,.14);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg></div></div>
+      <div class="ti" style="--dur:3.6s;--del:1s;--ic:rgba(0,120,212,.6);--ig:rgba(0,120,212,.2);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M13.05 4.24L6.56 18.05l-4.53.01 5.32-9.25z" fill="#0078D4"/><path d="M13.75 3.54l3.65 10.76-6.99 1.93 7.39.01L21.97 19H13.8z" fill="#0078D4"/></svg></div></div>
+      <div class="ti" style="--dur:3.3s;--del:1.25s;--ic:rgba(49,120,198,.6);--ig:rgba(49,120,198,.2);"><div class="ti-icon"><svg viewBox="0 0 24 24"><rect width="24" height="24" rx="2" fill="#3178C6"/><path d="M14.5 11H19v1.5h-2V18h-2v-5.5h-2V11h1.5z" fill="white"/><path d="M11.5 13.5c0-.8-.5-1.5-1.5-1.5H7v6h2v-2h.5l1 2H13l-1.2-2.3c.4-.4.7-1 .7-1.7v-.5zm-2 1H9v-1h.5c.3 0 .5.2.5.5s-.2.5-.5.5z" fill="white"/></svg></div></div>
+      <div class="ti" style="--dur:3.5s;--del:1.5s;--ic:rgba(162,89,255,.5);--ig:rgba(162,89,255,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M8 24c2.208 0 4-1.792 4-4v-4H8c-2.208 0-4 1.792-4 4s1.792 4 4 4z" fill="#0ACF83"/><path d="M4 12c0-2.208 1.792-4 4-4h4v8H8c-2.208 0-4-1.792-4-4z" fill="#A259FF"/><path d="M4 4c0-2.208 1.792-4 4-4h4v8H8C5.792 8 4 6.208 4 4z" fill="#F24E1E"/><path d="M12 0h4c2.208 0 4 1.792 4 4s-1.792 4-4 4h-4V0z" fill="#FF7262"/><path d="M20 12c0 2.208-1.792 4-4 4s-4-1.792-4-4 1.792-4 4-4 4 1.792 4 4z" fill="#1ABCFE"/></svg></div></div>
+      <div class="ti" style="--dur:3.9s;--del:1.75s;--ic:rgba(36,150,237,.5);--ig:rgba(36,150,237,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.084-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288-.29-.216z" fill="#2496ED"/></svg></div></div>
+      <!-- fila 2: Dart Node Python MySQL VSCode Postman Jira Git -->
+      <div class="ti" style="--dur:3.7s;--del:2s;--ic:rgba(0,180,216,.5);--ig:rgba(0,180,216,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M4.105 4.105S9.158 1.58 11.684.316a3.079 3.079 0 011.481-.315c.766.047 1.677.788 1.677.788L24 9.948v9.789l-8.075 4.137L4.105 4.105z" fill="#00B4D8"/><path d="M.137 9.949S-.316 6.58 1.053 5.211L4.105 4.105l11.82 19.769-4.052 2.079a3.717 3.717 0 01-1.9.047L.137 9.949z" fill="#0077B6"/></svg></div></div>
+      <div class="ti" style="--dur:3.6s;--del:2.25s;--ic:rgba(104,160,99,.5);--ig:rgba(104,160,99,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M11.998 24a1.36 1.36 0 01-.679-.18L8.556 22.16c-.404-.226-.207-.306-.073-.352.54-.188.648-.23 1.22-.557.06-.036.14-.022.2.013l2.106 1.25c.077.042.185.042.254 0l8.207-4.738c.077-.045.127-.136.127-.23V6.451c0-.097-.05-.185-.13-.232L12.26 1.485c-.077-.044-.18-.044-.254 0L3.8 6.219c-.082.047-.133.138-.133.232v9.472c0 .092.051.182.13.226l2.249 1.3c1.22.61 1.967-.109 1.967-.832V7.204c0-.133.106-.236.238-.236h1.038c.13 0 .237.103.237.236v9.413c0 1.629-.887 2.563-2.43 2.563-.474 0-.847 0-1.893-.515l-2.154-1.24a1.364 1.364 0 01-.679-1.181V6.452c0-.487.26-.939.679-1.184L11.32.528a1.414 1.414 0 011.36 0l8.208 4.74c.419.245.679.697.679 1.184v9.472c0 .487-.26.936-.679 1.18l-8.208 4.74a1.358 1.358 0 01-.682.156zm2.532-6.52c-3.596 0-4.347-1.65-4.347-3.038 0-.133.107-.236.238-.236h1.06c.118 0 .217.085.235.201.16 1.08.638 1.624 2.814 1.624 1.732 0 2.468-.392 2.468-1.313 0-.53-.21-.924-2.904-1.189-2.252-.222-3.644-.72-3.644-2.521 0-1.663 1.4-2.652 3.748-2.652 2.635 0 3.942.914 4.107 2.876a.237.237 0 01-.237.257h-1.064a.236.236 0 01-.23-.183c-.257-1.139-.882-1.504-2.576-1.504-1.897 0-2.117.66-2.117 1.156 0 .6.26.775 2.816 1.113 2.529.335 3.727.81 3.727 2.588-.003 1.796-1.498 2.82-4.093 2.82z" fill="#68A063"/></svg></div></div>
+      <div class="ti" style="--dur:4.2s;--del:2.5s;--ic:rgba(55,118,171,.5);--ig:rgba(55,118,171,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.912S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.031v-2.867s-.109-3.402 3.35-3.402h5.769s3.24.052 3.24-3.13V3.13S18.28 0 11.914 0zm-3.24 1.814a1.05 1.05 0 110 2.1 1.05 1.05 0 010-2.1z" fill="#3776AB"/><path d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.109S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.031v2.867s.109 3.402-3.35 3.402H9.447s-3.24-.052-3.24 3.13V20.87S5.72 24 12.086 24zm3.24-1.814a1.05 1.05 0 110-2.1 1.05 1.05 0 010 2.1z" fill="#FFD43B"/></svg></div></div>
+      <div class="ti" style="--dur:3.4s;--del:2.75s;--ic:rgba(0,117,143,.5);--ig:rgba(0,117,143,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="#00758F"><path d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.19.248.274l.055.036.015-.015c.049-.044.08-.109.066-.181-.026-.108-.113-.16-.124-.16zM5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 1.966.378 3.882.428 5.53zM9.81 14.58H8.217v1.673h1.47v.633H8.217v2.146H9.87v.663H7.462v-5.775h2.348zm5.501 5.53h-.96l-2.613-4.492h-.01c.04.867.057 1.728.054 2.587v1.905h-.82v-5.775h.99l2.576 4.449h.012c-.036-.826-.05-1.646-.044-2.466v-1.983h.815zm4.007.099c-1.32 0-2.218-.912-2.218-2.99 0-1.84.863-3.009 2.274-3.009.43 0 .774.068 1.068.193v.726a2.058 2.058 0 00-.984-.26c-.946 0-1.46.799-1.46 2.296 0 1.547.536 2.33 1.467 2.33.382 0 .742-.104 1.031-.278v.715c-.3.178-.667.277-1.178.277zm4.52-.099h-.961l-2.614-4.492h-.01c.04.867.057 1.728.054 2.587v1.905h-.82v-5.775h.991l2.576 4.449h.012c-.036-.826-.051-1.646-.045-2.466v-1.983h.817z"/></svg></div></div>
+      <div class="ti" style="--dur:3.3s;--del:3s;--ic:rgba(0,120,212,.6);--ig:rgba(0,120,212,.2);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M23.15 2.587L18.21.21a1.494 1.494 0 00-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 00-1.276.057L.327 7.261A1 1 0 00.326 8.74L3.899 12 .326 15.26a1 1 0 00.001 1.479L1.65 17.94a.999.999 0 001.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 001.704.29l4.942-2.377A1.5 1.5 0 0024 20.06V3.939a1.5 1.5 0 00-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z" fill="#007ACC"/></svg></div></div>
+      <div class="ti" style="--dur:4.0s;--del:3.25s;--ic:rgba(255,108,55,.5);--ig:rgba(255,108,55,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M13.527.099C6.955-.744.942 3.9.099 10.473c-.843 6.572 3.8 12.584 10.373 13.428 6.573.843 12.587-3.801 13.428-10.374C24.744 6.955 20.101.943 13.527.099zm2.934 14.29l-4.79-4.79 5.963-5.963 3.347 3.347-4.52 7.406zM11.39 10.17l4.81 4.81-7.624 1.616 2.814-6.426zm-.234-.44L7.52 6.093 6.2 3.453l6.624 5.543-1.668 1.668-.001-.001-.001.001zM7.272 6.31l3.474 3.474-2.88 6.574-2.39-1.005L7.273 6.31zM11.8 10.43l.96-.96 4.57 4.57-.527.863L11.8 10.43zm3.986 5.56l.527-.863L19.55 18.3a13.33 13.33 0 01-3.764 2.152l-2.834-2.834 2.834-2.833.001-.001-.001.001z" fill="#FF6C37"/></svg></div></div>
+      <div class="ti" style="--dur:3.8s;--del:3.5s;--ic:rgba(38,132,255,.5);--ig:rgba(38,132,255,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M11.571 11.513H0a5.218 5.218 0 005.232 5.215h2.13v2.057A5.215 5.215 0 0012.575 24V12.518a1.005 1.005 0 00-1.004-1.005zm5.723-5.756H5.757a5.215 5.215 0 005.215 5.214h2.129v2.058a5.218 5.218 0 005.215 5.214V6.762a1.005 1.005 0 00-1.022-1.005zM23.013 0H11.485a5.215 5.215 0 005.215 5.215h2.129v2.057A5.215 5.215 0 0024 12.483V1.005A1.005 1.005 0 0023.013 0z" fill="#2684FF"/></svg></div></div>
+      <!-- Git #16 -->
+      <div class="ti" style="--dur:3.6s;--del:3.75s;--ic:rgba(240,80,50,.5);--ig:rgba(240,80,50,.16);"><div class="ti-icon"><svg viewBox="0 0 24 24"><path d="M23.546 10.93L13.067.452a1.55 1.55 0 00-2.188 0L8.708 2.627l2.76 2.76a1.838 1.838 0 012.327 2.341l2.658 2.66a1.838 1.838 0 011.9 3.039 1.837 1.837 0 01-2.6 0 1.846 1.846 0 01-.404-2.013l-2.48-2.48v6.522a1.843 1.843 0 01.48 3.59 1.838 1.838 0 01-1.635-3.271v-6.59a1.838 1.838 0 01-1.001-2.406L8.042 4.197.454 11.783a1.55 1.55 0 000 2.188l10.48 10.478a1.55 1.55 0 002.187 0l10.425-10.426a1.55 1.55 0 000-2.093z" fill="#F05032"/></svg></div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: MONITOR -->
+  <div class="hero-right">
+    <div class="mon-glow"></div>
+    <div class="scene">
+      <div class="mon-wrap">
+        <div class="mon-3d">
+          <div class="mon-screen">
+            <div class="ide-top">
+              <div class="dot2 dr"></div><div class="dot2 dy"></div><div class="dot2 dg"></div>
+              <div class="ide-tabs">
+                <div class="tab2 tab-a">HeroSection.jsx</div>
+                <div class="tab2">App.jsx</div>
+              </div>
+            </div>
+            <div class="ide-body">
+              <div class="lnums" id="lnums"></div>
+              <div class="ide-code" id="codeArea"></div>
+            </div>
+            <div class="ide-status">
+              <span class="s-br">⎇ main</span>
+              <span><span class="s-err">⊗ 0</span>&nbsp;⚠ 0</span>
+              <span>React JSX</span>
+            </div>
+          </div>
+          <div class="mon-neck"></div>
+          <div class="mon-base"></div>
+        </div>
+      </div>
+
+      <div class="d-bug">🐛</div>
+      <div class="d-bugx">✕</div>
+
+      <!-- Lámpara -->
+      <div class="d-lamp">
+        <div class="lamp-cone"></div>
+        <svg width="36" height="68" viewBox="0 0 36 68" fill="none">
+          <rect x="7" y="60" width="22" height="5" rx="2.5" fill="#2a3550"/>
+          <rect x="13" y="56" width="10" height="6" rx="1.5" fill="#222d40"/>
+          <rect x="17" y="26" width="3" height="32" rx="1.5" fill="#2a3550"/>
+          <line x1="18" y1="26" x2="8" y2="14" stroke="#2a3550" stroke-width="2.5" stroke-linecap="round"/>
+          <ellipse cx="7" cy="12" rx="9" ry="6" fill="#222d40" transform="rotate(-15 7 12)"/>
+          <ellipse cx="7" cy="13" rx="7" ry="4.5" fill="rgba(255,220,80,.6)" transform="rotate(-15 7 13)"/>
+          <ellipse cx="7" cy="12.5" rx="4" ry="2.5" fill="rgba(255,245,150,.8)" transform="rotate(-15 7 12.5)"/>
+        </svg>
+      </div>
+
+      <!-- Auriculares -->
+      <div class="d-hp">
+        <svg width="44" height="40" viewBox="0 0 44 40" fill="none">
+          <path d="M4 24 Q4 4 22 4 Q40 4 40 24" stroke="#2a3550" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <rect x="1" y="22" width="9" height="14" rx="4.5" fill="#1e2840"/>
+          <rect x="2.5" y="23.5" width="6" height="11" rx="3" fill="#253045"/>
+          <rect x="34" y="22" width="9" height="14" rx="4.5" fill="#1e2840"/>
+          <rect x="35.5" y="23.5" width="6" height="11" rx="3" fill="#253045"/>
+          <rect x="3.5" y="25" width="3" height="2.5" rx="1" fill="rgba(255,59,48,.6)"/>
+          <rect x="36.5" y="25" width="3" height="2.5" rx="1" fill="rgba(0,123,255,.6)"/>
+        </svg>
+      </div>
+
+      <!-- Sticky -->
+      <div class="d-sticky">
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+          <rect width="38" height="38" rx="2" fill="#FFE066"/>
+          <rect width="38" height="8" rx="2" fill="#FFD033"/>
+          <text x="4" y="7" font-family="monospace" font-size="4.5" fill="rgba(100,60,0,.7)" font-weight="bold">TODO</text>
+          <rect x="5" y="14" width="28" height="2" rx="1" fill="rgba(0,0,0,.18)"/>
+          <rect x="5" y="19" width="22" height="2" rx="1" fill="rgba(0,0,0,.18)"/>
+          <rect x="5" y="24" width="25" height="2" rx="1" fill="rgba(0,0,0,.18)"/>
+          <rect x="5" y="29" width="18" height="2" rx="1" fill="rgba(0,0,0,.18)"/>
+          <text x="5" y="20.5" font-size="6" fill="rgba(255,59,48,.75)">✓</text>
+        </svg>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="d-phone">
+        <svg width="24" height="42" viewBox="0 0 24 42" fill="none">
+          <rect x="1" y="1" width="22" height="40" rx="4" fill="#1e2840"/>
+          <rect x="1" y="1" width="22" height="40" rx="4" stroke="rgba(120,160,255,.35)" stroke-width="1.2"/>
+          <rect x="3" y="5" width="18" height="28" rx="2" fill="#252d3d"/>
+          <rect x="4" y="6.5" width="16" height="2" rx="1" fill="rgba(0,123,255,.4)"/>
+          <rect x="4" y="10" width="7" height="6" rx="1" fill="rgba(97,218,251,.18)"/>
+          <rect x="13" y="10" width="7" height="6" rx="1" fill="rgba(255,59,48,.18)"/>
+          <rect x="4" y="18" width="16" height="1.2" rx=".6" fill="rgba(255,255,255,.12)"/>
+          <rect x="4" y="21" width="12" height="1.2" rx=".6" fill="rgba(255,255,255,.1)"/>
+          <rect x="4" y="24" width="14" height="1.2" rx=".6" fill="rgba(255,255,255,.1)"/>
+          <rect x="8" y="36" width="8" height="2" rx="1" fill="rgba(255,255,255,.18)"/>
+          <rect x="10" y="2.5" width="4" height="1.2" rx=".6" fill="rgba(255,255,255,.1)"/>
+        </svg>
+      </div>
+
+      <!-- Planta -->
+      <div class="d-plant">
+        <svg viewBox="0 0 70 75" fill="none" width="68" height="68">
+          <rect x="24" y="54" width="22" height="16" rx="3" fill="#6D4C41"/>
+          <rect x="22" y="50" width="26" height="7" rx="2" fill="#5D4037"/>
+          <rect x="33" y="36" width="3" height="17" fill="#388E3C"/>
+          <ellipse cx="34" cy="32" rx="8" ry="14" fill="#2E7D32" transform="rotate(-18 34 32)"/>
+          <ellipse cx="34" cy="32" rx="8" ry="14" fill="#43A047" transform="rotate(18 34 32)"/>
+          <ellipse cx="34" cy="26" rx="6" ry="10" fill="#66BB6A"/>
+          <ellipse cx="28" cy="38" rx="5" ry="8" fill="#388E3C" transform="rotate(-30 28 38)"/>
+          <ellipse cx="40" cy="38" rx="5" ry="8" fill="#43A047" transform="rotate(30 40 38)"/>
+        </svg>
+      </div>
+
+      <!-- Mug -->
+      <div class="d-mug">
+        <div class="stgrp"><div class="st"></div><div class="st"></div><div class="st"></div></div>
+        <svg viewBox="0 0 58 58" fill="none" width="58" height="58">
+          <rect x="6" y="20" width="32" height="28" rx="5" fill="#1565C0"/>
+          <rect x="6" y="20" width="32" height="8" rx="4" fill="#1E88E5"/>
+          <path d="M38 26h6a6 6 0 010 12h-6" stroke="#1976D2" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="4" y="48" width="36" height="5" rx="2" fill="#0D47A1"/>
+          <ellipse cx="22" cy="36" rx="8" ry="3.2" stroke="#61DAFB" stroke-width="1" fill="none"/>
+          <ellipse cx="22" cy="36" rx="8" ry="3.2" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(60 22 36)"/>
+          <ellipse cx="22" cy="36" rx="8" ry="3.2" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(120 22 36)"/>
+          <circle cx="22" cy="36" r="1.6" fill="#61DAFB"/>
+        </svg>
+      </div>
+
+      <div class="d-kbd" id="kbd"></div>
+      <div class="desk-surface"></div>
+    </div>
+  </div>
+
+</div>
+<div class="scroll-hint">
+  <span class="sh-t">scroll</span>
+  <div class="sh-a">↓</div>
+</div>
+</div>
+</section>
+
+<script>
+/* Navbar scroll */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+
+/* ══ FONDO ══ */
+const bg = document.getElementById('bgCanvas');
+const COLORS=['rgba(0,123,255,.65)','rgba(0,212,255,.55)','rgba(255,59,48,.5)',
+  'rgba(0,123,255,.45)','rgba(255,255,255,.45)','rgba(0,180,255,.6)'];
+for(let i=0;i<26;i++){
+  const el=document.createElement('div');el.className='particle';
+  const c=COLORS[i%COLORS.length];
+  const size=1.5+Math.random()*3;
+  const left=Math.random()*100;
+  const dur=10+Math.random()*18;
+  const del=Math.random()*16;
+  const dx=(Math.random()-.5)*140;
+  el.style.cssText=`left:${left}%;width:${size}px;height:${size}px;background:${c};--dx:${dx}px;animation-duration:${dur}s;animation-delay:-${del}s;`;
+  bg.appendChild(el);
+}
+const SNIPS=['const dev="Leonardo"','import React','<HeroSection />','git commit -m "feat"',
+  'flutter run','useEffect(()=>{','borderRadius:12','await fetch(api)',
+  'export default','// pixel perfect','gsap.from(ref,{})','npm run build'];
+for(let i=0;i<10;i++){
+  const el=document.createElement('div');el.className='code-fly';
+  el.textContent=SNIPS[i%SNIPS.length];
+  const left=3+Math.random()*80;
+  const dur=16+Math.random()*22;
+  const del=Math.random()*22;
+  const col=i%3===2?'rgba(255,80,60,.42)':'rgba(0,140,255,.35)';
+  el.style.cssText=`left:${left}%;color:${col};animation-duration:${dur}s;animation-delay:-${del}s;`;
+  bg.appendChild(el);
+}
+
+/* ══ TECLADO ══ */
+const kbd=document.getElementById('kbd');
+for(let i=0;i<39;i++){
+  const k=document.createElement('div');
+  const r=Math.random();
+  k.className='key'+(r>.9?' key-red':r>.82?' key-lit':'');
+  kbd.appendChild(k);
+}
+
+/* ══ TYPEWRITER IDE ══
+   Cada línea se "escribe" carácter a carácter preservando colores HTML.
+   Para eso extraemos el texto visible y escribimos los spans completos
+   sólo cuando la posición ya los alcanza.
+*/
+const LINES = [
+  { raw:'import React,{useState} from \'react\'',
+    html:`<span class="cb">import</span> <span class="cw">React</span><span class="cgr">,{useState}</span> <span class="cb">from</span> <span class="cg">'react'</span>` },
+  { raw:'import gsap from \'gsap\'',
+    html:`<span class="cb">import</span> <span class="cw">gsap</span> <span class="cb">from</span> <span class="cg">'gsap'</span>` },
+  { raw:'// ✦ Portfolio · Leonardo Daniel',
+    html:`<span class="cgr">// ✦ Portfolio · Leonardo Daniel</span>` },
+  { raw:'',
+    html:`` },
+  { raw:'const HeroSection = () => {',
+    html:`<span class="cb">const</span> <span class="co">HeroSection</span> <span class="cw">= () => {</span>` },
+  { raw:'  return (',
+    html:`&nbsp;&nbsp;<span class="cp">return</span> <span class="cw">(</span>` },
+  { raw:'    <section id="hero">',
+    html:`&nbsp;&nbsp;&nbsp;&nbsp;<span class="cr2">&lt;section</span> <span class="cy">id</span><span class="cw">=</span><span class="cg">"hero"</span><span class="cr2">&gt;</span>` },
+  { raw:'      <Dev name="Leonardo"/>',
+    html:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cr2">&lt;Dev</span> <span class="cy">name</span><span class="cw">=</span><span class="cg">"Leonardo"</span><span class="cr2">/&gt;</span>`,
+    active:true },
+];
+
+const codeArea = document.getElementById('codeArea');
+const lnums    = document.getElementById('lnums');
+
+let typeTimer = null;
+
+function buildLineNums(count){
+  lnums.innerHTML='';
+  for(let i=1;i<=count;i++){
+    const d=document.createElement('div');d.textContent=i;lnums.appendChild(d);
+  }
+}
+
+function typewriteAll(){
+  clearTimeout(typeTimer);
+  codeArea.innerHTML='';
+  buildLineNums(LINES.length);
+
+  let lineIdx=0;
+  let charIdx=0;
+  const rows=[];
+
+  /* crear filas vacías */
+  LINES.forEach((l,i)=>{
+    const row=document.createElement('div');
+    row.className='cl'+(l.active?' aline':'');
+    codeArea.appendChild(row);
+    rows.push(row);
+  });
+
+  const SPEED=28; /* ms por carácter */
+
+  function tick(){
+    if(lineIdx>=LINES.length) return;
+    const line=LINES[lineIdx];
+    const rawLen=line.raw.length;
+
+    if(rawLen===0){ lineIdx++;charIdx=0;typeTimer=setTimeout(tick,SPEED*3);return; }
+
+    charIdx++;
+
+    if(charIdx<=rawLen){
+      /* mostrar HTML coloreado hasta charIdx caracteres visibles */
+      rows[lineIdx].innerHTML = sliceColoredHTML(line.html, charIdx);
+      /* añadir cursor parpadeante al final */
+      rows[lineIdx].innerHTML += '<span class="cursor"></span>';
+      typeTimer=setTimeout(tick, SPEED);
+    } else {
+      /* línea completa — mostrar sin cursor */
+      rows[lineIdx].innerHTML = line.html;
+      lineIdx++;charIdx=0;
+      /* pequeña pausa antes de la siguiente línea */
+      typeTimer=setTimeout(tick, SPEED*8);
+    }
+  }
+  typeTimer=setTimeout(tick, 400);
+}
+
+/* Devuelve el HTML coloreado pero sólo mostrando los primeros `n` chars visibles */
+function sliceColoredHTML(html, n){
+  /* Parsear los spans y contar sólo texto real */
+  const div=document.createElement('div');div.innerHTML=html;
+  let visible=0; let result='';
+
+  function processNode(node){
+    if(visible>=n) return;
+    if(node.nodeType===3){ /* texto */
+      const remaining=n-visible;
+      const slice=node.textContent.slice(0,remaining);
+      result+=escHtml(slice);
+      visible+=slice.length;
+    } else if(node.nodeType===1){
+      const tag=node.tagName.toLowerCase();
+      const cls=node.getAttribute('class')||'';
+      result+=`<${tag}${cls?' class="'+cls+'"':''}>`;
+      node.childNodes.forEach(processNode);
+      result+=`</${tag}>`;
+    }
+  }
+
+  /* también manejar &nbsp; que no son nodos de texto normales */
+  /* los &nbsp; en el html origen son literales — los contamos como 1 char cada uno */
+  /* usamos innerHTML para parsear correctamente */
+  div.childNodes.forEach(processNode);
+  return result;
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+typewriteAll();
+
+/* Reiniciar cada 8s */
+setInterval(()=>{
+  codeArea.style.transition='opacity .35s';codeArea.style.opacity='0';
+  lnums.style.transition='opacity .35s';lnums.style.opacity='0';
+  setTimeout(()=>{
+    codeArea.style.opacity='1';lnums.style.opacity='1';
+    typewriteAll();
+  },380);
+},9000);
+
+/* ══ LOGOS pop + float ══ */
+document.querySelectorAll('.ti').forEach((el,i)=>{
+  el.style.opacity='0';el.style.transform='translateY(14px) scale(.8)';
+  setTimeout(()=>{
+    el.style.transition='opacity .45s ease,transform .45s ease';
+    el.style.opacity='1';el.style.transform='translateY(0) scale(1)';
+    setTimeout(()=>{el.style.transition='';el.style.transform='';},500);
+  },1400+i*110);
+});
+</script>
+
+<!-- ══════════════════════════════════════════
+     SOBRE MÍ
+══════════════════════════════════════════ -->
+<style>
+/* ── SECTION BASE ── */
+.section{position:relative;z-index:1;padding:7rem 2.5rem;max-width:1240px;margin:0 auto;}
+.section-label{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;
+  letter-spacing:4px;text-transform:uppercase;color:var(--blue);
+  display:flex;align-items:center;gap:10px;margin-bottom:.8rem;
+  opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;
+}
+.section-label.vis{opacity:1;transform:translateY(0);}
+.section-label::before{content:'';width:28px;height:2px;background:linear-gradient(90deg,var(--red),var(--blue));border-radius:2px;}
+.section-title{
+  font-size:clamp(2rem,4vw,3.2rem);font-weight:900;letter-spacing:-2px;margin-bottom:1rem;
+  opacity:0;transform:translateY(16px);transition:opacity .6s .1s ease,transform .6s .1s ease;
+}
+.section-title.vis{opacity:1;transform:translateY(0);}
+.section-title span{background:linear-gradient(90deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ── FONDO SECCIÓN — orbe rojo-left más pronunciado aquí ── */
+#sobre-mi{
+  background:radial-gradient(ellipse at 0% 60%,rgba(255,59,48,.07) 0%,transparent 55%),
+             radial-gradient(ellipse at 100% 20%,rgba(0,123,255,.08) 0%,transparent 55%);
+}
+
+/* ── LAYOUT ── */
+.about-grid{
+  display:grid;grid-template-columns:310px 1fr;gap:3.5rem;align-items:stretch;margin-top:3rem;
+}
+
+/* ══ COLUMNA IZQUIERDA ══ */
+.about-left{
+  display:flex;flex-direction:column;gap:1.6rem;
+  opacity:0;transform:translateX(-28px);transition:opacity .7s .2s ease,transform .7s .2s ease;
+}
+.about-left.vis{opacity:1;transform:translateX(0);}
+/* Terminal ocupa todo el espacio restante */
+.term-wrap{flex:1;}
+.term-body{flex:1;}
+
+/* Foto */
+.photo-frame{position:relative;width:270px;height:300px;margin:0 auto;}
+.photo-frame::before{
+  content:'';position:absolute;inset:-8px;border-radius:18px;
+  background:linear-gradient(135deg,var(--red),var(--blue));
+  z-index:0;opacity:.3;animation:framePulse 4s ease-in-out infinite;
+}
+@keyframes framePulse{0%,100%{opacity:.2;}50%{opacity:.45;}}
+.photo-frame::after{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  border:1.5px solid rgba(0,123,255,.28);z-index:2;pointer-events:none;
+}
+.photo-inner{
+  position:absolute;inset:0;z-index:1;border-radius:14px;overflow:hidden;
+  background:linear-gradient(145deg,#1e2840,#0f1520);
+  display:flex;align-items:center;justify-content:center;
+}
+.avatar-svg{width:155px;height:155px;opacity:.8;}
+.corner{position:absolute;width:16px;height:16px;z-index:3;}
+.corner-tl{top:-2px;left:-2px;border-top:2.5px solid var(--blue);border-left:2.5px solid var(--blue);border-radius:4px 0 0 0;}
+.corner-tr{top:-2px;right:-2px;border-top:2.5px solid var(--red);border-right:2.5px solid var(--red);border-radius:0 4px 0 0;}
+.corner-bl{bottom:-2px;left:-2px;border-bottom:2.5px solid var(--red);border-left:2.5px solid var(--red);border-radius:0 0 0 4px;}
+.corner-br{bottom:-2px;right:-2px;border-bottom:2.5px solid var(--blue);border-right:2.5px solid var(--blue);border-radius:0 0 4px 0;}
+
+/* Badge disponible */
+.about-badge{
+  position:absolute;bottom:-16px;right:6px;z-index:10;
+  background:rgba(10,15,25,.96);border:1px solid rgba(0,123,255,.3);
+  border-radius:12px;padding:.5rem .9rem;
+  display:flex;align-items:center;gap:7px;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+  animation:badgeFloat 4s ease-in-out infinite;
+}
+@keyframes badgeFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:#28CA41;
+  box-shadow:0 0 8px rgba(40,202,65,.8);animation:dotPulse 1.5s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.4);}}
+.badge-txt{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.8);white-space:nowrap;}
+.badge-txt strong{color:#fff;}
+
+/* ── MINI RADAR / SKILLS CHART abajo de la foto ── */
+.radar-wrap{
+  width:270px;margin:0 auto;
+  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:1.1rem 1rem .9rem;
+}
+.radar-title{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:3px;
+  text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:.9rem;text-align:center;
+}
+.skill-bar-row{display:flex;flex-direction:column;gap:.55rem;}
+.sbr{display:flex;flex-direction:column;gap:.22rem;}
+
+
+/* ══ COLUMNA DERECHA ══ */
+.about-content{
+  opacity:0;transform:translateX(28px);transition:opacity .7s .3s ease,transform .7s .3s ease;
+}
+.about-content.vis{opacity:1;transform:translateX(0);}
+.about-bio{font-size:.97rem;color:var(--txt2);line-height:1.88;margin-bottom:1.1rem;}
+.about-bio strong{color:#fff;font-weight:600;}
+.about-bio .hl{background:linear-gradient(90deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+.about-bio .hlr{color:var(--red);font-weight:600;}
+.about-divider{width:100%;height:1px;
+  background:linear-gradient(90deg,rgba(0,123,255,.3),rgba(255,59,48,.18),transparent);
+  margin:1.5rem 0;}
+
+/* ── HABILIDADES BLANDAS ── */
+.soft-label{
+  font-size:.68rem;font-family:'JetBrains Mono',monospace;font-weight:600;
+  letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:1rem;
+}
+.soft-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.soft-card{
+  display:flex;align-items:flex-start;gap:.8rem;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;padding:.85rem .95rem;
+  transition:background .3s,border-color .3s,transform .3s,opacity .5s ease,transform .5s ease;
+  cursor:default;opacity:0;transform:translateY(10px);
+}
+.soft-card.vis{opacity:1;transform:translateY(0);}
+.soft-card:hover{background:rgba(0,123,255,.06);border-color:rgba(0,123,255,.22);transform:translateY(-2px);}
+.soft-icon{width:33px;height:33px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;}
+.si-blue{background:rgba(0,123,255,.15);}
+.si-red{background:rgba(255,59,48,.12);}
+.si-cyan{background:rgba(0,212,255,.1);}
+.si-mix{background:linear-gradient(135deg,rgba(255,59,48,.1),rgba(0,123,255,.1));}
+.soft-name{font-size:.83rem;font-weight:700;color:#fff;margin-bottom:.1rem;}
+.soft-desc{font-size:.71rem;color:rgba(255,255,255,.38);line-height:1.5;}
+
+@media(max-width:900px){
+  .about-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .photo-frame,.term-wrap{width:100%;max-width:300px;}
+  .soft-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<section id="sobre-mi" style="position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.05);">
+<div class="section">
+
+  <div class="section-label" id="am-label">// sobre_mi</div>
+  <h2 class="section-title" id="am-title">Sobre <span>Mí</span></h2>
+
+  <div class="about-grid">
+
+    <!-- ══ IZQUIERDA: FOTO + SKILL BARS ══ -->
+    <div class="about-left" id="am-photo">
+
+      <!-- Foto -->
+      <div style="position:relative;">
+        <div class="photo-frame">
+          <div class="photo-inner">
+            <!-- Sustituir por: <img src="foto.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:14px;"> -->
+            <svg class="avatar-svg" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="38" r="22" fill="rgba(0,123,255,.2)" stroke="rgba(0,123,255,.4)" stroke-width="1.5"/>
+              <circle cx="50" cy="36" r="13" fill="rgba(0,123,255,.35)"/>
+              <ellipse cx="50" cy="82" rx="28" ry="18" fill="rgba(0,123,255,.15)" stroke="rgba(0,123,255,.3)" stroke-width="1.5"/>
+              <circle cx="50" cy="36" r="8" fill="rgba(255,255,255,.15)"/>
+            </svg>
+          </div>
+          <div class="corner corner-tl"></div>
+          <div class="corner corner-tr"></div>
+          <div class="corner corner-bl"></div>
+          <div class="corner corner-br"></div>
+        </div>
+        <div class="about-badge">
+          <div class="badge-dot"></div>
+          <span class="badge-txt"><strong>Disponible</strong> para proyectos</span>
+        </div>
+      </div>
+
+      <!-- Terminal animado -->
+      <div class="term-wrap" id="termWrap">
+        <div class="term-top">
+          <div class="td td-r"></div><div class="td td-y"></div><div class="td td-g"></div>
+          <span class="term-fname">ld@portfolio ~ zsh</span>
+        </div>
+        <div class="term-body" id="termBody"></div>
+      </div>
+
+    </div><!-- /about-left -->
+
+    <!-- ══ DERECHA: BIO + SOFT SKILLS ══ -->
+    <div class="about-content" id="am-content">
+
+      <p class="about-bio">
+        Soy un <strong>desarrollador Full-Stack</strong> con enfoque en
+        <span class="hl">Frontend &amp; Mobile</span>, apasionado por convertir ideas
+        en productos digitales que combinan <span class="hlr">diseño cuidado</span>
+        y <strong>código limpio</strong>. Me especializo en crear interfaces que no solo
+        funcionan bien, sino que <strong>se sienten bien</strong> al usarlas.
+      </p>
+      <p class="about-bio">
+        Con experiencia en <strong>React</strong>, <strong>Flutter</strong> y servicios cloud
+        como <strong>AWS y Firebase</strong>, disfruto cada etapa: desde el primer wireframe
+        hasta el <span class="hl">deploy en producción</span>. Siempre buscando el balance
+        entre rendimiento, accesibilidad y ese
+        <span class="hlr">detalle visual</span> que marca la diferencia.
+      </p>
+
+      <div class="about-divider"></div>
+      <div class="soft-label">// habilidades_blandas</div>
+
+      <div class="soft-grid" id="softGrid">
+        <div class="soft-card" style="transition-delay:.06s;">
+          <div class="soft-icon si-blue">🧩</div>
+          <div><div class="soft-name">Resolución de Problemas</div><div class="soft-desc">Descompongo retos complejos en pasos claros y accionables.</div></div>
+        </div>
+        <div class="soft-card" style="transition-delay:.12s;">
+          <div class="soft-icon si-red">🎯</div>
+          <div><div class="soft-name">Atención al Detalle</div><div class="soft-desc">Pixel-perfect en UI, preciso en lógica de negocio.</div></div>
+        </div>
+        <div class="soft-card" style="transition-delay:.18s;">
+          <div class="soft-icon si-cyan">🤝</div>
+          <div><div class="soft-name">Trabajo en Equipo</div><div class="soft-desc">Comunicación clara, code reviews constructivos y colaboración ágil.</div></div>
+        </div>
+        <div class="soft-card" style="transition-delay:.24s;">
+          <div class="soft-icon si-mix">⚡</div>
+          <div><div class="soft-name">Adaptabilidad</div><div class="soft-desc">Aprendo tecnologías nuevas rápido y me ajusto a cualquier stack.</div></div>
+        </div>
+        <div class="soft-card" style="transition-delay:.30s;">
+          <div class="soft-icon si-blue">🗣️</div>
+          <div><div class="soft-name">Comunicación</div><div class="soft-desc">Transmito ideas técnicas de forma clara a perfiles no técnicos.</div></div>
+        </div>
+        <div class="soft-card" style="transition-delay:.36s;">
+          <div class="soft-icon si-red">🔁</div>
+          <div><div class="soft-name">Mentalidad Iterativa</div><div class="soft-desc">Entrego valor rápido, itero con feedback y mejoro constantemente.</div></div>
+        </div>
+      </div>
+
+    </div><!-- /about-content -->
+  </div><!-- /about-grid -->
+</div>
+</section>
+
+<script>
+/* ══ SCROLL REVEAL ══ */
+const io2 = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('vis');io2.unobserve(e.target);} });
+},{threshold:0.12});
+['am-label','am-title','am-photo','am-content'].forEach(id=>{
+  const el=document.getElementById(id); if(el) io2.observe(el);
+});
+
+/* Soft cards */
+const softObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.soft-card').forEach(c=>c.classList.add('vis'));
+      softObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.08});
+const sg=document.getElementById('softGrid'); if(sg) softObs.observe(sg);
+
+/* ══ TERMINAL ANIMADO ══ */
+const TERM_LINES = [
+  { delay:0,    parts:[{c:'t-prompt',t:'❯ '},{c:'t-cmd',t:'whoami'}] },
+  { delay:550,  parts:[{c:'t-blue',  t:'Leonardo Daniel  '},{c:'t-dim',t:'// dev & ux'}] },
+  { delay:1050, parts:[{c:'t-prompt',t:'❯ '},{c:'t-cmd',t:'cat stack.json'}] },
+  { delay:1650, parts:[{c:'t-ok',t:'✓ '},{c:'t-dim',t:'Frontend  '},{c:'t-blue',t:'React · TypeScript'}] },
+  { delay:2000, parts:[{c:'t-ok',t:'✓ '},{c:'t-dim',t:'Mobile    '},{c:'t-blue',t:'Flutter · Dart'}] },
+  { delay:2350, parts:[{c:'t-ok',t:'✓ '},{c:'t-dim',t:'Cloud     '},{c:'t-info',t:'AWS · Firebase · Azure'}] },
+  { delay:2700, parts:[{c:'t-ok',t:'✓ '},{c:'t-dim',t:'Design    '},{c:'t-red', t:'Figma · UX · Prototype'}] },
+  { delay:3050, parts:[{c:'t-ok',t:'✓ '},{c:'t-dim',t:'QA        '},{c:'t-blue',t:'Postman · Jest'}] },
+  { delay:3400, parts:[{c:'t-ok',t:'✓ '},{c:'t-dim',t:'DB        '},{c:'t-info',t:'MySQL · Firestore'}] },
+  { delay:3800, parts:[{c:'t-prompt',t:'❯ '},{c:'t-cmd',t:'git log --oneline -2'}] },
+  { delay:4450, parts:[{c:'t-info',t:'f2c903a '},{c:'t-dim',t:'feat: pixel perfect ✦'}] },
+  { delay:4750, parts:[{c:'t-info',t:'a1b8e71 '},{c:'t-dim',t:'fix: mobile layout 📱'}] },
+  { delay:5150, parts:[{c:'t-prompt',t:'❯ '},{c:'t-cmd',t:'flutter build apk --release'}] },
+  { delay:6000, parts:[{c:'t-ok',t:'✓ '},{c:'t-blue',t:'Build success  '},{c:'t-dim',t:'12.4s'}] },
+  { delay:6500, parts:[{c:'t-prompt',t:'❯ '},{c:'t-cursor',t:''}] },
+];
+
+function renderTerm(){
+  const body = document.getElementById('termBody');
+  if(!body) return;
+  body.innerHTML = '';
+  let timers = [];
+  TERM_LINES.forEach((line, idx)=>{
+    const div = document.createElement('div');
+    div.className = 'tline';
+    body.appendChild(div);
+    const t = setTimeout(()=>{
+      div.innerHTML = '';
+      line.parts.forEach(p=>{
+        const s = document.createElement('span');
+        s.className = p.c;
+        s.textContent = p.t;
+        div.appendChild(s);
+      });
+      /* cursor en la última línea */
+      /* cursor siempre en la línea activa actual */
+      const cur = document.createElement('span');
+      cur.className = 'term-cursor';
+      cur.id = 'termCursor';
+      div.appendChild(cur);
+      /* quitar cursor de línea anterior */
+      const prev = document.getElementById('termCursor');
+      if(prev && prev !== cur) prev.remove();
+    }, line.delay);
+    timers.push(t);
+  });
+  /* reiniciar en loop */
+  const loopT = setTimeout(()=>{
+    timers.forEach(clearTimeout);
+    renderTerm();
+  }, 9000);
+  timers.push(loopT);
+}
+
+const termObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ renderTerm(); termObs.unobserve(e.target); }
+  });
+},{threshold:0.3});
+const tw = document.getElementById('termWrap'); if(tw) termObs.observe(tw);
+</script>
+
+<!-- ══════════════════════════════════════════
+     TECNOLOGÍAS
+══════════════════════════════════════════ -->
+<style>
+#tecnologias{
+  position:relative;z-index:1;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:
+    radial-gradient(ellipse at 100% 0%,   rgba(0,123,255,.07) 0%,transparent 50%),
+    radial-gradient(ellipse at 0%   100%, rgba(255,59,48,.06)  0%,transparent 50%);
+}
+
+/* ── CATEGORÍA ── */
+.tech-cat{margin-bottom:1.8rem;}
+.cat-header{
+  display:flex;align-items:center;gap:.8rem;margin-bottom:1.4rem;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .5s ease,transform .5s ease;
+}
+.cat-header.vis{opacity:1;transform:translateY(0);}
+.cat-icon{font-size:1.1rem;}
+.cat-name{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;color:#fff;
+  position:relative;
+}
+/* barra animada bajo el nombre de categoría */
+.cat-name::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--red),var(--blue));
+  transition:width .6s cubic-bezier(.4,0,.2,1);
+}
+.cat-header.vis .cat-name::after{width:100%;}
+
+/* línea derecha del header — gradiente más visible */
+.cat-line{
+  flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.18),transparent);
+  position:relative;overflow:hidden;
+}
+/* partícula que corre por la línea al entrar */
+.cat-line::after{
+  content:'';position:absolute;top:0;left:-40%;
+  width:40%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(0,212,255,.7),transparent);
+  animation:none;
+}
+.cat-header.vis .cat-line::after{
+  animation:lineSweep .9s .3s ease forwards;
+}
+@keyframes lineSweep{
+  0%{left:-40%;}
+  100%{left:110%;}
+}
+
+/* ─── BLOQUE DERECHO del header: contador de techs ─── */
+.cat-count{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  color:rgba(255,255,255,.3);white-space:nowrap;letter-spacing:1px;
+  display:flex;align-items:center;gap:5px;
+}
+.cat-count-num{
+  color:var(--blue);font-weight:700;font-size:.68rem;
+}
+
+/* ── TECH CARDS GRID ── */
+.tc-grid{
+  display:flex;flex-wrap:wrap;gap:.7rem;
+}
+
+/* ── KEYFRAMES ── */
+@keyframes tcFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-5px);}
+}
+@keyframes tcShimmer{
+  0%,50%{left:-60%;}
+  80%,100%{left:110%;}
+}
+
+/* ── CARD BASE ── */
+.tc{
+  position:relative;overflow:hidden;
+  width:88px;height:88px;
+  border-radius:14px;cursor:default;
+  /* color de fondo tintado con el color propio de la tech */
+  background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 2px 12px rgba(0,0,0,.25);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;
+  opacity:0;transform:translateY(14px) scale(.9);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.34,1.56,.64,1),
+             border-color .3s ease,box-shadow .3s ease,background .3s ease;
+}
+.tc.vis{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+.tc.floating{
+  animation:tcFloat var(--fd,4s) var(--fdel,0s) ease-in-out infinite;
+  transition:border-color .3s ease,box-shadow .3s ease,background .3s ease;
+}
+
+/* reflejo diagonal suave siempre visible */
+.tc::before{
+  content:'';position:absolute;
+  top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.09),transparent);
+  animation:tcShimmer var(--sd,6s) var(--sdel,0s) linear infinite;
+  pointer-events:none;z-index:1;
+}
+
+/* ── ICONO — color tenue pero visible ── */
+.tc-logo{
+  width:34px;height:34px;
+  /* grayscale parcial + buena opacidad = se ve el color sugerido */
+  filter:grayscale(.55) opacity(.6);
+  transition:filter .35s ease,transform .4s cubic-bezier(.34,1.56,.64,1);
+  flex-shrink:0;position:relative;z-index:2;
+}
+.tc-logo svg{width:100%;height:100%;}
+
+/* ── NOMBRE — blanco más visible ── */
+.tc-name{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:600;
+  color:rgba(255,255,255,.58);letter-spacing:.5px;text-align:center;
+  line-height:1.1;position:relative;z-index:2;
+  transition:color .3s ease,font-size .25s ease,text-shadow .3s ease;
+}
+
+/* ── NIVEL — ligerísimo hint en reposo ── */
+.tc-level{
+  font-size:.44rem;font-family:'JetBrains Mono',monospace;
+  color:rgba(255,255,255,.22);padding:1px 6px;border-radius:20px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.07);
+  position:relative;z-index:2;
+  transition:color .3s ease,background .3s ease,border-color .3s ease,font-size .25s ease;
+  white-space:nowrap;
+}
+
+/* ── HOVER ── */
+.tc:hover{
+  border-color:var(--hc,rgba(0,123,255,.7));
+  box-shadow:0 0 22px var(--hg,rgba(0,123,255,.2)),0 8px 28px rgba(0,0,0,.45),
+             inset 0 0 18px rgba(255,255,255,.03);
+  background:var(--hbg,rgba(0,123,255,.1));
+  transform:translateY(-8px) scale(1.1) !important;
+  animation-play-state:paused !important;
+  z-index:10;
+}
+.tc:hover::before{animation-play-state:paused;opacity:0;}
+.tc:hover .tc-logo{
+  filter:grayscale(0) opacity(1);
+  transform:scale(1.22) rotate(-5deg);
+}
+.tc:hover .tc-name{
+  color:#fff;font-size:.66rem;
+  text-shadow:0 0 12px var(--hc,rgba(0,123,255,.6));
+}
+.tc:hover .tc-level{
+  color:var(--lc,#fff);
+  background:var(--lbg,rgba(0,123,255,.25));
+  border-color:var(--hc,rgba(0,123,255,.4));
+  font-size:.5rem;
+}
+
+</style>
+
+<section id="tecnologias">
+<div class="section">
+  <div class="section-label" id="tec-label">// tecnologias</div>
+  <h2 class="section-title" id="tec-title">Mi <span>Stack</span></h2>
+
+  <!-- ─────────── FRONTEND ─────────── -->
+  <div class="tech-cat">
+    <div class="cat-header" id="cat0"><span class="cat-icon">🖥️</span><span class="cat-name">Frontend</span><div class="cat-line"></div><div class="cat-count"><span class="cat-count-num">06</span>&nbsp;techs</div></div>
+    <div class="tc-grid" id="tcg0">
+
+      <div class="tc" style="--hc:rgba(97,218,251,.55);--hg:rgba(97,218,251,.12);--hbg:rgba(97,218,251,.06);--lc:rgba(97,218,251,.9);--lbg:rgba(97,218,251,.15);--dc:#61DAFB;" data-key="react">
+        <div class="tc-logo"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2.05" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none" transform="rotate(120 12 12)"/></svg></div>
+        <div class="tc-name">React</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(49,120,198,.6);--hg:rgba(49,120,198,.14);--hbg:rgba(49,120,198,.07);--lc:rgba(100,170,255,.9);--lbg:rgba(49,120,198,.18);--dc:#3178C6;" data-key="typescript">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><rect width="24" height="24" rx="2" fill="#3178C6"/><path d="M14.5 11H19v1.5h-2V18h-2v-5.5h-2V11h1.5z" fill="white"/><path d="M11.5 13.5c0-.8-.5-1.5-1.5-1.5H7v6h2v-2h.5l1 2H13l-1.2-2.3c.4-.4.7-1 .7-1.7v-.5zm-2 1H9v-1h.5c.3 0 .5.2.5.5s-.2.5-.5.5z" fill="white"/></svg></div>
+        <div class="tc-name">TypeScript</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(247,223,30,.5);--hg:rgba(247,223,30,.1);--hbg:rgba(247,223,30,.05);--lc:rgba(247,223,30,.9);--lbg:rgba(247,223,30,.15);--dc:#F7DF1E;" data-key="javascript">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#F7DF1E"/><path d="M6 15.9c.4.7.9 1.2 1.9 1.2 1 0 1.6-.5 1.6-1.2 0-.8-.6-1.1-1.7-1.6l-.6-.2c-1.7-.7-2.8-1.6-2.8-3.5 0-1.7 1.3-3 3.4-3 1.5 0 2.5.5 3.3 1.8l-1.8 1.1c-.4-.7-.8-1-1.5-1-.7 0-1.1.4-1.1 1 0 .7.4 1 1.5 1.4l.6.3c2 .8 3.1 1.7 3.1 3.7 0 2.1-1.7 3.3-3.9 3.3-2.2 0-3.6-1-4.3-2.4L6 15.9zm8.7.2c.5.8 1 1.5 2 1.5.9 0 1.5-.4 1.5-1.8v-7.7h2.3v7.8c0 3-1.7 4.3-4.2 4.3-2.3 0-3.6-1.2-4.2-2.6l2.6-1.5z" fill="#000"/></svg></div>
+        <div class="tc-name">JavaScript</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(227,79,38,.55);--hg:rgba(227,79,38,.12);--hbg:rgba(227,79,38,.06);--lc:rgba(255,140,80,.9);--lbg:rgba(227,79,38,.15);--dc:#E34F26;" data-key="html5">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z" fill="#E34F26"/></svg></div>
+        <div class="tc-name">HTML5</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(38,77,228,.55);--hg:rgba(38,77,228,.12);--hbg:rgba(38,77,228,.06);--lc:rgba(100,130,255,.9);--lbg:rgba(38,77,228,.15);--dc:#264DE4;" data-key="css3">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.21 2.622 10.59.003-.3 3.88H9.081l.217 2.622h6.533l-.361 3.226-2.46.607-2.462-.607-.15-1.679H7.977l.261 3.563L12 19.263l4.16-1.12.557-6.2H8.84l-.166-2.35H16.7l.42-5.3z" fill="#264DE4"/></svg></div>
+        <div class="tc-name">CSS3</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(162,89,255,.5);--hg:rgba(162,89,255,.12);--hbg:rgba(162,89,255,.06);--lc:rgba(162,89,255,.9);--lbg:rgba(162,89,255,.15);--dc:#A259FF;" data-key="figma">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M8 24c2.208 0 4-1.792 4-4v-4H8c-2.208 0-4 1.792-4 4s1.792 4 4 4z" fill="#0ACF83"/><path d="M4 12c0-2.208 1.792-4 4-4h4v8H8c-2.208 0-4-1.792-4-4z" fill="#A259FF"/><path d="M4 4c0-2.208 1.792-4 4-4h4v8H8C5.792 8 4 6.208 4 4z" fill="#F24E1E"/><path d="M12 0h4c2.208 0 4 1.792 4 4s-1.792 4-4 4h-4V0z" fill="#FF7262"/><path d="M20 12c0 2.208-1.792 4-4 4s-4-1.792-4-4 1.792-4 4-4 4 1.792 4 4z" fill="#1ABCFE"/></svg></div>
+        <div class="tc-name">Figma</div>
+        <div class="tc-level">Intermedio</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────── MOBILE ─────────── -->
+  <div class="tech-cat">
+    <div class="cat-header" id="cat1"><span class="cat-icon">📱</span><span class="cat-name">Mobile</span><div class="cat-line"></div><div class="cat-count"><span class="cat-count-num">03</span>&nbsp;techs</div></div>
+    <div class="tc-grid" id="tcg1">
+
+      <div class="tc" style="--hc:rgba(84,197,248,.55);--hg:rgba(84,197,248,.12);--hbg:rgba(84,197,248,.06);--lc:rgba(84,197,248,.9);--lbg:rgba(84,197,248,.15);--dc:#54C5F8;" data-key="flutter">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M14.314 0L2.3 12 6 15.7 21.684.012z" fill="#54C5F8"/><path d="M14.314 11.986L6.3 20l3.71 3.7 1.34-1.36 5.66-5.66z" fill="#01579B"/><path d="M6.3 20l5.67-5.67 2.7 2.7L11.99 20l-2.7 2.7z" fill="#29B6F6"/></svg></div>
+        <div class="tc-name">Flutter</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(0,180,216,.5);--hg:rgba(0,180,216,.12);--hbg:rgba(0,180,216,.06);--lc:rgba(0,212,255,.9);--lbg:rgba(0,180,216,.15);--dc:#00B4D8;" data-key="dart">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M4.105 4.105S9.158 1.58 11.684.316a3.079 3.079 0 011.481-.315c.766.047 1.677.788 1.677.788L24 9.948v9.789l-8.075 4.137L4.105 4.105z" fill="#00B4D8"/><path d="M.137 9.949S-.316 6.58 1.053 5.211L4.105 4.105l11.82 19.769-4.052 2.079a3.717 3.717 0 01-1.9.047L.137 9.949z" fill="#0077B6"/></svg></div>
+        <div class="tc-name">Dart</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(97,218,251,.45);--hg:rgba(97,218,251,.1);--hbg:rgba(97,218,251,.05);--lc:rgba(97,218,251,.9);--lbg:rgba(97,218,251,.14);--dc:#61DAFB;" data-key="react-native">
+        <div class="tc-logo"><svg viewBox="0 0 24 24" fill="none"><path d="M12 1C6.48 1 2 5.48 2 11c0 4.17 2.55 7.75 6.22 9.28V22h7.56v-1.72C19.45 18.75 22 15.17 22 11c0-5.52-4.48-10-10-10z" fill="#20232A"/><circle cx="12" cy="11" r="2.05" fill="#61DAFB"/><ellipse cx="12" cy="11" rx="9.5" ry="3.5" stroke="#61DAFB" stroke-width="1" fill="none"/><ellipse cx="12" cy="11" rx="9.5" ry="3.5" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(60 12 11)"/><ellipse cx="12" cy="11" rx="9.5" ry="3.5" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(120 12 11)"/></svg></div>
+        <div class="tc-name">React Native</div>
+        <div class="tc-level">Intermedio</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────── CLOUD & BACKEND ─────────── -->
+  <div class="tech-cat">
+    <div class="cat-header" id="cat2"><span class="cat-icon">☁️</span><span class="cat-name">Cloud & Backend</span><div class="cat-line"></div><div class="cat-count"><span class="cat-count-num">05</span>&nbsp;techs</div></div>
+    <div class="tc-grid" id="tcg2">
+
+      <div class="tc" style="--hc:rgba(255,153,0,.55);--hg:rgba(255,153,0,.12);--hbg:rgba(255,153,0,.06);--lc:rgba(255,153,0,.9);--lbg:rgba(255,153,0,.15);--dc:#FF9900;" data-key="aws">
+        <div class="tc-logo"><svg viewBox="0 0 24 24" fill="#FF9900"><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 01-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 01-.287-.375 6.18 6.18 0 01-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.03-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 01-.28.104.488.488 0 01-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 01.224-.167c.279-.144.614-.264 1.005-.36A4.84 4.84 0 013.8 7.52c.95 0 1.644.216 2.091.647.439.43.662 1.085.662 1.963v2.586zm-3.24 1.214c.263 0 .534-.048.822-.144.287-.096.543-.271.758-.51.128-.152.224-.32.272-.512.047-.191.08-.423.08-.694v-.335a6.66 6.66 0 00-.735-.136 6.02 6.02 0 00-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.917 0 .375.095.655.295.846.191.2.47.296.838.296zm6.41.862c-.144 0-.24-.024-.304-.08-.064-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 01-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.151-.312a.549.549 0 01.32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 01.311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 01-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 01-.303.08h-.687c-.151 0-.255-.024-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.14c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 01-.048-.224v-.407c0-.167.064-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 00.415-.758.777.777 0 00-.215-.559c-.144-.151-.416-.287-.806-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.813a1.902 1.902 0 01-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.415.32-.096.655-.136 1.006-.136.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.311.088.455.136.144.048.256.096.336.144a.69.69 0 01.24.2.43.43 0 01.071.263v.375c0 .168-.064.256-.184.256a.83.83 0 01-.303-.096 3.652 3.652 0 00-1.532-.311c-.455 0-.815.071-1.062.223-.248.152-.375.383-.375.71 0 .224.08.416.24.567.159.152.454.304.877.44l1.134.358c.574.184.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.655-.207.926-.144.272-.336.511-.583.703-.248.2-.543.343-.886.447-.36.111-.734.167-1.142.167z"/></svg></div>
+        <div class="tc-name">AWS</div>
+        <div class="tc-level">Intermedio</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(255,202,40,.5);--hg:rgba(255,202,40,.1);--hbg:rgba(255,202,40,.05);--lc:rgba(255,202,40,.9);--lbg:rgba(255,202,40,.14);--dc:#FFCA28;" data-key="firebase">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg></div>
+        <div class="tc-name">Firebase</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(0,120,212,.6);--hg:rgba(0,120,212,.14);--hbg:rgba(0,120,212,.07);--lc:rgba(0,170,255,.9);--lbg:rgba(0,120,212,.18);--dc:#0078D4;" data-key="azure">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M13.05 4.24L6.56 18.05l-4.53.01 5.32-9.25z" fill="#0078D4"/><path d="M13.75 3.54l3.65 10.76-6.99 1.93 7.39.01L21.97 19H13.8z" fill="#0078D4"/></svg></div>
+        <div class="tc-name">Azure</div>
+        <div class="tc-level">Básico</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(104,160,99,.5);--hg:rgba(104,160,99,.1);--hbg:rgba(104,160,99,.05);--lc:rgba(104,200,99,.9);--lbg:rgba(104,160,99,.14);--dc:#68A063;" data-key="nodejs">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M11.998 24a1.36 1.36 0 01-.679-.18L8.556 22.16c-.404-.226-.207-.306-.073-.352.54-.188.648-.23 1.22-.557.06-.036.14-.022.2.013l2.106 1.25c.077.042.185.042.254 0l8.207-4.738c.077-.045.127-.136.127-.23V6.451c0-.097-.05-.185-.13-.232L12.26 1.485c-.077-.044-.18-.044-.254 0L3.8 6.219c-.082.047-.133.138-.133.232v9.472c0 .092.051.182.13.226l2.249 1.3c1.22.61 1.967-.109 1.967-.832V7.204c0-.133.106-.236.238-.236h1.038c.13 0 .237.103.237.236v9.413c0 1.629-.887 2.563-2.43 2.563-.474 0-.847 0-1.893-.515l-2.154-1.24a1.364 1.364 0 01-.679-1.181V6.452c0-.487.26-.939.679-1.184L11.32.528a1.414 1.414 0 011.36 0l8.208 4.74c.419.245.679.697.679 1.184v9.472c0 .487-.26.936-.679 1.18l-8.208 4.74a1.358 1.358 0 01-.682.156zm2.532-6.52c-3.596 0-4.347-1.65-4.347-3.038 0-.133.107-.236.238-.236h1.06c.118 0 .217.085.235.201.16 1.08.638 1.624 2.814 1.624 1.732 0 2.468-.392 2.468-1.313 0-.53-.21-.924-2.904-1.189-2.252-.222-3.644-.72-3.644-2.521 0-1.663 1.4-2.652 3.748-2.652 2.635 0 3.942.914 4.107 2.876a.237.237 0 01-.237.257h-1.064a.236.236 0 01-.23-.183c-.257-1.139-.882-1.504-2.576-1.504-1.897 0-2.117.66-2.117 1.156 0 .6.26.775 2.816 1.113 2.529.335 3.727.81 3.727 2.588-.003 1.796-1.498 2.82-4.093 2.82z" fill="#68A063"/></svg></div>
+        <div class="tc-name">Node.js</div>
+        <div class="tc-level">Intermedio</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(55,118,171,.5);--hg:rgba(55,118,171,.1);--hbg:rgba(55,118,171,.05);--lc:rgba(100,170,255,.9);--lbg:rgba(55,118,171,.14);--dc:#3776AB;" data-key="python">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.912S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.031v-2.867s-.109-3.402 3.35-3.402h5.769s3.24.052 3.24-3.13V3.13S18.28 0 11.914 0zm-3.24 1.814a1.05 1.05 0 110 2.1 1.05 1.05 0 010-2.1z" fill="#3776AB"/><path d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.109S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.031v2.867s.109 3.402-3.35 3.402H9.447s-3.24-.052-3.24 3.13V20.87S5.72 24 12.086 24zm3.24-1.814a1.05 1.05 0 110-2.1 1.05 1.05 0 010 2.1z" fill="#FFD43B"/></svg></div>
+        <div class="tc-name">Python</div>
+        <div class="tc-level">Básico</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────── BASE DE DATOS ─────────── -->
+  <div class="tech-cat">
+    <div class="cat-header" id="cat3"><span class="cat-icon">🗄️</span><span class="cat-name">Base de Datos</span><div class="cat-line"></div><div class="cat-count"><span class="cat-count-num">02</span>&nbsp;techs</div></div>
+    <div class="tc-grid" id="tcg3">
+
+      <div class="tc" style="--hc:rgba(0,117,143,.6);--hg:rgba(0,117,143,.14);--hbg:rgba(0,117,143,.07);--lc:rgba(0,180,200,.9);--lbg:rgba(0,117,143,.18);--dc:#00758F;" data-key="mysql">
+        <div class="tc-logo"><svg viewBox="0 0 24 24" fill="#00758F"><path d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.19.248.274l.055.036.015-.015c.049-.044.08-.109.066-.181-.026-.108-.113-.16-.124-.16zM5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 1.966.378 3.882.428 5.53zM9.81 14.58H8.217v1.673h1.47v.633H8.217v2.146H9.87v.663H7.462v-5.775h2.348zm5.501 5.53h-.96l-2.613-4.492h-.01c.04.867.057 1.728.054 2.587v1.905h-.82v-5.775h.99l2.576 4.449h.012c-.036-.826-.05-1.646-.044-2.466v-1.983h.815zm4.007.099c-1.32 0-2.218-.912-2.218-2.99 0-1.84.863-3.009 2.274-3.009.43 0 .774.068 1.068.193v.726a2.058 2.058 0 00-.984-.26c-.946 0-1.46.799-1.46 2.296 0 1.547.536 2.33 1.467 2.33.382 0 .742-.104 1.031-.278v.715c-.3.178-.667.277-1.178.277zm4.52-.099h-.961l-2.614-4.492h-.01c.04.867.057 1.728.054 2.587v1.905h-.82v-5.775h.991l2.576 4.449h.012c-.036-.826-.051-1.646-.045-2.466v-1.983h.817z"/></svg></div>
+        <div class="tc-name">MySQL</div>
+        <div class="tc-level">Intermedio</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(255,202,40,.5);--hg:rgba(255,202,40,.1);--hbg:rgba(255,202,40,.05);--lc:rgba(255,202,40,.9);--lbg:rgba(255,202,40,.14);--dc:#FFCA28;" data-key="firestore">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg></div>
+        <div class="tc-name">Firestore</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────── HERRAMIENTAS ─────────── -->
+  <div class="tech-cat" style="margin-bottom:0;">
+    <div class="cat-header" id="cat4"><span class="cat-icon">🔧</span><span class="cat-name">Herramientas & DevOps</span><div class="cat-line"></div><div class="cat-count"><span class="cat-count-num">05</span>&nbsp;techs</div></div>
+    <div class="tc-grid" id="tcg4">
+
+      <div class="tc" style="--hc:rgba(240,80,50,.5);--hg:rgba(240,80,50,.12);--hbg:rgba(240,80,50,.06);--lc:rgba(255,120,80,.9);--lbg:rgba(240,80,50,.15);--dc:#F05032;" data-key="git">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M23.546 10.93L13.067.452a1.55 1.55 0 00-2.188 0L8.708 2.627l2.76 2.76a1.838 1.838 0 012.327 2.341l2.658 2.66a1.838 1.838 0 011.9 3.039 1.837 1.837 0 01-2.6 0 1.846 1.846 0 01-.404-2.013l-2.48-2.48v6.522a1.843 1.843 0 01.48 3.59 1.838 1.838 0 01-1.635-3.271v-6.59a1.838 1.838 0 01-1.001-2.406L8.042 4.197.454 11.783a1.55 1.55 0 000 2.188l10.48 10.478a1.55 1.55 0 002.187 0l10.425-10.426a1.55 1.55 0 000-2.093z" fill="#F05032"/></svg></div>
+        <div class="tc-name">Git</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(0,120,212,.6);--hg:rgba(0,120,212,.14);--hbg:rgba(0,120,212,.07);--lc:rgba(0,170,255,.9);--lbg:rgba(0,120,212,.18);--dc:#007ACC;" data-key="vscode">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M23.15 2.587L18.21.21a1.494 1.494 0 00-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 00-1.276.057L.327 7.261A1 1 0 00.326 8.74L3.899 12 .326 15.26a1 1 0 00.001 1.479L1.65 17.94a.999.999 0 001.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 001.704.29l4.942-2.377A1.5 1.5 0 0024 20.06V3.939a1.5 1.5 0 00-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z" fill="#007ACC"/></svg></div>
+        <div class="tc-name">VS Code</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(36,150,237,.5);--hg:rgba(36,150,237,.12);--hbg:rgba(36,150,237,.06);--lc:rgba(36,190,237,.9);--lbg:rgba(36,150,237,.15);--dc:#2496ED;" data-key="docker">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.084-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288-.29-.216z" fill="#2496ED"/></svg></div>
+        <div class="tc-name">Docker</div>
+        <div class="tc-level">Básico</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(255,108,55,.5);--hg:rgba(255,108,55,.12);--hbg:rgba(255,108,55,.06);--lc:rgba(255,140,80,.9);--lbg:rgba(255,108,55,.15);--dc:#FF6C37;" data-key="postman">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M13.527.099C6.955-.744.942 3.9.099 10.473c-.843 6.572 3.8 12.584 10.373 13.428 6.573.843 12.587-3.801 13.428-10.374C24.744 6.955 20.101.943 13.527.099zm2.934 14.29l-4.79-4.79 5.963-5.963 3.347 3.347-4.52 7.406zM11.39 10.17l4.81 4.81-7.624 1.616 2.814-6.426zm-.234-.44L7.52 6.093 6.2 3.453l6.624 5.543-1.668 1.668-.001-.001-.001.001zM7.272 6.31l3.474 3.474-2.88 6.574-2.39-1.005L7.273 6.31zM11.8 10.43l.96-.96 4.57 4.57-.527.863L11.8 10.43zm3.986 5.56l.527-.863L19.55 18.3a13.33 13.33 0 01-3.764 2.152l-2.834-2.834 2.834-2.833.001-.001-.001.001z" fill="#FF6C37"/></svg></div>
+        <div class="tc-name">Postman</div>
+        <div class="tc-level">Avanzado</div>
+      </div>
+
+      <div class="tc" style="--hc:rgba(38,132,255,.5);--hg:rgba(38,132,255,.12);--hbg:rgba(38,132,255,.06);--lc:rgba(80,160,255,.9);--lbg:rgba(38,132,255,.15);--dc:#2684FF;" data-key="jira">
+        <div class="tc-logo"><svg viewBox="0 0 24 24"><path d="M11.571 11.513H0a5.218 5.218 0 005.232 5.215h2.13v2.057A5.215 5.215 0 0012.575 24V12.518a1.005 1.005 0 00-1.004-1.005zm5.723-5.756H5.757a5.215 5.215 0 005.215 5.214h2.129v2.058a5.218 5.218 0 005.215 5.214V6.762a1.005 1.005 0 00-1.022-1.005zM23.013 0H11.485a5.215 5.215 0 005.215 5.215h2.129v2.057A5.215 5.215 0 0024 12.483V1.005A1.005 1.005 0 0023.013 0z" fill="#2684FF"/></svg></div>
+        <div class="tc-name">Jira</div>
+        <div class="tc-level">Intermedio</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</section>
+
+<script>
+/* ══ REVEAL CATEGORÍAS ══ */
+const catObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('vis');catObs.unobserve(e.target);} });
+},{threshold:0.2});
+['tec-label','tec-title','cat0','cat1','cat2','cat3','cat4'].forEach(id=>{
+  const el=document.getElementById(id); if(el) catObs.observe(el);
+});
+
+/* ══ REVEAL CARDS con stagger + float/shimmer aleatorio ══ */
+['tcg0','tcg1','tcg2','tcg3','tcg4'].forEach(gid=>{
+  const grid = document.getElementById(gid);
+  if(!grid) return;
+  const gridObs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.tc').forEach((c,i)=>{
+          c.style.setProperty('--fd',   (3.2+Math.random()*2.4).toFixed(1)+'s');
+          c.style.setProperty('--fdel', (Math.random()*2).toFixed(1)+'s');
+          c.style.setProperty('--sd',   (5+Math.random()*4).toFixed(1)+'s');
+          c.style.setProperty('--sdel', (Math.random()*3).toFixed(1)+'s');
+          const entranceDelay = i * 55;
+          setTimeout(()=>{
+            c.classList.add('vis');
+            /* añadir floating después de que termine la transición de entrada (450ms) */
+            setTimeout(()=>c.classList.add('floating'), 500);
+          }, entranceDelay);
+        });
+        gridObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.1});
+  gridObs.observe(grid);
+});
+</script>
+<!-- ══ TECH POPUP ══ -->
+<style>
+.tp-overlay{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,0);
+  backdrop-filter:blur(0px);
+  display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;
+  pointer-events:none;
+  transition:background .3s ease,backdrop-filter .3s ease;
+}
+.tp-overlay.open{
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(10px);
+  pointer-events:all;
+}
+.tp-card{
+  position:relative;
+  width:100%;max-width:500px;
+  background:linear-gradient(145deg,#0d1525,#070c17);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:1.8rem;
+  box-shadow:0 24px 64px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.04);
+  transform:translateY(28px) scale(.93);
+  opacity:0;
+  transition:transform .38s cubic-bezier(.34,1.56,.64,1),opacity .3s ease;
+}
+.tp-overlay.open .tp-card{transform:translateY(0) scale(1);opacity:1;}
+.tp-card::before{
+  content:'';position:absolute;top:0;left:2rem;right:2rem;height:2px;
+  background:var(--pc,linear-gradient(90deg,var(--red),var(--blue)));
+  border-radius:0 0 2px 2px;
+}
+.tp-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
+.tp-icon{
+  width:50px;height:50px;border-radius:13px;flex-shrink:0;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+}
+.tp-icon svg{width:28px;height:28px;}
+.tp-meta{flex:1;min-width:0;}
+.tp-name{font-size:1.2rem;font-weight:900;letter-spacing:-1px;color:#fff;margin-bottom:.15rem;}
+.tp-cat{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2.5px;
+  text-transform:uppercase;color:rgba(255,255,255,.28);}
+.tp-lvl{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;
+  padding:.28rem .75rem;border-radius:20px;white-space:nowrap;
+  background:var(--lbadge,rgba(0,123,255,.18));
+  border:1px solid var(--lborder,rgba(0,123,255,.4));
+  color:var(--lcolor,rgba(100,170,255,.9));
+}
+.tp-desc{
+  font-size:.86rem;color:rgba(255,255,255,.5);line-height:1.78;
+  margin-bottom:1.2rem;
+}
+.tp-div{height:1px;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent);margin-bottom:1.1rem;}
+.tp-sec-title{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2.5px;
+  text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.7rem;
+}
+.tp-projects{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1rem;}
+.tp-proj{
+  display:flex;align-items:center;gap:.4rem;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;padding:.32rem .7rem;
+  font-size:.73rem;color:rgba(255,255,255,.6);
+  transition:background .2s,border-color .2s,color .2s;cursor:default;
+}
+.tp-proj:hover{background:rgba(0,123,255,.1);border-color:rgba(0,123,255,.3);color:#fff;}
+.tp-proj-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0;}
+.tp-tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.tp-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.53rem;
+  padding:.18rem .55rem;border-radius:6px;letter-spacing:.5px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  color:rgba(255,255,255,.32);
+}
+.tp-close{
+  position:absolute;top:.9rem;right:.9rem;
+  width:28px;height:28px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.45);
+  font-size:.85rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s;
+}
+.tp-close:hover{background:rgba(255,59,48,.25);color:#fff;}
+</style>
+
+<div class="tp-overlay" id="tpOverlay">
+  <div class="tp-card" id="tpCard">
+    <button class="tp-close" id="tpClose">✕</button>
+    <div class="tp-head">
+      <div class="tp-icon" id="tpIcon"></div>
+      <div class="tp-meta">
+        <div class="tp-name" id="tpName"></div>
+        <div class="tp-cat"  id="tpCat"></div>
+      </div>
+      <div class="tp-lvl" id="tpLvl"></div>
+    </div>
+    <p class="tp-desc" id="tpDesc"></p>
+    <div class="tp-div"></div>
+    <div class="tp-sec-title">// proyectos_donde_se_usó</div>
+    <div class="tp-projects" id="tpProjects"></div>
+    <div class="tp-sec-title" style="margin-top:.8rem;">// keywords</div>
+    <div class="tp-tags" id="tpTags"></div>
+  </div>
+</div>
+
+<script>
+const TECH_DATA = {
+  react:{name:'React',cat:'Frontend',level:'Avanzado',color:'rgba(97,218,251,.8)',lbadge:'rgba(97,218,251,.15)',lborder:'rgba(97,218,251,.4)',lcolor:'rgba(97,218,251,.9)',desc:'Biblioteca de JavaScript para interfaces basadas en componentes reutilizables. Gestión de estado con hooks, Context API y renderizado eficiente con Virtual DOM.',projects:['Portfolio Personal','E-Commerce App','Dashboard Analytics','Landing Page Pro'],tags:['Hooks','Context API','Virtual DOM','JSX','SPA']},
+  typescript:{name:'TypeScript',cat:'Frontend',level:'Avanzado',color:'rgba(49,120,198,.8)',lbadge:'rgba(49,120,198,.15)',lborder:'rgba(49,120,198,.5)',lcolor:'rgba(100,170,255,.9)',desc:'Superset tipado de JavaScript. Detecta errores en compilación con interfaces, tipos genéricos y autocompletado avanzado.',projects:['Portfolio Personal','Dashboard Analytics','API REST Client'],tags:['Tipos','Interfaces','Generics','Decorators','TSConfig']},
+  javascript:{name:'JavaScript',cat:'Frontend',level:'Avanzado',color:'rgba(247,223,30,.8)',lbadge:'rgba(247,223,30,.12)',lborder:'rgba(247,223,30,.4)',lcolor:'rgba(247,223,30,.9)',desc:'Lenguaje principal de la web. Lógica dinámica, manipulación del DOM, eventos y comunicación asíncrona con APIs externas.',projects:['Portfolio Personal','Landing Page Pro','E-Commerce App','Blog Dinámico'],tags:['ES2023','Async/Await','Fetch API','DOM','Closures']},
+  html5:{name:'HTML5',cat:'Frontend',level:'Avanzado',color:'rgba(227,79,38,.8)',lbadge:'rgba(227,79,38,.15)',lborder:'rgba(227,79,38,.5)',lcolor:'rgba(255,140,80,.9)',desc:'Lenguaje de marcado estándar. Etiquetas semánticas, Canvas, Web Storage y soporte multimedia nativo sin plugins.',projects:['Portfolio Personal','Landing Page Pro','E-Commerce App'],tags:['Semántico','Canvas','Accesibilidad','SEO','Forms']},
+  css3:{name:'CSS3',cat:'Frontend',level:'Avanzado',color:'rgba(38,77,228,.8)',lbadge:'rgba(38,77,228,.15)',lborder:'rgba(38,77,228,.5)',lcolor:'rgba(130,160,255,.9)',desc:'Lenguaje de estilos para diseñar y animar interfaces. Flexbox, Grid, animaciones, variables CSS y media queries.',projects:['Portfolio Personal','Landing Page Pro','Dashboard Analytics'],tags:['Flexbox','Grid','Animations','Variables','Responsive']},
+  figma:{name:'Figma',cat:'Frontend · UX',level:'Intermedio',color:'rgba(162,89,255,.8)',lbadge:'rgba(162,89,255,.15)',lborder:'rgba(162,89,255,.4)',lcolor:'rgba(162,89,255,.9)',desc:'Herramienta de diseño UI/UX colaborativa. Wireframes, prototipos interactivos, sistemas de diseño y handoff para devs.',projects:['App Móvil Fintech','E-Commerce App','Dashboard Analytics'],tags:['Prototipado','Auto Layout','Components','Design System','Handoff']},
+  flutter:{name:'Flutter',cat:'Mobile',level:'Avanzado',color:'rgba(84,197,248,.8)',lbadge:'rgba(84,197,248,.15)',lborder:'rgba(84,197,248,.4)',lcolor:'rgba(84,197,248,.9)',desc:'Framework de Google para apps nativas multiplataforma (iOS, Android, Web, Desktop) desde una base de código en Dart.',projects:['App Móvil Fintech','Delivery Tracker','Task Manager'],tags:['Widgets','Bloc/Cubit','Navigator 2.0','Null Safety','Animations']},
+  dart:{name:'Dart',cat:'Mobile',level:'Avanzado',color:'rgba(0,180,216,.8)',lbadge:'rgba(0,180,216,.15)',lborder:'rgba(0,180,216,.4)',lcolor:'rgba(0,212,255,.9)',desc:'Lenguaje de Google compilado a ARM nativo o JavaScript. Base de Flutter con tipado fuerte, async/await y null safety.',projects:['App Móvil Fintech','Delivery Tracker','Task Manager'],tags:['Null Safety','Async','Streams','OOP','Mixins']},
+  'react-native':{name:'React Native',cat:'Mobile',level:'Intermedio',color:'rgba(97,218,251,.7)',lbadge:'rgba(97,218,251,.12)',lborder:'rgba(97,218,251,.35)',lcolor:'rgba(97,218,251,.85)',desc:'Framework de Meta para apps móviles nativas con React y JS. Compila a componentes reales de iOS y Android.',projects:['Social Feed App','Notifications Module'],tags:['Expo','Navigation','StyleSheet','Bridge','Native Modules']},
+  aws:{name:'AWS',cat:'Cloud',level:'Intermedio',color:'rgba(255,153,0,.8)',lbadge:'rgba(255,153,0,.12)',lborder:'rgba(255,153,0,.4)',lcolor:'rgba(255,153,0,.9)',desc:'Plataforma cloud líder de Amazon. S3 para almacenamiento, Lambda serverless, EC2 para cómputo y Amplify para deploy.',projects:['E-Commerce App','Dashboard Analytics','Portfolio Personal'],tags:['S3','Lambda','EC2','Amplify','IAM']},
+  firebase:{name:'Firebase',cat:'Cloud · Backend',level:'Avanzado',color:'rgba(255,202,40,.8)',lbadge:'rgba(255,202,40,.12)',lborder:'rgba(255,202,40,.4)',lcolor:'rgba(255,202,40,.9)',desc:'Plataforma BaaS de Google. Firestore en tiempo real, autenticación, almacenamiento, funciones cloud y hosting integrado.',projects:['App Móvil Fintech','Task Manager','Chat en Tiempo Real','Delivery Tracker'],tags:['Firestore','Auth','Storage','Functions','Hosting']},
+  azure:{name:'Azure',cat:'Cloud',level:'Básico',color:'rgba(0,120,212,.8)',lbadge:'rgba(0,120,212,.15)',lborder:'rgba(0,120,212,.5)',lcolor:'rgba(0,170,255,.9)',desc:'Plataforma cloud de Microsoft. Pipelines CI/CD con Azure DevOps, almacenamiento de recursos y despliegue de apps web.',projects:['Dashboard Analytics','Pipeline CI/CD'],tags:['DevOps','App Service','Blob Storage','CI/CD','Pipelines']},
+  nodejs:{name:'Node.js',cat:'Backend',level:'Intermedio',color:'rgba(104,160,99,.8)',lbadge:'rgba(104,160,99,.15)',lborder:'rgba(104,160,99,.4)',lcolor:'rgba(130,210,110,.9)',desc:'Entorno de JS en el servidor basado en V8. APIs REST, servidores en tiempo real con WebSockets y herramientas CLI.',projects:['API REST Client','Chat en Tiempo Real','E-Commerce App'],tags:['Express','npm','REST APIs','WebSockets','Middleware']},
+  python:{name:'Python',cat:'Backend · Scripts',level:'Básico',color:'rgba(55,118,171,.8)',lbadge:'rgba(55,118,171,.15)',lborder:'rgba(55,118,171,.4)',lcolor:'rgba(100,170,255,.9)',desc:'Lenguaje versátil para scripting, automatización y backend. Procesamiento de datos, automatización de tareas y pequeñas APIs.',projects:['Scripts de Automatización','Data Processing Tool'],tags:['Scripts','Pandas','Flask','Automation','pip']},
+  mysql:{name:'MySQL',cat:'Base de Datos',level:'Intermedio',color:'rgba(0,117,143,.8)',lbadge:'rgba(0,117,143,.15)',lborder:'rgba(0,117,143,.4)',lcolor:'rgba(0,180,200,.9)',desc:'SGBD relacional más popular. Consultas complejas con JOINs, índices, transacciones y procedimientos almacenados.',projects:['E-Commerce App','Dashboard Analytics','API REST Client'],tags:['SQL','JOINs','Indexing','Transactions','Stored Procs']},
+  firestore:{name:'Firestore',cat:'Base de Datos · Cloud',level:'Avanzado',color:'rgba(255,202,40,.8)',lbadge:'rgba(255,202,40,.12)',lborder:'rgba(255,202,40,.4)',lcolor:'rgba(255,202,40,.9)',desc:'Base de datos NoSQL en tiempo real de Firebase. Sincronización automática, consultas flexibles y offline support nativo.',projects:['App Móvil Fintech','Chat en Tiempo Real','Task Manager','Delivery Tracker'],tags:['NoSQL','Realtime','Collections','Security Rules','Offline']},
+  git:{name:'Git',cat:'Herramientas · DevOps',level:'Avanzado',color:'rgba(240,80,50,.8)',lbadge:'rgba(240,80,50,.15)',lborder:'rgba(240,80,50,.4)',lcolor:'rgba(255,120,80,.9)',desc:'Control de versiones distribuido estándar. Ramas, merges, rebases, pull requests en GitHub/GitLab y flujos ágiles.',projects:['Todos los proyectos','Portfolio Personal','App Móvil Fintech'],tags:['GitHub','Branching','Merge','Rebase','PR Workflow']},
+  vscode:{name:'VS Code',cat:'Herramientas',level:'Avanzado',color:'rgba(0,120,212,.8)',lbadge:'rgba(0,120,212,.15)',lborder:'rgba(0,120,212,.5)',lcolor:'rgba(0,170,255,.9)',desc:'Editor más popular del mundo por Microsoft. Extensiones, debugging integrado, terminal, Git y soporte para Copilot.',projects:['Todos los proyectos'],tags:['Extensions','Debugging','Snippets','Git UI','Copilot']},
+  docker:{name:'Docker',cat:'DevOps',level:'Básico',color:'rgba(36,150,237,.8)',lbadge:'rgba(36,150,237,.15)',lborder:'rgba(36,150,237,.4)',lcolor:'rgba(36,190,237,.9)',desc:'Contenedores que empaquetan apps con todas sus dependencias. Entornos reproducibles y despliegue consistente.',projects:['API REST Client','Pipeline CI/CD'],tags:['Containers','Dockerfile','Compose','Images','Volumes']},
+  postman:{name:'Postman',cat:'Herramientas · QA',level:'Avanzado',color:'rgba(255,108,55,.8)',lbadge:'rgba(255,108,55,.15)',lborder:'rgba(255,108,55,.4)',lcolor:'rgba(255,140,80,.9)',desc:'Plataforma para probar y documentar APIs. Colecciones, variables de entorno, tests automatizados y mocking de endpoints.',projects:['E-Commerce App','API REST Client','App Móvil Fintech','Dashboard Analytics'],tags:['Collections','Env Vars','Tests','Mock Server','Newman']},
+  jira:{name:'Jira',cat:'Herramientas · PM',level:'Intermedio',color:'rgba(38,132,255,.8)',lbadge:'rgba(38,132,255,.15)',lborder:'rgba(38,132,255,.4)',lcolor:'rgba(80,160,255,.9)',desc:'Gestión de proyectos ágil de Atlassian. Sprints, backlogs, epics, user stories e integración con GitHub.',projects:['App Móvil Fintech','E-Commerce App','Dashboard Analytics'],tags:['Scrum','Sprints','Backlog','Epics','Kanban']},
+};
+
+const overlay = document.getElementById('tpOverlay');
+
+function openPopup(key, cardEl){
+  const d = TECH_DATA[key]; if(!d) return;
+  document.getElementById('tpCard').style.setProperty('--pc','linear-gradient(90deg,'+d.color+',transparent)');
+  document.getElementById('tpIcon').innerHTML = cardEl.querySelector('.tc-logo').innerHTML;
+  document.getElementById('tpName').textContent = d.name;
+  document.getElementById('tpCat').textContent  = '// ' + d.cat.toLowerCase().replace(/\s·\s/g,'_').replace(/\s/g,'_');
+  const lvl = document.getElementById('tpLvl');
+  lvl.textContent = d.level;
+  lvl.style.cssText = `background:${d.lbadge};border-color:${d.lborder};color:${d.lcolor};`;
+  document.getElementById('tpDesc').textContent = d.desc;
+  document.getElementById('tpProjects').innerHTML = d.projects.map(p=>`<div class="tp-proj"><div class="tp-proj-dot"></div>${p}</div>`).join('');
+  document.getElementById('tpTags').innerHTML = d.tags.map(t=>`<span class="tp-tag">${t}</span>`).join('');
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closePopup(){
+  overlay.classList.remove('open');
+  document.body.style.overflow='';
+}
+
+document.querySelectorAll('.tc[data-key]').forEach(card=>{
+  card.style.cursor='pointer';
+  card.addEventListener('click',()=>openPopup(card.dataset.key, card));
+});
+document.getElementById('tpClose').addEventListener('click',closePopup);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closePopup();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopup();});
+</script>
+<!-- ══════════════════════════════════════════
+     CERTIFICACIONES
+══════════════════════════════════════════ -->
+<style>
+#certificaciones{
+  position:relative;z-index:1;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:
+    radial-gradient(ellipse at 50% 0%,   rgba(0,123,255,.06) 0%,transparent 55%),
+    radial-gradient(ellipse at 0%  80%,  rgba(255,59,48,.05) 0%,transparent 50%),
+    radial-gradient(ellipse at 100% 60%, rgba(0,212,255,.04) 0%,transparent 45%);
+  overflow:hidden;
+}
+
+/* partículas de fondo estáticas */
+#certificaciones::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px),
+    radial-gradient(circle,rgba(0,123,255,.08)   1px,transparent 1px);
+  background-size:48px 48px, 96px 96px;
+  background-position:0 0, 24px 24px;
+  mask-image:radial-gradient(ellipse at 50% 50%,black 30%,transparent 80%);
+}
+
+/* ── LAYOUT PRINCIPAL: featured left + grid right ── */
+.cert-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+  margin-top:3rem;
+  align-items:start;
+}
+
+/* ══ FEATURED CERT (grande, izquierda) ══ */
+.cert-featured{
+  position:relative;
+  opacity:0;transform:translateX(-24px);
+  transition:opacity .7s .1s ease,transform .7s .1s ease;
+}
+.cert-featured.vis{opacity:1;transform:translateX(0);}
+
+.cf-card{
+  position:relative;border-radius:20px;overflow:hidden;
+  background:linear-gradient(145deg,#0e1829,#080f1d);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 16px 48px rgba(0,0,0,.5);
+  cursor:pointer;
+  transition:transform .35s cubic-bezier(.34,1.2,.64,1),box-shadow .35s ease,border-color .35s ease;
+}
+.cf-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 28px 64px rgba(0,0,0,.6),0 0 0 1px rgba(0,123,255,.3);
+  border-color:rgba(0,123,255,.35);
+}
+
+/* imagen/banner del cert */
+.cf-banner{
+  position:relative;height:160px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.cf-banner-bg{
+  position:absolute;inset:0;
+  background:var(--cbg, linear-gradient(135deg,#0d1f40,#1a0a2e));
+  transition:transform .5s ease;
+}
+.cf-card:hover .cf-banner-bg{transform:scale(1.04);}
+
+/* logo plataforma en banner */
+.cf-platform-logo{
+  position:relative;z-index:2;
+  width:80px;height:80px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.cf-platform-logo svg{width:44px;height:44px;}
+
+/* badge "FEATURED" */
+.cf-badge{
+  position:absolute;top:12px;left:12px;z-index:3;
+  font-family:'JetBrains Mono',monospace;font-size:.52rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:.25rem .65rem;border-radius:6px;
+  background:linear-gradient(135deg,var(--red),var(--blue));
+  color:#fff;
+}
+
+/* año en esquina */
+.cf-year-tag{
+  position:absolute;top:12px;right:12px;z-index:3;
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:600;
+  padding:.22rem .6rem;border-radius:6px;
+  background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.7);
+}
+
+/* body del featured */
+.cf-body{padding:1.4rem 1.6rem 1.6rem;}
+.cf-issuer{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--ccolor,var(--blue));margin-bottom:.45rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.cf-issuer::before{content:'';width:20px;height:2px;background:currentColor;border-radius:2px;flex-shrink:0;}
+.cf-title{
+  font-size:1.1rem;font-weight:800;letter-spacing:-0.5px;
+  color:#fff;line-height:1.3;margin-bottom:.9rem;
+}
+.cf-desc{font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:1.1rem;}
+.cf-footer{display:flex;align-items:center;justify-content:space-between;gap:.8rem;}
+.cf-skills{display:flex;flex-wrap:wrap;gap:.35rem;}
+.cf-skill{
+  font-family:'JetBrains Mono',monospace;font-size:.52rem;
+  padding:.18rem .5rem;border-radius:5px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  color:rgba(255,255,255,.38);
+}
+.cf-link{
+  display:flex;align-items:center;gap:.4rem;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;
+  color:var(--ccolor,var(--blue));text-decoration:none;white-space:nowrap;
+  padding:.35rem .8rem;border-radius:8px;
+  border:1px solid rgba(0,123,255,.3);background:rgba(0,123,255,.08);
+  transition:background .2s,border-color .2s,color .2s,transform .2s;
+  flex-shrink:0;
+}
+.cf-link:hover{background:rgba(0,123,255,.18);border-color:rgba(0,123,255,.5);transform:translateY(-1px);}
+.cf-link svg{width:11px;height:11px;flex-shrink:0;}
+
+/* ══ GRID DE CERTS (derecha) ══ */
+.cert-grid-wrap{
+  display:flex;flex-direction:column;gap:1rem;
+  opacity:0;transform:translateX(24px);
+  transition:opacity .7s .2s ease,transform .7s .2s ease;
+}
+.cert-grid-wrap.vis{opacity:1;transform:translateX(0);}
+
+.cc{
+  position:relative;border-radius:14px;overflow:hidden;
+  background:linear-gradient(145deg,#0c1422,#070c17);
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;gap:1rem;align-items:center;
+  padding:1rem 1.2rem;cursor:pointer;
+  transition:transform .3s cubic-bezier(.34,1.2,.64,1),
+             box-shadow .3s ease,border-color .3s ease,background .3s ease;
+  opacity:0;transform:translateY(12px);
+}
+.cc.vis{opacity:1;transform:translateY(0);}
+.cc:hover{
+  transform:translateX(6px);
+  border-color:var(--ccolor2,rgba(0,123,255,.35));
+  background:rgba(255,255,255,.04);
+  box-shadow:0 6px 24px rgba(0,0,0,.35),
+            -3px 0 0 var(--ccolor2,rgba(0,123,255,.5));
+}
+
+/* línea izquierda de color */
+.cc::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--ccolor2,var(--blue));
+  border-radius:0 2px 2px 0;
+  opacity:.6;transition:opacity .3s,width .3s;
+}
+.cc:hover::before{opacity:1;width:4px;}
+
+/* icono plataforma pequeño */
+.cc-icon{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+}
+.cc-icon svg{width:22px;height:22px;}
+
+.cc-info{flex:1;min-width:0;}
+.cc-name{
+  font-size:.82rem;font-weight:700;color:#fff;
+  margin-bottom:.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.cc-meta{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  color:rgba(255,255,255,.32);display:flex;align-items:center;gap:.5rem;
+}
+.cc-meta-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;}
+.cc-issuer-txt{color:var(--ccolor2,rgba(100,170,255,.7));}
+
+.cc-right{display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;}
+.cc-year{
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;
+  color:rgba(255,255,255,.28);white-space:nowrap;
+}
+.cc-arrow{
+  width:24px;height:24px;border-radius:6px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.3);font-size:.7rem;
+  transition:background .2s,color .2s,transform .2s;
+}
+.cc:hover .cc-arrow{background:var(--ccolor2,rgba(0,123,255,.2));color:#fff;transform:translateX(2px);}
+
+/* ── FILA INFERIOR: 2 certs medianos ── */
+.cert-row-bottom{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;
+  margin-top:2rem;
+  opacity:0;transform:translateY(16px);
+  transition:opacity .6s .35s ease,transform .6s .35s ease;
+}
+.cert-row-bottom.vis{opacity:1;transform:translateY(0);}
+
+.cm{
+  position:relative;border-radius:16px;overflow:hidden;
+  background:linear-gradient(145deg,#0c1422,#070c17);
+  border:1px solid rgba(255,255,255,.08);
+  cursor:pointer;
+  transition:transform .3s cubic-bezier(.34,1.2,.64,1),box-shadow .3s ease,border-color .3s ease;
+}
+.cm:hover{
+  transform:translateY(-5px);
+  border-color:var(--ccolor3,rgba(0,123,255,.35));
+  box-shadow:0 12px 36px rgba(0,0,0,.4);
+}
+.cm-top{
+  height:80px;display:flex;align-items:center;justify-content:center;
+  background:var(--cmbg,linear-gradient(135deg,#0d1f40,#1a0a2e));
+  position:relative;overflow:hidden;
+}
+.cm-top-icon{
+  width:42px;height:42px;border-radius:11px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:2;
+}
+.cm-top-icon svg{width:24px;height:24px;}
+.cm-body{padding:.9rem 1.1rem 1rem;}
+.cm-issuer{
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--ccolor3,var(--blue));margin-bottom:.25rem;
+}
+.cm-title{font-size:.82rem;font-weight:700;color:#fff;line-height:1.35;margin-bottom:.6rem;}
+.cm-footer{display:flex;align-items:center;justify-content:space-between;}
+.cm-year-sm{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:rgba(255,255,255,.25);}
+.cm-link{
+  display:flex;align-items:center;gap:.3rem;
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:600;
+  color:var(--ccolor3,rgba(100,170,255,.8));text-decoration:none;
+  padding:.22rem .6rem;border-radius:6px;
+  border:1px solid var(--ccolor3,rgba(0,123,255,.3));
+  background:rgba(0,123,255,.06);
+  transition:background .2s,transform .2s;
+}
+.cm-link:hover{background:rgba(0,123,255,.15);transform:translateY(-1px);}
+.cm-link svg{width:9px;height:9px;}
+
+
+/* ══ BANNER BORDER TRACE — GPU only (transform+opacity) ══ */
+@keyframes traceRun{
+  0%  {transform:translateX(-110%);opacity:0;}
+  8%  {opacity:1;}
+  75% {opacity:1;}
+  100%{transform:translateX(210%);opacity:0;}
+}
+/* shared base */
+.banner-trace-top,
+.banner-trace-bot{
+  position:absolute;left:0;right:0;height:2px;z-index:5;
+  pointer-events:none;overflow:hidden;
+  contain:strict;          /* limit repaint scope */
+}
+.banner-trace-top{top:0;}
+.banner-trace-bot{bottom:0;}
+.banner-trace-top::after,
+.banner-trace-bot::after{
+  content:'';position:absolute;top:0;left:0;
+  width:55%;height:100%;
+  will-change:transform,opacity;   /* hint compositor */
+  animation:traceRun var(--tdur,3.5s) var(--tdel,0s) linear infinite;
+}
+.banner-trace-top::after{
+  background:linear-gradient(90deg,transparent 0%,var(--red) 35%,var(--blue) 65%,transparent 100%);
+}
+.banner-trace-bot::after{
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 35%,var(--red) 65%,transparent 100%);
+  animation-delay:calc(var(--tdel,0s) + var(--tdur,3.5s) * .45); /* phase-offset without extra keyframe */
+}
+
+/* .cc rows: animated left border instead of top/bot (they have no visual banner) */
+@keyframes ccBorderPulse{
+  0%,100%{opacity:.5;box-shadow:-3px 0 0 var(--ccolor2,var(--blue));}
+  50%    {opacity:1; box-shadow:-4px 0 0 var(--ccolor2,var(--blue)),
+                               -4px 0 12px var(--ccolor2,rgba(0,123,255,.3));}
+}
+.cc.vis::before{
+  animation:ccBorderPulse 2.5s var(--cbdel,0s) ease-in-out infinite;
+  will-change:opacity,box-shadow;
+}
+
+@media(max-width:960px){
+  .cert-layout{grid-template-columns:1fr;}
+  .cert-row-bottom{grid-template-columns:1fr;}
+}
+
+/* perf: pause trace animations off-screen */
+.traces-paused .banner-trace-top::after,
+.traces-paused .banner-trace-bot::after,
+.traces-paused .cc::before{
+  animation-play-state:paused;
+}
+</style>
+
+<section id="certificaciones">
+<div class="section">
+  <div class="section-label" id="cer-label">// certificaciones</div>
+  <h2 class="section-title" id="cer-title">Mis <span>Certificados</span></h2>
+
+  <div class="cert-layout">
+
+    <!-- ══ FEATURED ══ -->
+    <div class="cert-featured" id="cer-feat">
+      <div class="cf-card" onclick="window.open('https://coursera.org','_blank')">
+        <div class="cf-banner" style="position:relative;">
+          <div class="banner-trace-top" style="--tdur:3.5s;--tdel:0s;"></div>
+          <div class="banner-trace-bot" style="--tdur:3.5s;--tdel:0s;"></div>
+          <div class="cf-banner-bg" style="--cbg:linear-gradient(135deg,#0050b3 0%,#003380 50%,#00152e 100%);"></div>
+          <div class="cf-platform-logo">
+            <!-- Coursera icon -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M11.97 0C5.36 0 0 5.37 0 12s5.36 12 11.97 12C18.6 24 24 18.63 24 12S18.6 0 11.97 0zm0 4.48c4.16 0 7.54 3.38 7.54 7.52s-3.38 7.52-7.54 7.52A7.528 7.528 0 014.43 12c0-4.14 3.38-7.52 7.54-7.52zm-2.9 4.32v6.38l5.52-3.19-5.52-3.19z" fill="#0056D2"/>
+            </svg>
+          </div>
+          <div class="cf-badge">★ Destacado</div>
+          <div class="cf-year-tag">2024</div>
+        </div>
+        <div class="cf-body">
+          <div class="cf-issuer" style="--ccolor:#4A9EF4;">Coursera · Meta</div>
+          <div class="cf-title">Meta Front-End Developer Professional Certificate</div>
+          <div class="cf-desc">Programa completo de 9 cursos que cubre HTML, CSS, JavaScript, React, UX/UI Design y preparación para entrevistas técnicas frontend.</div>
+          <div class="cf-footer">
+            <div class="cf-skills">
+              <span class="cf-skill">React</span>
+              <span class="cf-skill">JavaScript</span>
+              <span class="cf-skill">UX/UI</span>
+              <span class="cf-skill">Bootstrap</span>
+            </div>
+            <a class="cf-link" href="https://coursera.org" target="_blank" onclick="event.stopPropagation()">
+              Ver cert
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GRID LATERAL ══ -->
+    <div class="cert-grid-wrap" id="cer-grid">
+
+      <!-- cert 1 -->
+      <div class="cc" style="--ccolor2:rgba(255,153,0,.5);;--cbdel:0s" onclick="window.open('https://aws.amazon.com/certification/','_blank')">
+        <div class="cc-icon">
+          <svg viewBox="0 0 24 24" fill="#FF9900"><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 01-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 01-.287-.375 6.18 6.18 0 01-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.03-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 01-.28.104.488.488 0 01-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 01.224-.167c.279-.144.614-.264 1.005-.36A4.84 4.84 0 013.8 7.52c.95 0 1.644.216 2.091.647.439.43.662 1.085.662 1.963v2.586zm10.346 2.77c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 01-.048-.224v-.407c0-.167.064-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 00.415-.758.777.777 0 00-.215-.559c-.144-.151-.416-.287-.806-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.813a1.902 1.902 0 01-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.415.32-.096.655-.136 1.006-.136.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.311.088.455.136.144.048.256.096.336.144a.69.69 0 01.24.2.43.43 0 01.071.263v.375c0 .168-.064.256-.184.256a.83.83 0 01-.303-.096 3.652 3.652 0 00-1.532-.311c-.455 0-.815.071-1.062.223-.248.152-.375.383-.375.71 0 .224.08.416.24.567.159.152.454.304.877.44l1.134.358c.574.184.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.655-.207.926-.144.272-.336.511-.583.703-.248.2-.543.343-.886.447-.36.111-.734.167-1.142.167z"/></svg>
+        </div>
+        <div class="cc-info">
+          <div class="cc-name">AWS Cloud Practitioner</div>
+          <div class="cc-meta">
+            <span class="cc-issuer-txt">Amazon Web Services</span>
+            <div class="cc-meta-dot"></div>
+            <span>Foundational</span>
+          </div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-year">2023</div>
+          <div class="cc-arrow">↗</div>
+        </div>
+      </div>
+
+      <!-- cert 2 -->
+      <div class="cc" style="--ccolor2:rgba(84,197,248,.5);;--cbdel:0.3s" onclick="window.open('https://flutter.dev/learn','_blank')">
+        <div class="cc-icon">
+          <svg viewBox="0 0 24 24"><path d="M14.314 0L2.3 12 6 15.7 21.684.012z" fill="#54C5F8"/><path d="M14.314 11.986L6.3 20l3.71 3.7 1.34-1.36 5.66-5.66z" fill="#01579B"/><path d="M6.3 20l5.67-5.67 2.7 2.7L11.99 20l-2.7 2.7z" fill="#29B6F6"/></svg>
+        </div>
+        <div class="cc-info">
+          <div class="cc-name">Flutter & Dart — Complete Guide</div>
+          <div class="cc-meta">
+            <span class="cc-issuer-txt">Udemy · Maximilian</span>
+            <div class="cc-meta-dot"></div>
+            <span>Avanzado</span>
+          </div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-year">2023</div>
+          <div class="cc-arrow">↗</div>
+        </div>
+      </div>
+
+      <!-- cert 3 -->
+      <div class="cc" style="--ccolor2:rgba(97,218,251,.5);;--cbdel:0.6s" onclick="window.open('https://coursera.org','_blank')">
+        <div class="cc-icon">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2.05" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.1" fill="none" transform="rotate(120 12 12)"/></svg>
+        </div>
+        <div class="cc-info">
+          <div class="cc-name">React — The Complete Guide 2024</div>
+          <div class="cc-meta">
+            <span class="cc-issuer-txt">Udemy · Academind</span>
+            <div class="cc-meta-dot"></div>
+            <span>Avanzado</span>
+          </div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-year">2024</div>
+          <div class="cc-arrow">↗</div>
+        </div>
+      </div>
+
+      <!-- cert 4 -->
+      <div class="cc" style="--ccolor2:rgba(38,132,255,.5);;--cbdel:0.9s" onclick="window.open('https://coursera.org','_blank')">
+        <div class="cc-icon">
+          <svg viewBox="0 0 24 24"><path d="M11.571 11.513H0a5.218 5.218 0 005.232 5.215h2.13v2.057A5.215 5.215 0 0012.575 24V12.518a1.005 1.005 0 00-1.004-1.005zm5.723-5.756H5.757a5.215 5.215 0 005.215 5.214h2.129v2.058a5.218 5.218 0 005.215 5.214V6.762a1.005 1.005 0 00-1.022-1.005zM23.013 0H11.485a5.215 5.215 0 005.215 5.215h2.129v2.057A5.215 5.215 0 0024 12.483V1.005A1.005 1.005 0 0023.013 0z" fill="#2684FF"/></svg>
+        </div>
+        <div class="cc-info">
+          <div class="cc-name">Jira & Agile Project Management</div>
+          <div class="cc-meta">
+            <span class="cc-issuer-txt">Atlassian · LinkedIn</span>
+            <div class="cc-meta-dot"></div>
+            <span>Intermedio</span>
+          </div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-year">2023</div>
+          <div class="cc-arrow">↗</div>
+        </div>
+      </div>
+
+    </div><!-- /cert-grid-wrap -->
+  </div><!-- /cert-layout -->
+
+  <!-- ══ FILA INFERIOR ══ -->
+  <div class="cert-row-bottom" id="cer-bottom">
+
+    <!-- cert medio 1 -->
+    <div class="cm" style="--ccolor3:rgba(255,202,40,.6);" onclick="window.open('https://firebase.google.com','_blank')">
+      <div class="cm-top">
+        <div class="banner-trace-top" style="--tdur:2.8s;"></div>
+        <div class="banner-trace-bot" style="--tdur:2.8s;"></div>
+        <div class="cf-banner-bg" style="background:linear-gradient(135deg,#1a1200,#2d1f00);position:absolute;inset:0;"></div>
+        <div class="cm-top-icon" style="position:relative;z-index:2;">
+          <svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg>
+        </div>
+      </div>
+      <div class="cm-body">
+        <div class="cm-issuer">Google · Firebase</div>
+        <div class="cm-title">Firebase & Firestore — Apps en Tiempo Real</div>
+        <div class="cm-footer">
+          <span class="cm-year-sm">2022</span>
+          <a class="cm-link" href="https://firebase.google.com" target="_blank" onclick="event.stopPropagation()">
+            Ver cert
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- cert medio 2 -->
+    <div class="cm" style="--ccolor3:rgba(162,89,255,.6);" onclick="window.open('https://coursera.org','_blank')">
+      <div class="cm-top">
+        <div class="banner-trace-top" style="--tdur:2.8s;"></div>
+        <div class="banner-trace-bot" style="--tdur:2.8s;"></div>
+        <div class="cf-banner-bg" style="background:linear-gradient(135deg,#140026,#200a3a);position:absolute;inset:0;"></div>
+        <div class="cm-top-icon" style="position:relative;z-index:2;">
+          <svg viewBox="0 0 24 24"><path d="M8 24c2.208 0 4-1.792 4-4v-4H8c-2.208 0-4 1.792-4 4s1.792 4 4 4z" fill="#0ACF83"/><path d="M4 12c0-2.208 1.792-4 4-4h4v8H8c-2.208 0-4-1.792-4-4z" fill="#A259FF"/><path d="M4 4c0-2.208 1.792-4 4-4h4v8H8C5.792 8 4 6.208 4 4z" fill="#F24E1E"/><path d="M12 0h4c2.208 0 4 1.792 4 4s-1.792 4-4 4h-4V0z" fill="#FF7262"/><path d="M20 12c0 2.208-1.792 4-4 4s-4-1.792-4-4 1.792-4 4-4 4 1.792 4 4z" fill="#1ABCFE"/></svg>
+        </div>
+      </div>
+      <div class="cm-body">
+        <div class="cm-issuer">Google UX Design</div>
+        <div class="cm-title">UX Design Professional Certificate</div>
+        <div class="cm-footer">
+          <span class="cm-year-sm">2024</span>
+          <a class="cm-link" href="https://coursera.org" target="_blank" onclick="event.stopPropagation()">
+            Ver cert
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /cert-row-bottom -->
+
+</div>
+</section>
+
+<script>
+/* ── CERT REVEAL ── */
+const cerObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');cerObs.unobserve(e.target);}});
+},{threshold:0.12});
+['cer-label','cer-title','cer-feat','cer-grid','cer-bottom'].forEach(id=>{
+  const el=document.getElementById(id);if(el)cerObs.observe(el);
+});
+
+/* ── PAUSE traces when section off-screen (perf) ── */
+const cerSection = document.getElementById('certificaciones');
+const pjSection  = document.getElementById('proyectos');
+const perfObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    const tracers = e.target.querySelectorAll('.banner-trace-top::after,.banner-trace-bot::after');
+    /* toggle animation-play-state via class on section */
+    e.target.classList.toggle('traces-paused', !e.isIntersecting);
+  });
+},{threshold:0, rootMargin:'200px'});
+if(cerSection) perfObs.observe(cerSection);
+if(pjSection)  perfObs.observe(pjSection);
+
+/* grid cards stagger */
+const cerGridObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.cc').forEach((c,i)=>
+        setTimeout(()=>c.classList.add('vis'),i*80)
+      );
+      cerGridObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.08});
+const cg=document.getElementById('cer-grid');if(cg)cerGridObs.observe(cg);
+</script>
+<!-- ══════════════════════════════════════════
+     PROYECTOS
+══════════════════════════════════════════ -->
+<style>
+/* ─────────────────────────────────────────
+   PROYECTOS — animación exclusiva: radar sweep
+   (diferente a los certs que usan line-trace)
+───────────────────────────────────────── */
+#proyectos{
+  position:relative;z-index:1;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:
+    radial-gradient(ellipse at 20% 0%,  rgba(255,59,48,.07) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 100%,rgba(0,123,255,.06) 0%,transparent 50%);
+}
+
+/* ── RADAR SWEEP (conic-gradient rotando) ── */
+@keyframes radarRotate{ to{ transform:rotate(360deg); } }
+@keyframes radarFade{
+  0%,40%{ opacity:.7; }
+  80%,100%{ opacity:0; }
+}
+.pj-radar{
+  position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;
+  border-radius:inherit;
+}
+.pj-radar::before{           /* sweep cónico */
+  content:'';
+  position:absolute;
+  width:200%;height:200%;
+  top:-50%;left:-50%;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--pglow,rgba(0,123,255,.3)) 20deg,
+    transparent 40deg
+  );
+  will-change:transform;
+  animation:radarRotate var(--rdur,4s) var(--rdel,0s) linear infinite;
+}
+.pj-radar::after{            /* anillo pulsante desde centro */
+  content:'';
+  position:absolute;
+  inset:30% 35%;
+  border-radius:50%;
+  border:1px solid var(--pcolor,rgba(0,123,255,.5));
+  animation:radarFade var(--rdur,4s) var(--rdel,0s) ease-out infinite;
+  will-change:opacity;
+}
+
+/* ── CARRUSEL WRAPPER ── */
+.pj-wrap{
+  margin-top:3rem;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .65s ease,transform .65s ease;
+}
+.pj-wrap.vis{ opacity:1;transform:translateY(0); }
+
+/* ventana del carrusel — NO overflow:hidden para no cortar hover */
+.pj-viewport{
+  /* Overflow visible vertically so hover lift is never clipped */
+  overflow:visible;
+  /* Clip only the horizontal axis */
+  clip-path:inset(0 0 0 0);   /* overridden below per axis trick */
+  /* Use wrapper for horizontal masking, not overflow */
+  cursor:grab;
+  touch-action:pan-y;
+  /* Extra space above/below for hover lift */
+  padding:14px 0 18px;
+  margin:-14px 0 -18px;
+  /* horizontal fade via mask applied to the inner viewport shell */
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-composite: destination-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+}
+.pj-viewport.is-dragging{ cursor:grabbing; }
+/* durante el drag bloqueamos hover para que no interfiera */
+.pj-viewport.is-dragging .pj{ pointer-events:none; }
+
+.pj-track{
+  display:flex;
+  gap:1.4rem;
+  transition:transform .46s cubic-bezier(.25,.46,.45,.94);
+  will-change:transform;
+  padding:.6rem .2rem 1rem;
+  user-select:none; -webkit-user-select:none;
+}
+.pj-track.snap-off{ transition:none !important; }
+
+/* ── CARD ── */
+.pj{
+  /* ancho: 320px desktop; sube a 82vw en móvil chico */
+  flex:0 0 clamp(260px, 42vw, 320px);
+  border-radius:18px;
+  background:linear-gradient(145deg,#0d1525,#070c18);
+  border:1px solid rgba(255,255,255,.09);
+  /* overflow:hidden en banner solamente (ver .pj-banner) */
+  overflow:visible;
+  position:relative;
+  cursor:pointer;
+  transition:
+    transform .3s cubic-bezier(.34,1.18,.64,1),
+    box-shadow .3s ease,
+    border-color .3s ease;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+  -webkit-tap-highlight-color:transparent;
+}
+/* recortar el contenido interno sin bloquear el overflow del card */
+.pj-inner{
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+}
+.pj:hover{
+  transform:translateY(-8px) scale(1.012);
+  box-shadow:0 24px 56px rgba(0,0,0,.65),
+             0 0 0 1px var(--pcolor,rgba(0,123,255,.45));
+  border-color:var(--pcolor,rgba(0,123,255,.4));
+  z-index:10;
+}
+.pj-viewport.is-dragging .pj{
+  transform:none !important;
+  box-shadow:0 4px 20px rgba(0,0,0,.4) !important;
+}
+
+/* ── BANNER ── */
+.pj-banner{
+  position:relative;height:168px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--pbg,linear-gradient(135deg,#0d1f40,#0a0d1a));
+}
+
+/* mock browser window */
+.pj-mock{
+  position:relative;z-index:5;
+  width:96px;height:72px;
+  background:rgba(0,0,0,.6);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 28px rgba(0,0,0,.6);
+  transition:transform .3s ease;
+  overflow:hidden;
+}
+.pj-mock::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:14px;
+  background:rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.08);
+  border-radius:9px 9px 0 0;
+}
+.pj:hover .pj-mock{ transform:scale(1.12) translateY(-5px); }
+.pj-mock-dots{ position:absolute;top:4px;left:7px;display:flex;gap:3px; }
+.pj-mock-dot{ width:4px;height:4px;border-radius:50%; }
+.pj-mock-icon{
+  margin-top:8px;font-size:1.5rem;position:relative;z-index:2;
+  filter:drop-shadow(0 2px 8px var(--pglow,rgba(0,123,255,.5)));
+  transition:filter .3s ease;
+}
+.pj:hover .pj-mock-icon{
+  filter:drop-shadow(0 4px 14px var(--pglow,rgba(0,123,255,.8)));
+}
+
+/* type badge */
+.pj-type{
+  position:absolute;top:10px;left:12px;z-index:6;
+  font-family:'JetBrains Mono',monospace;font-size:.49rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:5px;
+  background:rgba(0,0,0,.7);
+  border:1px solid var(--pcolor,rgba(0,123,255,.45));
+  color:var(--pcolor,rgba(140,200,255,.9));
+}
+
+/* stack chips */
+.pj-stack-chips{
+  position:absolute;bottom:10px;right:10px;z-index:6;
+  display:flex;gap:.3rem;
+}
+.pj-chip{
+  width:22px;height:22px;border-radius:6px;
+  background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .22s ease,border-color .22s ease;
+}
+.pj:hover .pj-chip{ border-color:rgba(255,255,255,.25); }
+.pj:hover .pj-chip:nth-child(1){ transform:translateY(-3px); }
+.pj:hover .pj-chip:nth-child(2){ transform:translateY(-5px); }
+.pj:hover .pj-chip:nth-child(3){ transform:translateY(-3px); }
+.pj-chip svg{ width:12px;height:12px; }
+
+/* ── BODY ── */
+.pj-body{ padding:1.15rem 1.25rem 1.25rem; }
+.pj-name{
+  font-size:.96rem;font-weight:800;letter-spacing:-.4px;
+  color:#fff;margin-bottom:.32rem;
+  transition:color .25s;
+}
+.pj:hover .pj-name{ color:var(--pcolor,#fff); }
+.pj-desc{
+  font-size:.76rem;color:rgba(255,255,255,.4);
+  line-height:1.72;margin-bottom:.85rem;
+  display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;
+}
+.pj-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.45rem;
+}
+.pj-tags{ display:flex;flex-wrap:wrap;gap:.28rem;flex:1;min-width:0; }
+.pj-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.47rem;letter-spacing:.4px;
+  padding:.14rem .45rem;border-radius:5px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  color:rgba(255,255,255,.3);white-space:nowrap;
+}
+.pj-links{ display:flex;gap:.32rem;flex-shrink:0; }
+.pj-btn{
+  display:flex;align-items:center;gap:.26rem;
+  font-family:'JetBrains Mono',monospace;font-size:.52rem;font-weight:600;
+  padding:.26rem .58rem;border-radius:7px;text-decoration:none;
+  transition:background .18s,transform .18s,box-shadow .18s;
+  white-space:nowrap;
+}
+.pj-btn.live{
+  background:linear-gradient(135deg,var(--red),var(--blue));
+  color:#fff;box-shadow:0 3px 10px rgba(0,123,255,.2);
+}
+.pj-btn.live:hover{ transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,123,255,.4); }
+.pj-btn.repo{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.5);
+}
+.pj-btn.repo:hover{ background:rgba(255,255,255,.13);color:#fff;transform:translateY(-2px); }
+.pj-btn svg{ width:10px;height:10px;flex-shrink:0; }
+
+/* ── NAV ── */
+.pj-nav{
+  display:flex;align-items:center;justify-content:center;
+  gap:.85rem;margin-top:1.5rem;
+}
+.pj-arrow{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.4);font-size:.9rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s,transform .2s,border-color .2s;
+  flex-shrink:0;
+}
+.pj-arrow:hover:not(:disabled){
+  background:rgba(0,123,255,.2);border-color:rgba(0,123,255,.4);
+  color:#fff;transform:scale(1.1);
+}
+.pj-arrow:disabled{ opacity:.2;cursor:default; }
+.pj-dots{ display:flex;gap:.42rem;align-items:center; }
+.pj-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.18);
+  transition:all .28s ease;cursor:pointer;
+}
+.pj-dot.on{
+  background:var(--blue);width:18px;border-radius:3px;
+  box-shadow:0 0 7px rgba(0,123,255,.5);
+}
+.pj-counter{
+  font-family:'JetBrains Mono',monospace;font-size:.57rem;
+  color:rgba(255,255,255,.22);min-width:34px;text-align:center;
+}
+.pj-counter span{ color:var(--blue); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .pj{ flex:0 0 82vw; }
+  .pj-banner{ height:148px; }
+  .pj-mock{ width:84px;height:64px; }
+  .pj-nav{ gap:.55rem; }
+}
+@media(max-width:400px){
+  .pj{ flex:0 0 88vw; }
+}
+
+/* perf: pause radar when off-screen */
+.traces-paused .pj-radar::before,
+.traces-paused .pj-radar::after{
+  animation-play-state:paused;
+}
+</style>
+
+<section id="proyectos">
+<div class="section">
+  <div class="section-label" id="pj-label">// proyectos</div>
+  <h2 class="section-title" id="pj-title">Mi <span>Trabajo</span></h2>
+
+  <div class="pj-wrap" id="pjWrap">
+    <div class="pj-viewport" id="pjViewport">
+      <div class="pj-track" id="pjTrack">
+
+        <!-- 1 · Portfolio -->
+        <div class="pj" style="--pcolor:rgba(0,212,255,.85);--pbg:linear-gradient(135deg,#001828,#001018);--pglow:rgba(0,212,255,.25);--rdur:5s;--rdel:0s;">
+          <div class="pj-inner">
+            <div class="pj-banner">
+              <div class="pj-radar"></div>
+              <div class="pj-mock"><div class="pj-mock-dots"><div class="pj-mock-dot" style="background:#ff5f57"></div><div class="pj-mock-dot" style="background:#febc2e"></div><div class="pj-mock-dot" style="background:#28c840"></div></div><div class="pj-mock-icon">⚡</div></div>
+              <div class="pj-type">Web</div>
+              <div class="pj-stack-chips">
+                <div class="pj-chip"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2.05" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none" transform="rotate(120 12 12)"/></svg></div>
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><rect width="24" height="24" rx="2" fill="#3178C6"/><path d="M14.5 11H19v1.5h-2V18h-2v-5.5h-2V11h1.5z" fill="#fff"/><path d="M11.5 13.5c0-.8-.5-1.5-1.5-1.5H7v6h2v-2h.5l1 2H13l-1.2-2.3c.4-.4.7-1 .7-1.7v-.5zm-2 1H9v-1h.5c.3 0 .5.2.5.5s-.2.5-.5.5z" fill="#fff"/></svg></div>
+              </div>
+            </div>
+            <div class="pj-body">
+              <div class="pj-name">Portfolio Personal</div>
+              <div class="pj-desc">Sitio personal con animaciones avanzadas, secciones interactivas y diseño responsive completo.</div>
+              <div class="pj-footer">
+                <div class="pj-tags"><span class="pj-tag">React</span><span class="pj-tag">TypeScript</span><span class="pj-tag">CSS3</span></div>
+                <div class="pj-links"><a class="pj-btn live" href="#" target="_blank" onclick="event.stopPropagation()">Live ↗</a><a class="pj-btn repo" href="#" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 · Fintech -->
+        <div class="pj" style="--pcolor:rgba(84,197,248,.85);--pbg:linear-gradient(135deg,#001828,#000f1c);--pglow:rgba(84,197,248,.22);--rdur:5.5s;--rdel:.9s;">
+          <div class="pj-inner">
+            <div class="pj-banner">
+              <div class="pj-radar"></div>
+              <div class="pj-mock"><div class="pj-mock-dots"><div class="pj-mock-dot" style="background:#ff5f57"></div><div class="pj-mock-dot" style="background:#febc2e"></div><div class="pj-mock-dot" style="background:#28c840"></div></div><div class="pj-mock-icon">💳</div></div>
+              <div class="pj-type">Mobile</div>
+              <div class="pj-stack-chips">
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M14.314 0L2.3 12 6 15.7 21.684.012z" fill="#54C5F8"/><path d="M14.314 11.986L6.3 20l3.71 3.7 1.34-1.36 5.66-5.66z" fill="#01579B"/><path d="M6.3 20l5.67-5.67 2.7 2.7L11.99 20l-2.7 2.7z" fill="#29B6F6"/></svg></div>
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg></div>
+              </div>
+            </div>
+            <div class="pj-body">
+              <div class="pj-name">App Móvil Fintech</div>
+              <div class="pj-desc">Gestión financiera con autenticación biométrica, dashboard en tiempo real y sincronización Firebase.</div>
+              <div class="pj-footer">
+                <div class="pj-tags"><span class="pj-tag">Flutter</span><span class="pj-tag">Firebase</span><span class="pj-tag">Dart</span></div>
+                <div class="pj-links"><a class="pj-btn live" href="#" target="_blank" onclick="event.stopPropagation()">Live ↗</a><a class="pj-btn repo" href="#" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 · E-Commerce -->
+        <div class="pj" style="--pcolor:rgba(255,59,48,.85);--pbg:linear-gradient(135deg,#200008,#130005);--pglow:rgba(255,59,48,.22);--rdur:4.8s;--rdel:.4s;">
+          <div class="pj-inner">
+            <div class="pj-banner">
+              <div class="pj-radar"></div>
+              <div class="pj-mock"><div class="pj-mock-dots"><div class="pj-mock-dot" style="background:#ff5f57"></div><div class="pj-mock-dot" style="background:#febc2e"></div><div class="pj-mock-dot" style="background:#28c840"></div></div><div class="pj-mock-icon">🛒</div></div>
+              <div class="pj-type">Full-Stack</div>
+              <div class="pj-stack-chips">
+                <div class="pj-chip"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2.05" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none" transform="rotate(120 12 12)"/></svg></div>
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M11.998 24a1.36 1.36 0 01-.679-.18l-2.763-1.659c-.404-.226-.207-.306-.073-.352.54-.188.648-.23 1.22-.557.06-.036.14-.022.2.013l2.106 1.25c.077.042.185.042.254 0l8.207-4.738c.077-.045.127-.136.127-.23V6.451c0-.097-.05-.185-.13-.232L12.26 1.485c-.077-.044-.18-.044-.254 0L3.8 6.219c-.082.047-.133.138-.133.232v9.472c0 .092.051.182.13.226l2.249 1.3c1.22.61 1.967-.109 1.967-.832V7.204c0-.133.106-.236.238-.236h1.038c.13 0 .237.103.237.236v9.413c0 1.629-.887 2.563-2.43 2.563-.474 0-.847 0-1.893-.515l-2.154-1.24a1.364 1.364 0 01-.679-1.181V6.452c0-.487.26-.939.679-1.184L11.32.528a1.414 1.414 0 011.36 0l8.208 4.74c.419.245.679.697.679 1.184v9.472c0 .487-.26.936-.679 1.18l-8.208 4.74a1.358 1.358 0 01-.682.156z" fill="#68A063"/></svg></div>
+              </div>
+            </div>
+            <div class="pj-body">
+              <div class="pj-name">E-Commerce App</div>
+              <div class="pj-desc">Tienda online completa con carrito, pagos, panel admin y gestión de inventario en tiempo real.</div>
+              <div class="pj-footer">
+                <div class="pj-tags"><span class="pj-tag">React</span><span class="pj-tag">Node.js</span><span class="pj-tag">MySQL</span></div>
+                <div class="pj-links"><a class="pj-btn live" href="#" target="_blank" onclick="event.stopPropagation()">Live ↗</a><a class="pj-btn repo" href="#" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 · Dashboard -->
+        <div class="pj" style="--pcolor:rgba(162,89,255,.85);--pbg:linear-gradient(135deg,#100820,#070412);--pglow:rgba(162,89,255,.24);--rdur:5.2s;--rdel:1.3s;">
+          <div class="pj-inner">
+            <div class="pj-banner">
+              <div class="pj-radar"></div>
+              <div class="pj-mock"><div class="pj-mock-dots"><div class="pj-mock-dot" style="background:#ff5f57"></div><div class="pj-mock-dot" style="background:#febc2e"></div><div class="pj-mock-dot" style="background:#28c840"></div></div><div class="pj-mock-icon">📊</div></div>
+              <div class="pj-type">Web App</div>
+              <div class="pj-stack-chips">
+                <div class="pj-chip"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2.05" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="3.8" stroke="#61DAFB" stroke-width="1.2" fill="none" transform="rotate(120 12 12)"/></svg></div>
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><rect width="24" height="24" rx="2" fill="#3178C6"/><path d="M14.5 11H19v1.5h-2V18h-2v-5.5h-2V11h1.5z" fill="#fff"/></svg></div>
+              </div>
+            </div>
+            <div class="pj-body">
+              <div class="pj-name">Dashboard Analytics</div>
+              <div class="pj-desc">Métricas en tiempo real, gráficas interactivas, filtros avanzados y exportación de reportes.</div>
+              <div class="pj-footer">
+                <div class="pj-tags"><span class="pj-tag">React</span><span class="pj-tag">TypeScript</span><span class="pj-tag">AWS</span></div>
+                <div class="pj-links"><a class="pj-btn live" href="#" target="_blank" onclick="event.stopPropagation()">Live ↗</a><a class="pj-btn repo" href="#" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 · Delivery -->
+        <div class="pj" style="--pcolor:rgba(255,202,40,.85);--pbg:linear-gradient(135deg,#181000,#0e0900);--pglow:rgba(255,202,40,.2);--rdur:5.8s;--rdel:.6s;">
+          <div class="pj-inner">
+            <div class="pj-banner">
+              <div class="pj-radar"></div>
+              <div class="pj-mock"><div class="pj-mock-dots"><div class="pj-mock-dot" style="background:#ff5f57"></div><div class="pj-mock-dot" style="background:#febc2e"></div><div class="pj-mock-dot" style="background:#28c840"></div></div><div class="pj-mock-icon">🗺️</div></div>
+              <div class="pj-type">Mobile</div>
+              <div class="pj-stack-chips">
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M14.314 0L2.3 12 6 15.7 21.684.012z" fill="#54C5F8"/><path d="M14.314 11.986L6.3 20l3.71 3.7 1.34-1.36 5.66-5.66z" fill="#01579B"/><path d="M6.3 20l5.67-5.67 2.7 2.7L11.99 20l-2.7 2.7z" fill="#29B6F6"/></svg></div>
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg></div>
+              </div>
+            </div>
+            <div class="pj-body">
+              <div class="pj-name">Delivery Tracker</div>
+              <div class="pj-desc">Seguimiento de pedidos en tiempo real con mapas integrados, push notifications y valoraciones.</div>
+              <div class="pj-footer">
+                <div class="pj-tags"><span class="pj-tag">Flutter</span><span class="pj-tag">Firebase</span><span class="pj-tag">Maps</span></div>
+                <div class="pj-links"><a class="pj-btn live" href="#" target="_blank" onclick="event.stopPropagation()">Live ↗</a><a class="pj-btn repo" href="#" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 · Chat -->
+        <div class="pj" style="--pcolor:rgba(52,211,153,.85);--pbg:linear-gradient(135deg,#041408,#020a04);--pglow:rgba(52,211,153,.2);--rdur:5s;--rdel:1.6s;">
+          <div class="pj-inner">
+            <div class="pj-banner">
+              <div class="pj-radar"></div>
+              <div class="pj-mock"><div class="pj-mock-dots"><div class="pj-mock-dot" style="background:#ff5f57"></div><div class="pj-mock-dot" style="background:#febc2e"></div><div class="pj-mock-dot" style="background:#28c840"></div></div><div class="pj-mock-icon">💬</div></div>
+              <div class="pj-type">Full-Stack</div>
+              <div class="pj-stack-chips">
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M11.998 24a1.36 1.36 0 01-.679-.18l-2.763-1.659c-.404-.226-.207-.306-.073-.352.54-.188.648-.23 1.22-.557.06-.036.14-.022.2.013l2.106 1.25c.077.042.185.042.254 0l8.207-4.738c.077-.045.127-.136.127-.23V6.451c0-.097-.05-.185-.13-.232L12.26 1.485c-.077-.044-.18-.044-.254 0L3.8 6.219c-.082.047-.133.138-.133.232v9.472c0 .092.051.182.13.226l2.249 1.3c1.22.61 1.967-.109 1.967-.832V7.204c0-.133.106-.236.238-.236h1.038c.13 0 .237.103.237.236v9.413c0 1.629-.887 2.563-2.43 2.563-.474 0-.847 0-1.893-.515l-2.154-1.24a1.364 1.364 0 01-.679-1.181V6.452c0-.487.26-.939.679-1.184L11.32.528a1.414 1.414 0 011.36 0l8.208 4.74c.419.245.679.697.679 1.184v9.472c0 .487-.26.936-.679 1.18l-8.208 4.74a1.358 1.358 0 01-.682.156z" fill="#68A063"/></svg></div>
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg></div>
+              </div>
+            </div>
+            <div class="pj-body">
+              <div class="pj-name">Chat en Tiempo Real</div>
+              <div class="pj-desc">Mensajería instantánea con salas, privados, indicadores de escritura e historial persistente.</div>
+              <div class="pj-footer">
+                <div class="pj-tags"><span class="pj-tag">Node.js</span><span class="pj-tag">Firestore</span><span class="pj-tag">WS</span></div>
+                <div class="pj-links"><a class="pj-btn live" href="#" target="_blank" onclick="event.stopPropagation()">Live ↗</a><a class="pj-btn repo" href="#" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7 · Task Manager -->
+        <div class="pj" style="--pcolor:rgba(0,123,255,.9);--pbg:linear-gradient(135deg,#001230,#000818);--pglow:rgba(0,123,255,.24);--rdur:4.6s;--rdel:.2s;">
+          <div class="pj-inner">
+            <div class="pj-banner">
+              <div class="pj-radar"></div>
+              <div class="pj-mock"><div class="pj-mock-dots"><div class="pj-mock-dot" style="background:#ff5f57"></div><div class="pj-mock-dot" style="background:#febc2e"></div><div class="pj-mock-dot" style="background:#28c840"></div></div><div class="pj-mock-icon">✅</div></div>
+              <div class="pj-type">Mobile · Web</div>
+              <div class="pj-stack-chips">
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M14.314 0L2.3 12 6 15.7 21.684.012z" fill="#54C5F8"/><path d="M14.314 11.986L6.3 20l3.71 3.7 1.34-1.36 5.66-5.66z" fill="#01579B"/><path d="M6.3 20l5.67-5.67 2.7 2.7L11.99 20l-2.7 2.7z" fill="#29B6F6"/></svg></div>
+                <div class="pj-chip"><svg viewBox="0 0 24 24"><path d="M3.89 15.672L6.255.461A.542.542 0 017.27.288l2.543 4.771z" fill="#FFA000"/><path d="M16.326 9.785l-2.257-4.497a.542.542 0 00-.96 0L3.53 17.984z" fill="#F57C00"/><path d="M20.684 19.376l-2.25-14a.54.54 0 00-.919-.295L3.316 19.367l7.856 4.427a1.621 1.621 0 001.588 0z" fill="#FFCA28"/></svg></div>
+              </div>
+            </div>
+            <div class="pj-body">
+              <div class="pj-name">Task Manager</div>
+              <div class="pj-desc">Gestor colaborativo con Kanban, prioridades, recordatorios y sincronización en la nube.</div>
+              <div class="pj-footer">
+                <div class="pj-tags"><span class="pj-tag">Flutter</span><span class="pj-tag">Firebase</span><span class="pj-tag">Firestore</span></div>
+                <div class="pj-links"><a class="pj-btn live" href="#" target="_blank" onclick="event.stopPropagation()">Live ↗</a><a class="pj-btn repo" href="#" target="_blank" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /pj-track -->
+    </div><!-- /pj-viewport -->
+
+    <div class="pj-nav">
+      <button class="pj-arrow" id="pjPrev" disabled>←</button>
+      <div class="pj-dots" id="pjDots"></div>
+      <div class="pj-counter"><span id="pjCurr">1</span> / <span id="pjTotal">7</span></div>
+      <button class="pj-arrow" id="pjNext">→</button>
+    </div>
+  </div><!-- /pj-wrap -->
+</div>
+</section>
+
+<script>
+/* ── reveal ── */
+(()=>{
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});
+  },{threshold:0.08});
+  ['pj-label','pj-title','pjWrap'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+})();
+
+/* ── carousel ── */
+(()=>{
+  const vp    = document.getElementById('pjViewport');
+  const track = document.getElementById('pjTrack');
+  const dotsEl= document.getElementById('pjDots');
+  const prevB = document.getElementById('pjPrev');
+  const nextB = document.getElementById('pjNext');
+  const currEl= document.getElementById('pjCurr');
+  const totEl = document.getElementById('pjTotal');
+  if(!track) return;
+
+  const cards = Array.from(track.querySelectorAll('.pj'));
+  const N     = cards.length;
+  totEl.textContent = N;
+  let idx=0, dragging=false, startX=0, startOff=0, liveOff=0;
+
+  /* gap from CSS: 1.4rem. Read actual computed gap */
+  function gap(){ return parseFloat(getComputedStyle(track).gap)||22; }
+  function cardW(){ return cards[0].getBoundingClientRect().width + gap(); }
+  function maxOff(){ return (N-1)*cardW(); }
+
+  /* dots */
+  cards.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='pj-dot'+(i===0?' on':'');
+    d.onclick=()=>go(i);
+    dotsEl.appendChild(d);
+  });
+
+  function go(i, instant=false){
+    idx=Math.max(0,Math.min(i,N-1));
+    liveOff=idx*cardW();
+    if(instant) track.classList.add('snap-off');
+    track.style.transform=`translateX(${-liveOff}px)`;
+    if(instant) requestAnimationFrame(()=>requestAnimationFrame(()=>track.classList.remove('snap-off')));
+    dotsEl.querySelectorAll('.pj-dot').forEach((d,j)=>d.classList.toggle('on',j===idx));
+    currEl.textContent=idx+1;
+    prevB.disabled=idx===0;
+    nextB.disabled=idx===N-1;
+  }
+
+  prevB.onclick=()=>go(idx-1);
+  nextB.onclick=()=>go(idx+1);
+
+  /* drag helpers */
+  function dStart(x){
+    dragging=true; startX=x; startOff=liveOff;
+    vp.classList.add('is-dragging');
+    track.classList.add('snap-off');
+  }
+  function dMove(x){
+    if(!dragging) return;
+    const raw=startOff-(x-startX);
+    /* rubber-band at edges */
+    const clamped=Math.max(-40, Math.min(raw, maxOff()+40));
+    liveOff=clamped;
+    track.style.transform=`translateX(${-liveOff}px)`;
+  }
+  function dEnd(x){
+    if(!dragging) return;
+    dragging=false;
+    vp.classList.remove('is-dragging');
+    track.classList.remove('snap-off');
+    const dx=x-startX;
+    const thr=cardW()*0.2;
+    if(dx<-thr) go(idx+1);
+    else if(dx>thr) go(idx-1);
+    else go(idx);
+  }
+
+  /* mouse */
+  vp.addEventListener('mousedown', e=>{e.preventDefault();dStart(e.clientX);});
+  window.addEventListener('mousemove', e=>{dMove(e.clientX);});
+  window.addEventListener('mouseup',   e=>{dEnd(e.clientX);});
+
+  /* touch */
+  vp.addEventListener('touchstart', e=>dStart(e.touches[0].clientX),{passive:true});
+  vp.addEventListener('touchmove',  e=>dMove(e.touches[0].clientX), {passive:true});
+  vp.addEventListener('touchend',   e=>dEnd(e.changedTouches[0].clientX),{passive:true});
+
+  /* keyboard */
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight') go(idx+1);
+    if(e.key==='ArrowLeft')  go(idx-1);
+  });
+
+  /* recalc on resize */
+  let resizeT;
+  window.addEventListener('resize',()=>{
+    clearTimeout(resizeT);
+    resizeT=setTimeout(()=>go(idx,true),120);
+  });
+
+  go(0);
+})();
+</script>
+
+<!-- ══════════════════════════════════════════
+     EXPERIENCIA
+══════════════════════════════════════════ -->
+<style>
+#experiencia{
+  position:relative;z-index:1;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:
+    radial-gradient(ellipse at 0% 40%,   rgba(0,123,255,.07) 0%,transparent 55%),
+    radial-gradient(ellipse at 100% 70%,  rgba(255,59,48,.06)  0%,transparent 50%);
+  overflow:hidden;
+}
+
+/* ── TIMELINE LAYOUT ── */
+.exp-wrap{
+  position:relative;margin-top:3rem;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .7s ease,transform .7s ease;
+}
+.exp-wrap.vis{ opacity:1;transform:translateY(0); }
+
+/* línea central vertical */
+.exp-timeline{
+  position:relative;
+  padding-left:2.8rem;
+}
+.exp-timeline::before{
+  content:'';
+  position:absolute;left:.9rem;top:0;bottom:0;
+  width:2px;
+  background:linear-gradient(180deg,
+    transparent 0%,
+    rgba(0,123,255,.4) 8%,
+    rgba(0,123,255,.25) 50%,
+    rgba(255,59,48,.3) 92%,
+    transparent 100%);
+}
+
+/* ── NODO ── */
+.exp-node{
+  position:relative;
+  margin-bottom:2.2rem;
+  opacity:0;transform:translateX(-18px);
+  transition:opacity .55s ease, transform .55s ease;
+}
+.exp-node.vis{ opacity:1;transform:translateX(0); }
+
+/* punto en la línea */
+.exp-dot{
+  position:absolute;left:-2.15rem;top:1.4rem;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--ecolor,var(--blue));
+  border:3px solid #070c18;
+  box-shadow:0 0 0 3px var(--ecolor,var(--blue)),
+             0 0 14px var(--ecolor,rgba(0,123,255,.5));
+  z-index:2;
+}
+/* pulso permanente en el último nodo (actual) */
+.exp-node.current .exp-dot::after{
+  content:'';position:absolute;inset:-5px;border-radius:50%;
+  border:2px solid var(--ecolor,var(--blue));
+  animation:dotPulse 2s ease-out infinite;
+  will-change:transform,opacity;
+}
+@keyframes dotPulse{
+  0%  {transform:scale(1);opacity:.8;}
+  100%{transform:scale(2.2);opacity:0;}
+}
+
+/* ── CARD ── */
+.exp-card{
+  background:linear-gradient(145deg,#0c1422,#070c17);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;
+  overflow:hidden;
+  transition:border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+  cursor:default;
+}
+.exp-card:hover{
+  border-color:var(--ecolor,rgba(0,123,255,.4));
+  box-shadow:0 10px 40px rgba(0,0,0,.5),
+             0 0 0 1px var(--ecolor,rgba(0,123,255,.2));
+  transform:translateX(4px);
+}
+
+/* banner de empresa */
+.exp-banner{
+  position:relative;height:110px;overflow:hidden;
+  display:flex;align-items:center;padding:0 1.6rem;
+  gap:1.2rem;
+  background:var(--ebg,linear-gradient(135deg,#0d1f40,#0a0d1a));
+}
+
+/* partículas flotantes en banner */
+@keyframes expFloat{
+  0%,100%{transform:translateY(0) rotate(0deg);opacity:.5;}
+  50%    {transform:translateY(-8px) rotate(180deg);opacity:.9;}
+}
+.exp-particles{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.exp-particle{
+  position:absolute;
+  width:var(--ps,4px);height:var(--ps,4px);
+  border-radius:50%;
+  background:var(--ecolor,rgba(0,123,255,.6));
+  will-change:transform,opacity;
+  animation:expFloat var(--pd,3s) var(--pdel,0s) ease-in-out infinite;
+}
+
+/* logo empresa */
+.exp-logo{
+  width:58px;height:58px;border-radius:15px;flex-shrink:0;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:2;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
+  font-size:1.6rem;
+}
+.exp-company-info{
+  position:relative;z-index:2;flex:1;min-width:0;
+}
+.exp-company{
+  font-size:1.05rem;font-weight:800;letter-spacing:-.4px;color:#fff;
+  margin-bottom:.2rem;
+}
+.exp-role{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;
+  letter-spacing:1.5px;color:var(--ecolor,rgba(100,170,255,.9));
+}
+.exp-period{
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;
+  color:rgba(255,255,255,.3);margin-top:.25rem;
+  display:flex;align-items:center;gap:.4rem;
+}
+.exp-period-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--ecolor,var(--blue));
+  flex-shrink:0;
+}
+
+/* badge actual */
+.exp-badge{
+  position:absolute;top:10px;right:12px;z-index:3;
+  font-family:'JetBrains Mono',monospace;font-size:.5rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:.2rem .6rem;border-radius:5px;
+  background:rgba(0,0,0,.6);
+  border:1px solid var(--ecolor,rgba(0,123,255,.5));
+  color:var(--ecolor,rgba(100,180,255,.9));
+}
+
+/* body de la card */
+.exp-body{ padding:1.2rem 1.4rem 1.4rem; }
+.exp-desc{
+  font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.75;
+  margin-bottom:1rem;
+}
+.exp-achievements{
+  display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.1rem;
+}
+.exp-achievement{
+  display:flex;align-items:flex-start;gap:.6rem;
+  font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.6;
+}
+.exp-ach-icon{
+  width:18px;height:18px;flex-shrink:0;margin-top:.05rem;
+  border-radius:5px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;
+}
+.exp-skills{display:flex;flex-wrap:wrap;gap:.35rem;}
+.exp-skill{
+  font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.4px;
+  padding:.16rem .5rem;border-radius:5px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  color:rgba(255,255,255,.32);
+}
+
+@media(max-width:640px){
+  .exp-timeline{ padding-left:2.2rem; }
+  .exp-banner{ height:auto;padding:1rem 1.2rem; flex-wrap:wrap; }
+}
+</style>
+
+<section id="experiencia">
+<div class="section">
+  <div class="section-label" id="exp-label">// experiencia</div>
+  <h2 class="section-title" id="exp-title">Mi <span>Trayectoria</span></h2>
+
+  <div class="exp-wrap" id="expWrap">
+  <div class="exp-timeline">
+
+    <!-- ── Nodo 1 · Actual ── -->
+    <div class="exp-node current" id="expN0" style="--ecolor:rgba(0,212,255,.85);--ebg:linear-gradient(135deg,#001828,#001018);">
+      <div class="exp-dot"></div>
+      <div class="exp-card">
+        <div class="exp-banner">
+          <div class="exp-particles">
+            <div class="exp-particle" style="--ps:3px;--pd:3.2s;--pdel:0s;  left:10%;top:30%;"></div>
+            <div class="exp-particle" style="--ps:5px;--pd:4.1s;--pdel:.8s; left:25%;top:65%;"></div>
+            <div class="exp-particle" style="--ps:2px;--pd:2.8s;--pdel:.3s; left:55%;top:20%;"></div>
+            <div class="exp-particle" style="--ps:4px;--pd:3.6s;--pdel:1.1s;left:75%;top:55%;"></div>
+            <div class="exp-particle" style="--ps:3px;--pd:5s;  --pdel:.5s; left:88%;top:40%;"></div>
+          </div>
+          <div class="exp-logo">🚀</div>
+          <div class="exp-company-info">
+            <div class="exp-company">Freelance & Proyectos Propios</div>
+            <div class="exp-role">Mobile & Frontend Developer</div>
+            <div class="exp-period">
+              <div class="exp-period-dot"></div>
+              Ene 2023 — Presente
+            </div>
+          </div>
+          <div class="exp-badge">● Actual</div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-desc">Desarrollo de aplicaciones móviles y web para clientes nacionales e internacionales. Especialización en Flutter, React y arquitecturas serverless con Firebase y AWS.</div>
+          <div class="exp-achievements">
+            <div class="exp-achievement"><div class="exp-ach-icon">⚡</div>Entrega de 7+ proyectos productivos en tiempo y forma, con clients en 3 países.</div>
+            <div class="exp-achievement"><div class="exp-ach-icon">📱</div>Apps publicadas en App Store y Play Store con más de 500 descargas combinadas.</div>
+            <div class="exp-achievement"><div class="exp-ach-icon">⭐</div>Rating promedio de 4.8/5 en satisfacción de clientes en plataformas freelance.</div>
+          </div>
+          <div class="exp-skills">
+            <span class="exp-skill">Flutter</span><span class="exp-skill">React</span>
+            <span class="exp-skill">Firebase</span><span class="exp-skill">AWS</span>
+            <span class="exp-skill">TypeScript</span><span class="exp-skill">Node.js</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Nodo 2 ── -->
+    <div class="exp-node" id="expN1" style="--ecolor:rgba(162,89,255,.85);--ebg:linear-gradient(135deg,#100820,#080412);">
+      <div class="exp-dot"></div>
+      <div class="exp-card">
+        <div class="exp-banner">
+          <div class="exp-particles">
+            <div class="exp-particle" style="--ps:4px;--pd:3.5s;--pdel:.2s; left:15%;top:50%;"></div>
+            <div class="exp-particle" style="--ps:2px;--pd:4.5s;--pdel:.7s; left:40%;top:25%;"></div>
+            <div class="exp-particle" style="--ps:5px;--pd:3s;  --pdel:1.2s;left:70%;top:60%;"></div>
+            <div class="exp-particle" style="--ps:3px;--pd:4.2s;--pdel:.4s; left:85%;top:35%;"></div>
+          </div>
+          <div class="exp-logo">💼</div>
+          <div class="exp-company-info">
+            <div class="exp-company">Agencia Digital Creativa</div>
+            <div class="exp-role">Junior Frontend Developer</div>
+            <div class="exp-period">
+              <div class="exp-period-dot"></div>
+              Mar 2022 — Dic 2022 · 10 meses
+            </div>
+          </div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-desc">Desarrollo de interfaces web para clientes del sector retail y servicios. Colaboración en equipo ágil usando Jira, Git y metodologías Scrum con sprints de dos semanas.</div>
+          <div class="exp-achievements">
+            <div class="exp-achievement"><div class="exp-ach-icon">🎯</div>Participación en 12 proyectos de landing pages y e-commerce con React y TypeScript.</div>
+            <div class="exp-achievement"><div class="exp-ach-icon">⚡</div>Mejora del 30% en tiempo de carga de sitios mediante optimización de assets.</div>
+            <div class="exp-achievement"><div class="exp-ach-icon">🤝</div>Integración con equipos de diseño UX/UI para implementar sistemas de diseño en Figma.</div>
+          </div>
+          <div class="exp-skills">
+            <span class="exp-skill">React</span><span class="exp-skill">JavaScript</span>
+            <span class="exp-skill">CSS3</span><span class="exp-skill">Figma</span>
+            <span class="exp-skill">Git</span><span class="exp-skill">Jira</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /exp-timeline -->
+  </div><!-- /exp-wrap -->
+</div>
+</section>
+
+<script>
+(()=>{
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});
+  },{threshold:0.1});
+  ['exp-label','exp-title','expWrap'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+
+  const nodeObs=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');nodeObs.unobserve(e.target);}});
+  },{threshold:0.15});
+  document.querySelectorAll('.exp-node').forEach((n,i)=>{
+    n.style.transitionDelay=`${i*0.15}s`;
+    nodeObs.observe(n);
+  });
+})();
+</script>
+
+<!-- ══════════════════════════════════════════
+     CONTACTO
+══════════════════════════════════════════ -->
+<style>
+#contacto{
+  position:relative;z-index:1;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:
+    radial-gradient(ellipse at 50% 0%,   rgba(0,123,255,.09) 0%,transparent 55%),
+    radial-gradient(ellipse at 10% 80%,  rgba(255,59,48,.07) 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 60%,  rgba(0,212,255,.05) 0%,transparent 45%);
+  overflow:hidden;
+}
+
+/* ── fondo grid ── */
+#contacto::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,123,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,123,255,.04) 1px,transparent 1px);
+  background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 50%,black 20%,transparent 75%);
+  mask-image:radial-gradient(ellipse at 50% 50%,black 20%,transparent 75%);
+}
+
+/* ── HEADER CTA ── */
+.ct-header{
+  text-align:center;margin-bottom:2.8rem;
+  opacity:0;transform:translateY(16px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+.ct-header.vis{ opacity:1;transform:translateY(0); }
+.ct-tagline{
+  font-size:.78rem;color:rgba(255,255,255,.35);
+  font-family:'JetBrains Mono',monospace;letter-spacing:2px;
+  margin-bottom:.5rem;
+}
+.ct-title-big{
+  font-size:clamp(1.8rem,5vw,3rem);font-weight:900;letter-spacing:-2px;
+  background:linear-gradient(135deg,#fff 30%,rgba(0,180,255,.7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:.8rem;
+}
+.ct-sub{
+  font-size:.85rem;color:rgba(255,255,255,.38);line-height:1.8;max-width:440px;margin:0 auto;
+}
+
+/* ── GRID DE CONTACTOS ── */
+.ct-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1.1rem;
+  max-width:920px;margin:0 auto;
+}
+
+/* ── CONTACT CARD ── */
+.cc-card{
+  position:relative;border-radius:20px;overflow:hidden;
+  background:linear-gradient(145deg,#0c1422,#070c17);
+  border:1px solid rgba(255,255,255,.09);
+  text-decoration:none;
+  cursor:pointer;
+  opacity:0;transform:translateY(16px) scale(.97);
+  transition:
+    opacity .5s ease, transform .5s ease,
+    border-color .3s ease, box-shadow .3s ease;
+}
+.cc-card.vis{
+  opacity:1;transform:translateY(0) scale(1);
+}
+.cc-card:hover{
+  border-color:var(--ctc,rgba(0,123,255,.45));
+  box-shadow:0 16px 44px rgba(0,0,0,.55),
+             0 0 0 1px var(--ctc,rgba(0,123,255,.25));
+  transform:translateY(-6px) scale(1.02);
+}
+
+/* ── BANNER de cada canal ── */
+.cc-banner{
+  height:130px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--ctbg,linear-gradient(135deg,#001230,#00081a));
+}
+
+/* animación distinta por tipo de icono: orbita */
+@keyframes ctOrbit{
+  from{transform:rotate(0deg) translateX(var(--or,28px)) rotate(0deg);}
+  to  {transform:rotate(360deg) translateX(var(--or,28px)) rotate(-360deg);}
+}
+@keyframes ctPulseRing{
+  0%  {transform:scale(.8);opacity:.8;}
+  100%{transform:scale(1.8);opacity:0;}
+}
+@keyframes ctShine{
+  0%,100%{opacity:0;transform:translateX(-60%) rotate(25deg);}
+  40%,60%{opacity:.6;transform:translateX(160%) rotate(25deg);}
+}
+
+/* anillo de fondo pulsante */
+.cc-ring{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.cc-ring::before,.cc-ring::after{
+  content:'';position:absolute;border-radius:50%;
+  border:1px solid var(--ctc,rgba(0,123,255,.35));
+  will-change:transform,opacity;
+}
+.cc-ring::before{
+  width:80px;height:80px;
+  animation:ctPulseRing 2.4s var(--crdel,0s) ease-out infinite;
+}
+.cc-ring::after{
+  width:56px;height:56px;
+  animation:ctPulseRing 2.4s calc(var(--crdel,0s) + 1.2s) ease-out infinite;
+}
+
+/* partículas en órbita alrededor del icono */
+.cc-orbit{
+  position:absolute;width:6px;height:6px;
+  will-change:transform;
+  top:50%;left:50%;margin:-3px 0 0 -3px;
+}
+.cc-orbit::before{
+  content:'';position:absolute;inset:0;
+  border-radius:50%;
+  background:var(--ctc,rgba(0,123,255,.7));
+  box-shadow:0 0 6px var(--ctc,rgba(0,123,255,.5));
+}
+.cc-orbit.o1{animation:ctOrbit var(--osp,3.5s) linear infinite;}
+.cc-orbit.o2{animation:ctOrbit var(--osp,3.5s) calc(var(--osp,3.5s)*.5) linear infinite;--or:18px;}
+
+/* icono central */
+.cc-icon-wrap{
+  position:relative;z-index:5;
+  width:64px;height:64px;border-radius:18px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 28px rgba(0,0,0,.45);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.cc-card:hover .cc-icon-wrap{
+  transform:scale(1.1) translateY(-4px);
+  box-shadow:0 14px 36px rgba(0,0,0,.5),
+             0 0 24px var(--ctc,rgba(0,123,255,.3));
+}
+.cc-icon-wrap svg{ width:32px;height:32px; }
+
+/* shine sweep */
+.cc-shine{
+  position:absolute;top:-20%;left:-20%;
+  width:40%;height:140%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
+  pointer-events:none;
+  animation:ctShine 4s var(--crdel,0s) ease-in-out infinite;
+  will-change:transform,opacity;
+}
+
+/* ── BODY ── */
+.cc-body{ padding:1rem 1.1rem 1.2rem; }
+.cc-platform{
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--ctc,rgba(100,170,255,.9));margin-bottom:.28rem;
+}
+.cc-value{
+  font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.1rem;
+  letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.cc-hint{
+  font-size:.7rem;color:rgba(255,255,255,.28);
+  font-family:'JetBrains Mono',monospace;
+}
+
+@media(max-width:860px){ .ct-grid{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:480px){ .ct-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:340px){ .ct-grid{ grid-template-columns:1fr; } }
+</style>
+
+<section id="contacto">
+<div class="section">
+  <div class="ct-header" id="ctHead">
+    <div class="ct-tagline">// hablemos</div>
+    <div class="ct-title-big">¿Trabajamos juntos?</div>
+    <p class="ct-sub">Estoy disponible para proyectos freelance, oportunidades de trabajo y colaboraciones.</p>
+  </div>
+
+  <!-- ── CTA CHAT — INICIO DE SECCIÓN ── -->
+  <style>
+  .ct-cta-top{
+    max-width:680px;margin:0 auto 3rem;
+    opacity:0;transform:translateY(18px);
+    transition:opacity .65s .15s ease,transform .65s .15s ease;
+  }
+  .ct-cta-top.vis{ opacity:1;transform:translateY(0); }
+  .ct-cta-top-btn{ display:flex;justify-content:center;margin-top:1.1rem; }
+  .ct-terminal{
+    background:rgba(6,10,18,.88);border:1px solid rgba(255,255,255,.1);
+    border-radius:16px;overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(0,123,255,.15);
+  }
+  .ct-term-bar{
+    display:flex;align-items:center;gap:.5rem;padding:.55rem 1rem;
+    background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .ct-term-dot{ width:10px;height:10px;border-radius:50%; }
+  .ct-term-title{
+    flex:1;text-align:center;font-family:'JetBrains Mono',monospace;
+    font-size:.58rem;color:rgba(255,255,255,.25);letter-spacing:2px;
+  }
+  .ct-chat{
+    padding:1.4rem 1.5rem 1.5rem;display:flex;flex-direction:column;
+    gap:.9rem;min-height:180px;
+  }
+  .ct-bubble{
+    display:flex;align-items:flex-end;gap:.6rem;
+    opacity:0;transform:translateY(8px);
+    transition:opacity .4s ease,transform .4s ease;
+  }
+  .ct-bubble.show{ opacity:1;transform:translateY(0); }
+  .ct-bubble.right{ flex-direction:row-reverse; }
+  .ct-avatar{
+    width:28px;height:28px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.85rem;border:1px solid rgba(255,255,255,.12);
+  }
+  .ct-avatar.me{ background:linear-gradient(135deg,var(--red),var(--blue)); }
+  .ct-avatar.them{ background:rgba(255,255,255,.08); }
+  .ct-msg{
+    max-width:72%;padding:.6rem .9rem;border-radius:14px;
+    font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.75);
+  }
+  .ct-bubble.right .ct-msg{
+    background:linear-gradient(135deg,rgba(0,100,220,.5),rgba(0,60,160,.4));
+    border:1px solid rgba(0,123,255,.3);border-bottom-right-radius:4px;
+  }
+  .ct-bubble.left .ct-msg{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+    border-bottom-left-radius:4px;
+  }
+  .ct-typing{ display:inline-flex;align-items:center;gap:3px;padding:.4rem .7rem; }
+  .ct-typing span{
+    width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.4);
+    animation:typingBounce 1.2s ease-in-out infinite;will-change:transform;
+  }
+  .ct-typing span:nth-child(2){ animation-delay:.2s; }
+  .ct-typing span:nth-child(3){ animation-delay:.4s; }
+  @keyframes typingBounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
+  .ct-cursor{
+    display:inline-block;width:2px;height:.85em;background:rgba(0,180,255,.9);
+    margin-left:2px;vertical-align:text-bottom;
+    animation:cursorBlink .75s step-end infinite;
+  }
+  @keyframes cursorBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+  .ct-cta-btn{
+    display:inline-flex;align-items:center;gap:.6rem;
+    padding:.65rem 1.6rem;border-radius:50px;
+    background:linear-gradient(135deg,var(--red),var(--blue));
+    color:#fff;text-decoration:none;font-weight:700;font-size:.82rem;
+    box-shadow:0 4px 20px rgba(0,123,255,.35);
+    opacity:0;transform:translateY(8px) scale(.97);
+    transition:opacity .4s ease,transform .4s ease,box-shadow .25s ease;
+  }
+  .ct-cta-btn.show{ opacity:1;transform:translateY(0) scale(1); }
+  .ct-cta-btn:hover{ transform:translateY(-3px) scale(1.03);box-shadow:0 8px 30px rgba(0,123,255,.5); }
+  .ct-cta-btn svg{ width:16px;height:16px;flex-shrink:0; }
+  </style>
+
+
+  <div class="ct-cta-top" id="ctCtaTop">
+    <div class="ct-terminal">
+      <div class="ct-term-bar">
+        <div class="ct-term-dot" style="background:#ff5f57"></div>
+        <div class="ct-term-dot" style="background:#febc2e"></div>
+        <div class="ct-term-dot" style="background:#28c840"></div>
+        <div class="ct-term-title">chat_nuevo.js — listo para hablar</div>
+      </div>
+      <div class="ct-chat" id="ctChatTop"></div>
+    </div>
+    <div class="ct-cta-top-btn">
+      <a class="ct-cta-btn" id="ctBtnTop" href="/cdn-cgi/l/email-protection#5a2e2f1a3f373b333674393537">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Escríbeme ahora · <span class="__cf_email__" data-cfemail="dbafae9bbeb6bab2b7f5b8b4b6">[email&#160;protected]</span>
+      </a>
+    </div>
+  </div>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  (()=>{
+    const MSGS=[
+      {side:'left', avatar:'\u{1F44B}',text:'\u00a1Hola! Vi tu portfolio y me pareci\u00f3 incre\u00edble...'},
+      {side:'right',avatar:'\u{1F604}',text:'\u00a1Gracias! \u00bfEn qu\u00e9 puedo ayudarte?'},
+      {side:'left', avatar:'\u{1F44B}',text:'Tengo un proyecto en mente y creo que eres la persona indicada.'},
+      {side:'right',avatar:'\u{1F604}',text:'\u00a1Con gusto! Cu\u00e9ntame m\u00e1s, estoy disponible ahora mismo \u{1F680}'},
+    ];
+    function createBubble(msg,withCursor=false){
+      const wrap=document.createElement('div');
+      wrap.className=`ct-bubble ${msg.side==='right'?'right':'left'}`;
+      const av=document.createElement('div');
+      av.className=`ct-avatar ${msg.side==='right'?'me':'them'}`;
+      av.textContent=msg.avatar;
+      const m=document.createElement('div');
+      m.className='ct-msg';
+      if(withCursor){m.innerHTML=msg.text+'<span class="ct-cursor"></span>';}
+      else{m.textContent=msg.text;}
+      wrap.appendChild(msg.side==='right'?m:av);
+      wrap.appendChild(msg.side==='right'?av:m);
+      return wrap;
+    }
+    function createTyping(side){
+      const wrap=document.createElement('div');
+      wrap.className=`ct-bubble ${side==='right'?'right':'left'}`;
+      const av=document.createElement('div');
+      av.className=`ct-avatar ${side==='right'?'me':'them'}`;
+      av.textContent=side==='right'?'\u{1F604}':'\u{1F44B}';
+      const m=document.createElement('div');
+      m.className='ct-msg';
+      m.innerHTML='<div class="ct-typing"><span></span><span></span><span></span></div>';
+      wrap.appendChild(side==='right'?m:av);
+      wrap.appendChild(side==='right'?av:m);
+      return wrap;
+    }
+    const delay=ms=>new Promise(r=>setTimeout(r,ms));
+    async function runChatIn(chatEl,btnEl){
+      for(let i=0;i<MSGS.length;i++){
+        const msg=MSGS[i];
+        const typing=createTyping(msg.side);
+        chatEl.appendChild(typing);
+        await delay(50);typing.classList.add('show');
+        chatEl.scrollTop=chatEl.scrollHeight;
+        await delay(820+msg.text.length*15);
+        typing.remove();
+        const isLast=i===MSGS.length-1;
+        const bubble=createBubble(msg,isLast);
+        chatEl.appendChild(bubble);
+        await delay(40);bubble.classList.add('show');
+        chatEl.scrollTop=chatEl.scrollHeight;
+        if(!isLast)await delay(520);
+      }
+      await delay(420);
+      if(btnEl)btnEl.classList.add('show');
+    }
+    const chatTop=document.getElementById('ctChatTop');
+    const btnTop=document.getElementById('ctBtnTop');
+    const ctaTop=document.getElementById('ctCtaTop');
+    let startedTop=false;
+    const obsTop=new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(e.isIntersecting&&!startedTop){
+          startedTop=true;
+          setTimeout(()=>runChatIn(chatTop,btnTop),450);
+          obsTop.unobserve(e.target);
+        }
+      });
+    },{threshold:0.25});
+    if(ctaTop)obsTop.observe(ctaTop);
+  })();
+  </script>
+
+  <div class="ct-grid" id="ctGrid">
+
+    <!-- Teléfono -->
+    <a class="cc-card" href="tel:+525512345678" style="--ctc:rgba(52,211,153,.85);--ctbg:linear-gradient(135deg,#041a10,#020e08);--crdel:0s;--osp:4s;">
+      <div class="cc-banner">
+        <div class="cc-ring"></div>
+        <div class="cc-orbit o1" style="--or:34px;"></div>
+        <div class="cc-orbit o2" style="--or:34px;"></div>
+        <div class="cc-shine"></div>
+        <div class="cc-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(52,211,153,.95)" stroke-width="1.8" stroke-linecap="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.63a19.79 19.79 0 01-3.07-8.73A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-platform">Teléfono</div>
+        <div class="cc-value">+52 55 1234 5678</div>
+        <div class="cc-hint">WhatsApp disponible</div>
+      </div>
+    </a>
+
+    <!-- LinkedIn -->
+    <a class="cc-card" href="https://linkedin.com/in/tu-usuario" target="_blank" style="--ctc:rgba(10,102,194,.95);--ctbg:linear-gradient(135deg,#001428,#000f1e);--crdel:.3s;--osp:5s;">
+      <div class="cc-banner">
+        <div class="cc-ring"></div>
+        <div class="cc-orbit o1" style="--or:30px;"></div>
+        <div class="cc-orbit o2" style="--or:30px;"></div>
+        <div class="cc-shine"></div>
+        <div class="cc-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="rgba(10,130,233,.95)">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-platform">LinkedIn</div>
+        <div class="cc-value">in/tu-usuario</div>
+        <div class="cc-hint">Red profesional</div>
+      </div>
+    </a>
+
+    <!-- Facebook -->
+    <a class="cc-card" href="https://facebook.com/tu-usuario" target="_blank" style="--ctc:rgba(24,119,242,.9);--ctbg:linear-gradient(135deg,#001030,#000820);--crdel:.6s;--osp:4.5s;">
+      <div class="cc-banner">
+        <div class="cc-ring"></div>
+        <div class="cc-orbit o1" style="--or:32px;"></div>
+        <div class="cc-orbit o2" style="--or:32px;"></div>
+        <div class="cc-shine"></div>
+        <div class="cc-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="rgba(24,119,242,.95)">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-platform">Facebook</div>
+        <div class="cc-value">/tu-usuario</div>
+        <div class="cc-hint">Sígueme</div>
+      </div>
+    </a>
+
+    <!-- Instagram -->
+    <a class="cc-card" href="https://instagram.com/tu-usuario" target="_blank" style="--ctc:rgba(225,48,108,.9);--ctbg:linear-gradient(135deg,#1a0010,#0e0008);--crdel:.9s;--osp:3.8s;">
+      <div class="cc-banner">
+        <div class="cc-ring"></div>
+        <div class="cc-orbit o1" style="--or:36px;"></div>
+        <div class="cc-orbit o2" style="--or:36px;"></div>
+        <div class="cc-shine"></div>
+        <div class="cc-icon-wrap">
+          <svg viewBox="0 0 24 24">
+            <defs>
+              <linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#f09433"/>
+                <stop offset="25%"  stop-color="#e6683c"/>
+                <stop offset="50%"  stop-color="#dc2743"/>
+                <stop offset="75%"  stop-color="#cc2366"/>
+                <stop offset="100%" stop-color="#bc1888"/>
+              </linearGradient>
+            </defs>
+            <path fill="url(#igGrad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-platform">Instagram</div>
+        <div class="cc-value">@tu-usuario</div>
+        <div class="cc-hint">Contenido & vida dev</div>
+      </div>
+    </a>
+
+  </div><!-- /ct-grid -->
+
+
+  <!-- footer del portfolio -->
+  <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.05);">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:3px;color:rgba(255,255,255,.2);text-transform:uppercase;">
+      // hecho con ❤️ · &copy; 2025
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+(()=>{
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});
+  },{threshold:0.08});
+  ['ctHead','ctCtaTop'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+
+  const cardObs=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.cc-card').forEach((c,i)=>{
+          setTimeout(()=>c.cla

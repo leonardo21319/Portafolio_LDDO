@@ -1,0 +1,110 @@
+/* src/styles/stack.css */
+#tecnologias {
+  position: relative; z-index: 1;
+  border-top: 1px solid rgba(255,255,255,.05);
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(0,123,255,.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 0% 100%, rgba(255,59,48,.06) 0%, transparent 50%);
+  overflow: hidden;
+}
+
+.tc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.tc-grid.vis { opacity: 1; transform: translateY(0); }
+
+.tc {
+  position: relative;
+  background: linear-gradient(145deg, #0c1422, #070c17);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px; padding: .9rem .6rem;
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  cursor: pointer;
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+  opacity: 0; transform: translateY(12px) scale(.96);
+}
+.tc.vis { opacity: 1; transform: translateY(0) scale(1); }
+.tc:hover {
+  border-color: var(--tc, rgba(255,255,255,.3));
+  box-shadow: 0 8px 28px rgba(0,0,0,.4), 0 0 0 1px var(--tc, rgba(255,255,255,.1));
+  transform: translateY(-4px) scale(1.04);
+}
+
+.tc-logo {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  transition: filter .3s ease, transform .3s ease;
+}
+.tc-logo svg, .tc-logo img { width: 100%; height: 100%; }
+.tc:hover .tc-logo {
+  transform: translateY(-2px) scale(1.12);
+  filter: drop-shadow(0 4px 8px var(--tg, rgba(255,255,255,.2)));
+}
+
+.tc-name {
+  font-size: .6rem; font-weight: 700; letter-spacing: .5px;
+  text-align: center; color: rgba(255,255,255,.55);
+  text-transform: uppercase;
+}
+.tc-level {
+  font-family: var(--mono); font-size: .48rem;
+  color: var(--tc, rgba(255,255,255,.3));
+  letter-spacing: .5px; text-transform: uppercase;
+}
+
+/* popup */
+.tc-popup-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity .25s ease; pointer-events: none;
+}
+.tc-popup-overlay.open { opacity: 1; pointer-events: all; }
+
+.tc-popup {
+  background: linear-gradient(145deg, #0c1422, #070c17);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px; padding: 1.8rem;
+  max-width: 420px; width: 90%;
+  transform: scale(.94) translateY(12px);
+  transition: transform .3s cubic-bezier(.34,1.18,.64,1);
+  position: relative;
+}
+.tc-popup-overlay.open .tc-popup { transform: scale(1) translateY(0); }
+
+.tc-popup-close {
+  position: absolute; top: .8rem; right: .9rem;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 6px; width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: .75rem; color: rgba(255,255,255,.4);
+  transition: all .2s ease;
+}
+.tc-popup-close:hover { background: rgba(255,59,48,.15); border-color: rgba(255,59,48,.3); color: #ff3b30; }
+
+.tc-popup-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.tc-popup-icon { width: 44px; height: 44px; }
+.tc-popup-icon svg, .tc-popup-icon img { width: 100%; height: 100%; }
+.tc-popup-name { font-size: 1.05rem; font-weight: 800; color: #fff; margin-bottom: .15rem; }
+.tc-popup-cat { font-family: var(--mono); font-size: .55rem; letter-spacing: 1.5px; color: rgba(255,255,255,.3); }
+.tc-popup-desc { font-size: .78rem; color: rgba(255,255,255,.45); line-height: 1.7; margin-bottom: 1rem; }
+.tc-popup-label { font-family: var(--mono); font-size: .52rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.25); margin-bottom: .4rem; }
+.tc-popup-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .9rem; }
+.tc-popup-tag {
+  font-family: var(--mono); font-size: .52rem; letter-spacing: .3px;
+  padding: .18rem .5rem; border-radius: 5px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
+  color: rgba(255,255,255,.35);
+}
+.tc-popup-projects { display: flex; flex-direction: column; gap: .35rem; }
+.tc-popup-project {
+  font-size: .72rem; color: rgba(255,255,255,.4);
+  padding: .3rem .6rem; border-radius: 6px;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+}
+
+@media(max-width:640px) { .tc-grid { grid-template-columns: repeat(auto-fill, minmax(80px,1fr)); gap: .7rem; } }
