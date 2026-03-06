@@ -1,14 +1,62 @@
 // src/admin/AdminLayout.jsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { FiLogOut, FiHome, FiFolder, FiCpu, FiBriefcase, FiSettings, FiUser } from 'react-icons/fi';
+import {
+  FiLogOut, FiHome, FiFolder, FiCpu,
+  FiBriefcase, FiSettings, FiUser, FiMenu, FiX,
+  FiAward, FiChevronRight, FiExternalLink,
+} from 'react-icons/fi';
 import AnimatedBackground from '../components/ui/AnimatedBackground';
+
+/* ─── Inject global styles once ─── */
+const STYLE_ID = 'adm-layout-styles';
+if (typeof document !== 'undefined' && !document.getElementById(STYLE_ID)) {
+  const s = document.createElement('style');
+  s.id = STYLE_ID;
+  s.textContent = `
+    @keyframes adm-spin { to { transform: rotate(360deg); } }
+    .adm-sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 240px;
+      background: rgba(8,13,24,.97);
+      border-right: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(20px);
+      display: flex; flex-direction: column;
+      z-index: 200;
+      transition: transform .25s ease;
+    }
+    .adm-sidebar.open { transform: translateX(0) !important; }
+    .adm-main   { margin-left: 240px; min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; }
+    .adm-topbar { display: none; align-items: center; gap: 12px; padding: .75rem 1rem;
+      background: rgba(8,13,24,.95); border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+    .adm-content { flex: 1; padding: 2rem 2.5rem; }
+    @media (max-width: 768px) {
+      .adm-sidebar  { transform: translateX(-100%); }
+      .adm-main     { margin-left: 0 !important; }
+      .adm-topbar   { display: flex !important; }
+      .adm-content  { padding: 1.25rem !important; }
+    }
+    .adm-navlink:hover { background: rgba(255,255,255,.04) !important; color: rgba(255,255,255,.7) !important; }
+  `;
+  document.head.appendChild(s);
+}
+
+/* ─── Nav ─── */
+const NAV = [
+  { to: '/admin',              label: 'Dashboard',    icon: FiHome,      exact: true,  enabled: true  },
+  { to: '/admin/projects',     label: 'Proyectos',    icon: FiFolder,    exact: false, enabled: true  },
+  { to: '/admin/technologies', label: 'Tecnologías',  icon: FiCpu,       exact: false, enabled: true  },
+  { to: '/admin/experiences',  label: 'Experiencias', icon: FiBriefcase, exact: false, enabled: false },
+  { to: '/admin/certs',        label: 'Certificados', icon: FiAward,     exact: false, enabled: false },
+  { to: '/admin/settings',     label: 'Configuración',icon: FiSettings,  exact: false, enabled: false },
+];
 
 const AdminLayout = () => {
   const { user, logout, loading } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate  = useNavigate();
+  const location  = useLocation();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -17,132 +65,122 @@ const AdminLayout = () => {
     }
   }, [user, loading, navigate]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-dark-primary text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-text-secondary">Cargando panel...</p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => { setOpen(false); }, [location.pathname]);
 
-  if (!user) {
-    return null;
-  }
+  if (loading) return (
+    <div style={{ minHeight: '100vh', background: '#080d18', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 14 }}>
+      <div style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid rgba(59,130,246,.2)', borderTopColor: '#3b82f6', animation: 'adm-spin .8s linear infinite' }} />
+      <p style={{ color: 'rgba(255,255,255,.35)', fontSize: '.8rem' }}>Cargando panel...</p>
+    </div>
+  );
 
-  // Función para determinar si un enlace está activo
-  const isActive = (path) => {
-    return location.pathname === path || location.pathname.startsWith(path + '/');
-  };
+  if (!user) return null;
+
+  const isActive = (item) => item.exact
+    ? location.pathname === item.to
+    : location.pathname === item.to || location.pathname.startsWith(item.to + '/');
+
+  const currentLabel = NAV.find(n => isActive(n))?.label || 'Dashboard';
+
+  const avatar = user.photoURL
+    ? <img src={user.photoURL} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+    : <FiUser size={15} color="#3b82f6" />;
 
   return (
-    <div className="min-h-screen bg-dark-primary text-white">
+    <div style={{ minHeight: '100vh', background: '#080d18', display: 'flex', fontFamily: "'Inter', system-ui, sans-serif" }}>
       <AnimatedBackground />
-      
-      {/* Panel Superior - Siempre visible */}
-      <div className="fixed top-0 left-0 right-0 glass-effect-strong border-b border-white/10 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo / Título */}
-            <div className="flex items-center space-x-4">
-              <Link to="/admin" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-red rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">A</span>
-                </div>
-                <span className="text-white font-bold text-lg hidden sm:block">Admin Panel</span>
-              </Link>
-            </div>
 
-            {/* Menú de navegación - TODOS HABILITADOS */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
-              <Link
-                to="/admin"
-                className={`px-3 py-2 rounded-lg transition-smooth flex items-center space-x-1 ${
-                  isActive('/admin') && !isActive('/admin/projects') && !isActive('/admin/technologies')
-                    ? 'bg-accent-blue text-white'
-                    : 'text-text-secondary hover:text-white hover:bg-white/5'
-                }`}
-                title="Dashboard"
-              >
-                <FiHome className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline text-sm">Dashboard</span>
-              </Link>
+      {/* SIDEBAR */}
+      <aside className={`adm-sidebar${open ? ' open' : ''}`}>
 
-              <Link
-                to="/admin/projects"
-                className={`px-3 py-2 rounded-lg transition-smooth flex items-center space-x-1 ${
-                  isActive('/admin/projects')
-                    ? 'bg-accent-blue text-white'
-                    : 'text-text-secondary hover:text-white hover:bg-white/5'
-                }`}
-                title="Proyectos"
-              >
-                <FiFolder className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline text-sm">Proyectos</span>
-              </Link>
-
-              {/* TECNOLOGÍAS - HABILITADO */}
-              <Link
-                to="/admin/technologies"
-                className={`px-3 py-2 rounded-lg transition-smooth flex items-center space-x-1 ${
-                  isActive('/admin/technologies')
-                    ? 'bg-accent-blue text-white'
-                    : 'text-text-secondary hover:text-white hover:bg-white/5'
-                }`}
-                title="Tecnologías"
-              >
-                <FiCpu className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline text-sm">Tecnologías</span>
-              </Link>
-
-              {/* Experiencias - Deshabilitado por ahora */}
-              <div
-                className="px-3 py-2 rounded-lg text-text-secondary opacity-50 cursor-not-allowed flex items-center space-x-1"
-                title="Próximamente"
-              >
-                <FiBriefcase className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline text-sm">Experiencias</span>
-              </div>
-
-              {/* Configuración - Deshabilitado por ahora */}
-              <div
-                className="px-3 py-2 rounded-lg text-text-secondary opacity-50 cursor-not-allowed flex items-center space-x-1"
-                title="Próximamente"
-              >
-                <FiSettings className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline text-sm">Configuración</span>
-              </div>
-            </div>
-
-            {/* Información del usuario */}
-            <div className="flex items-center space-x-3">
-              <div className="hidden md:flex items-center space-x-2">
-                <div className="w-8 h-8 bg-accent-blue/20 rounded-full flex items-center justify-center">
-                  <FiUser className="w-4 h-4 text-accent-blue" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs text-text-secondary">Conectado como</span>
-                  <span className="text-sm text-white font-medium">{user.email}</span>
-                </div>
-              </div>
-              
-              <button
-                onClick={logout}
-                className="p-2 text-red-400 hover:text-red-300 hover:bg-white/5 rounded-lg transition-smooth"
-                title="Cerrar sesión"
-              >
-                <FiLogOut className="w-5 h-5" />
-              </button>
-            </div>
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '1.35rem 1.2rem 1rem', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg,#3b82f6,#ef4444)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ color: '#fff', fontWeight: 800, fontSize: '.85rem' }}>LD</span>
+          </div>
+          <div>
+            <p style={{ color: '#fff', fontWeight: 700, fontSize: '.88rem', margin: 0 }}>Admin Panel</p>
+            <p style={{ color: 'rgba(255,255,255,.3)', fontSize: '.65rem', margin: 0 }}>Portfolio CMS</p>
           </div>
         </div>
-      </div>
 
-      {/* Contenido principal - con padding superior para el panel fijo */}
-      <div className="pt-16 min-h-screen">
-        <div className="p-4 sm:p-6 lg:p-8">
+        {/* Nav links */}
+        <nav style={{ flex: 1, padding: '1.2rem .75rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <p style={{ color: 'rgba(255,255,255,.18)', fontSize: '.58rem', fontWeight: 700, letterSpacing: '2px', padding: '0 .5rem', marginBottom: '.5rem' }}>MENÚ</p>
+
+          {NAV.map(item => {
+            const active = isActive(item);
+            const Icon   = item.icon;
+            if (!item.enabled) return (
+              <div key={item.to} title="Próximamente"
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '.6rem .75rem', borderRadius: 9, color: 'rgba(255,255,255,.18)', fontSize: '.84rem', cursor: 'not-allowed' }}>
+                <Icon size={16} />
+                <span style={{ flex: 1 }}>{item.label}</span>
+                <span style={{ fontSize: '.56rem', fontWeight: 700, background: 'rgba(255,255,255,.05)', color: 'rgba(255,255,255,.2)', padding: '2px 6px', borderRadius: 4, letterSpacing: '.5px' }}>Soon</span>
+              </div>
+            );
+            return (
+              <Link key={item.to} to={item.to} className="adm-navlink"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '.6rem .75rem', borderRadius: 9, textDecoration: 'none',
+                  fontSize: '.84rem', fontWeight: 500, transition: 'all .15s ease',
+                  background: active ? 'rgba(59,130,246,.14)' : 'transparent',
+                  border: active ? '1px solid rgba(59,130,246,.22)' : '1px solid transparent',
+                  color: active ? '#fff' : 'rgba(255,255,255,.42)',
+                }}>
+                <Icon size={16} color={active ? '#60a5fa' : 'rgba(255,255,255,.4)'} />
+                <span style={{ flex: 1 }}>{item.label}</span>
+                {active && <FiChevronRight size={13} color="rgba(255,255,255,.4)" />}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Back to portfolio */}
+        <div style={{ padding: '0 .75rem .75rem' }}>
+          <a href="/"
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '.55rem .75rem', borderRadius: 9, color: 'rgba(255,255,255,.25)', fontSize: '.78rem', textDecoration: 'none', border: '1px solid rgba(255,255,255,.06)', background: 'rgba(255,255,255,.02)' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,.55)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,.25)'}
+          >
+            <FiExternalLink size={13} />
+            <span>Ver portafolio</span>
+          </a>
+        </div>
+
+        {/* User box */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '.9rem 1rem 1.1rem', borderTop: '1px solid rgba(255,255,255,.06)' }}>
+          <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(59,130,246,.12)', border: '1px solid rgba(59,130,246,.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+            {avatar}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: '#fff', fontWeight: 600, fontSize: '.78rem', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.displayName || 'Admin'}</p>
+            <p style={{ color: 'rgba(255,255,255,.28)', fontSize: '.63rem', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
+          </div>
+          <button onClick={logout} title="Cerrar sesión"
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 5, borderRadius: 7, display: 'flex', alignItems: 'center' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(248,113,113,.1)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+          >
+            <FiLogOut size={15} color="#f87171" />
+          </button>
+        </div>
+      </aside>
+
+      {/* Mobile overlay */}
+      {open && <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.55)', zIndex: 199, backdropFilter: 'blur(3px)' }} />}
+
+      {/* MAIN */}
+      <div className="adm-main">
+        <div className="adm-topbar">
+          <button onClick={() => setOpen(o => !o)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}>
+            {open ? <FiX size={20} color="#fff" /> : <FiMenu size={20} color="#fff" />}
+          </button>
+          <span style={{ color: '#fff', fontWeight: 600, fontSize: '.88rem', flex: 1 }}>{currentLabel}</span>
+          <a href="/" style={{ color: 'rgba(255,255,255,.3)', fontSize: '.75rem', textDecoration: 'none' }}>← Inicio</a>
+        </div>
+        <div className="adm-content">
           <Outlet />
         </div>
       </div>
