@@ -18,20 +18,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  // ✅ Obtener el correo autorizado de las variables de entorno
   const authorizedEmail = import.meta.env.VITE_AUTHORIZED_ADMIN_EMAIL;
-  
-  // Para debug (solo en desarrollo)
-  if (import.meta.env.DEV) {
-    console.log('🔐 Correo autorizado desde env:', authorizedEmail);
-  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       console.log('🔄 Estado de auth cambiado:', user ? user.email : 'No usuario');
       
       if (user) {
-        // Verificar si el correo coincide con el de las variables de entorno
+        // Verificar si el correo coincide
         const authorized = user.email === authorizedEmail;
         console.log('🔐 Correo autorizado:', authorized ? '✅ Sí' : '❌ No');
         
@@ -39,7 +33,7 @@ export const AuthProvider = ({ children }) => {
           setUser(user);
           setIsAuthorized(true);
         } else {
-          // Si no está autorizado, cerrar sesión
+          // Si no está autorizado, cerrar sesión y limpiar estado
           console.log('⛔ Correo no autorizado, cerrando sesión...');
           await signOut(auth);
           setUser(null);
@@ -54,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     return unsubscribe;
-  }, [authorizedEmail]); // ✅ Dependencia del correo autorizado
+  }, [authorizedEmail]);
 
   const value = {
     user,

@@ -9,10 +9,12 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(0);
   const { user, isAuthorized } = useAuth();
 
   const authorizedEmail = import.meta.env.VITE_AUTHORIZED_ADMIN_EMAIL;
 
+  // Redirigir si ya está autorizado
   useEffect(() => {
     if (user && isAuthorized) {
       navigate('/admin');
@@ -23,11 +25,29 @@ const AdminLogin = () => {
     try {
       setLoading(true);
       setError('');
-      await signInWithPopup(auth, googleProvider);
+      
+      const result = await signInWithPopup(auth, googleProvider);
+      const loggedInEmail = result.user.email;
+      
+      // ✅ VULNERABILIDAD 1 SOLUCIONADA: Verificar inmediatamente después del login
+      if (loggedInEmail !== authorizedEmail) {
+        // Cerrar sesión inmediatamente
+        await auth.signOut();
+        setLoginAttempts(prev => prev + 1);
+        setError(
+          `⛔ Acceso denegado. El correo "${loggedInEmail}" no está autorizado.\n` +
+          `Solo el administrador con correo "${authorizedEmail}" puede acceder.`
+        );
+        return;
+      }
+      
+      // Si es el correo correcto, el contexto se encargará
     } catch (error) {
       console.error('Error de login:', error);
       if (error.code === 'auth/popup-closed-by-user') {
         setError('Ventana cerrada. Intenta de nuevo.');
+      } else if (error.code === 'auth/popup-blocked') {
+        setError('Ventana bloqueada. Permite ventanas emergentes e intenta de nuevo.');
       } else {
         setError('Error al iniciar sesión. Intenta de nuevo.');
       }
@@ -54,9 +74,27 @@ const AdminLogin = () => {
           </p>
         </div>
 
+        {/* ✅ Mensaje de error mejorado para cuentas no autorizadas */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-lg">
-            <p className="text-sm">{error}</p>
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+            <div className="flex items-start space-x-3">
+              <svg className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div className="flex-1">
+                <p className="text-sm text-red-500 whitespace-pre-line">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ✅ Mostrar intentos fallidos si hay muchos */}
+        {loginAttempts > 2 && (
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+            <p className="text-xs text-yellow-500 text-center">
+              Múltiples intentos fallidos detectados. Asegúrate de usar la cuenta correcta.
+            </p>
           </div>
         )}
 
