@@ -1,7 +1,7 @@
 // src/contexts/AuthContext.jsx
-import { createContext, useState, useEffect, useContext } from 'react';
-import { auth, googleProvider } from '../config/firebase';
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { auth } from '../config/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -16,67 +16,50 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  // ✅ Obtener el correo autorizado de las variables de entorno
+  const authorizedEmail = import.meta.env.VITE_AUTHORIZED_ADMIN_EMAIL;
+  
+  // Para debug (solo en desarrollo)
+  if (import.meta.env.DEV) {
+    console.log('🔐 Correo autorizado desde env:', authorizedEmail);
+  }
 
   useEffect(() => {
-    console.log('🔄 Verificando estado de autenticación...');
-    const unsubscribe = onAuthStateChanged(auth, 
-      (user) => {
-        console.log('✅ Estado de auth cambiado:', user ? user.email : 'No usuario');
-        setUser(user);
-        setLoading(false);
-      },
-      (error) => {
-        console.error('❌ Error en auth state:', error);
-        setError(error.message);
-        setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log('🔄 Estado de auth cambiado:', user ? user.email : 'No usuario');
+      
+      if (user) {
+        // Verificar si el correo coincide con el de las variables de entorno
+        const authorized = user.email === authorizedEmail;
+        console.log('🔐 Correo autorizado:', authorized ? '✅ Sí' : '❌ No');
+        
+        if (authorized) {
+          setUser(user);
+          setIsAuthorized(true);
+        } else {
+          // Si no está autorizado, cerrar sesión
+          console.log('⛔ Correo no autorizado, cerrando sesión...');
+          await signOut(auth);
+          setUser(null);
+          setIsAuthorized(false);
+        }
+      } else {
+        setUser(null);
+        setIsAuthorized(false);
       }
-    );
+      
+      setLoading(false);
+    });
 
     return unsubscribe;
-  }, []);
-
-  const loginWithGoogle = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log('🔄 Iniciando login con Google...');
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log('✅ Login exitoso:', result.user.email);
-      setUser(result.user);
-      
-      // Forzar redirección después del login
-      setTimeout(() => {
-        window.location.href = '/admin';
-      }, 500);
-      
-      return true;
-    } catch (err) {
-      console.error('❌ Error en login:', err);
-      setError(err.message);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      setUser(null);
-      window.location.href = '/';
-    } catch (err) {
-      console.error('Error en logout:', err);
-      setError(err.message);
-    }
-  };
+  }, [authorizedEmail]); // ✅ Dependencia del correo autorizado
 
   const value = {
     user,
     loading,
-    error,
-    loginWithGoogle,
-    logout
+    isAuthorized
   };
 
   return (
