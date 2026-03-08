@@ -85,7 +85,7 @@ const IDE_LINES = [
 ];
 
 /* ── Animated keyboard ────────────────────────────────────────── */
-const BLUE_KEYS=[3,9,16,22,30], RED_KEYS=[19];
+const BLUE_KEYS=[3,9,16,22,30], RED_KEYS=[12,17,19,37];
 function AnimatedKeyboard() {
   const keysRef = useRef([]);
   useEffect(() => {
@@ -104,7 +104,7 @@ function AnimatedKeyboard() {
     timers.push(setTimeout(loop, 1400));
     return () => timers.forEach(clearTimeout);
   }, []);
-  const cls = i => RED_KEYS.includes(i) ? 'key key-red' : BLUE_KEYS.includes(i) ? 'key key-blue' : [6,13,26,33].includes(i) ? 'key key-lit' : 'key';
+  const cls = i => RED_KEYS.includes(i) ? 'key key-red' : BLUE_KEYS.includes(i) ? 'key key-blue' : [0,6,13,26,27,33].includes(i) ? 'key key-lit' : 'key';
   return (
     <div className="d-kbd">
       {Array.from({length:39}, (_,i) => (
@@ -270,8 +270,8 @@ export default function HeroSection() {
             <button className="btn-projects" onClick={() => scrollTo('proyectos')}>
               🚀 Ver Proyectos
             </button>
-            <button className="btn-contact" onClick={() => scrollTo('contacto')}>
-              ✉ Contacto
+            <button className="btn-contact" onClick={() => scrollTo('certificaciones')}>
+              ✔ Certificaciones
             </button>
           </div>
 
