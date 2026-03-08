@@ -270,7 +270,7 @@ export default function HeroSection() {
             <button className="btn-projects" onClick={() => scrollTo('proyectos')}>
               🚀 Ver Proyectos
             </button>
-            <button className="btn-contact" onClick={() => scrollTo('certificaciones')}>
+            <button className="btn-certifications" onClick={() => scrollTo('certificaciones')}>
               ✔ Certificaciones
             </button>
           </div>
