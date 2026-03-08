@@ -1,39 +1,185 @@
 // src/admin/HeroManager.jsx
-import { useState, useEffect, useRef } from 'react';
-import { db } from '../config/firebase';
+import { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db } from '../config/firebase';
+import { iconMap, getLabel } from '../utils/iconMapper';
 
-const EMPTY = {
-  name: '',
-  title: '',
-  subtitle: '',
-  description: '',
-  ctaText: 'Ver Proyectos',
-  ctaLink: '#proyectos',
-  avatarUrl: '',
-  cv_url: '',
-  badges: [],
+/* ── Defaults (CV) ────────────────────────────────────────────── */
+const DEFAULTS = {
+  nameWhite:   'Leonardo Daniel',
+  nameBlue:    'Dominguez',
+  roleLine:    'Frontend & Mobile Dev · UX · QA',
+  description: 'Apasionado por crear experiencias digitales que combinan **estética** y **funcionalidad**. Especializado en **React**, **Flutter** y **AWS**, con enfoque en calidad y detalle pixel a pixel.',
+  heroIcons: [
+    'SiReact','SiFlutter','FaAws','SiFirebase',
+    'TbBrandAzure','SiTypescript','SiFigma','SiDocker',
+    'SiDart','SiNodedotjs','SiPython','SiMysql',
+    'TbBrandVscode','SiPostman','SiJira','SiGit',
+  ],
 };
 
-export default function HeroManager() {
-  const [form, setForm]             = useState(EMPTY);
-  const [badgeInput, setBadgeInput] = useState('');
-  const [loading, setLoading]       = useState(true);
-  const [saving, setSaving]         = useState(false);
-  const [uploading, setUploading]   = useState(false);
-  const [status, setStatus]         = useState(null); // { type: 'success'|'error', msg }
-  const fileRef                     = useRef();
+const ALL_ICONS = Object.keys(iconMap);
 
-  // ── Cargar documento único hero/main ──────────────────────────────
+/* ── Inject CSS ────────────────────────────────────────────────── */
+const SID = 'adm-hero-mgr';
+if (typeof document !== 'undefined' && !document.getElementById(SID)) {
+  const s = document.createElement('style');
+  s.id = SID;
+  s.textContent = `
+    @keyframes hm-spin { to { transform:rotate(360deg); } }
+
+    .hm-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .hm-card-title {
+      color: rgba(255,255,255,.28);
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      margin: 0 0 1rem;
+      padding-bottom: .65rem;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .hm-label {
+      color: rgba(255,255,255,.38);
+      font-size: .74rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .hm-input, .hm-textarea {
+      width: 100%; box-sizing: border-box;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 9px;
+      color: #e2e8f0;
+      font-size: .85rem;
+      font-family: inherit;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .hm-input:focus, .hm-textarea:focus {
+      border-color: rgba(59,130,246,.6);
+    }
+    .hm-textarea {
+      resize: vertical;
+      line-height: 1.6;
+      min-height: 90px;
+    }
+    .hm-preview {
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: .9rem;
+      font-size: .9rem;
+    }
+    .hm-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .hm-field { display: flex; flex-direction: column; }
+
+    /* icon chips */
+    .hm-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.45);
+      font-size: .76rem; font-family: inherit;
+      cursor: pointer; user-select: none;
+      transition: all .15s;
+    }
+    .hm-chip:hover {
+      background: rgba(255,255,255,.09);
+      color: rgba(255,255,255,.75);
+      border-color: rgba(255,255,255,.18);
+    }
+    .hm-chip.on {
+      background: rgba(59,130,246,.15);
+      border-color: rgba(59,130,246,.4);
+      color: #93c5fd;
+    }
+    .hm-chip.on:hover { background: rgba(59,130,246,.22); }
+
+    /* selected order chips */
+    .hm-sel-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 7px;
+      background: rgba(59,130,246,.1);
+      border: 1px solid rgba(59,130,246,.22);
+      color: #93c5fd; font-size: .76rem;
+    }
+    .hm-sel-chip .num { color: rgba(255,255,255,.25); font-size: .63rem; }
+    .hm-sel-chip button {
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,.25); padding: 0; line-height: 1;
+      font-size: .72rem; transition: color .15s;
+    }
+    .hm-sel-chip button:hover { color: #f87171; }
+
+    /* search */
+    .hm-search {
+      width: 100%; box-sizing: border-box;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 9px; color: #e2e8f0;
+      font-size: .83rem; font-family: inherit;
+      padding: 8px 12px; outline: none;
+      transition: border-color .2s;
+    }
+    .hm-search:focus { border-color: rgba(59,130,246,.5); }
+
+    /* save button */
+    .hm-save {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 26px; border-radius: 10px;
+      background: linear-gradient(135deg,#3b82f6,#1d4ed8);
+      border: none; color: #fff;
+      font-size: .875rem; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+    .hm-save:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+    .hm-save:disabled { opacity: .5; cursor: not-allowed; }
+
+    .hm-hint {
+      color: rgba(255,255,255,.22);
+      font-size: .74rem;
+      line-height: 1.5;
+      margin: 0 0 .8rem;
+    }
+  `;
+  document.head.appendChild(s);
+}
+
+/* ── Component ────────────────────────────────────────────────── */
+export default function HeroManager() {
+  const [form,    setForm]    = useState(DEFAULTS);
+  const [search,  setSearch]  = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving,  setSaving]  = useState(false);
+  const [status,  setStatus]  = useState(null); // { type:'success'|'error', msg }
+
+  /* Load */
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         const snap = await getDoc(doc(db, 'hero', 'main'));
-        if (!cancelled && snap.exists()) setForm({ ...EMPTY, ...snap.data() });
+        if (!cancelled && snap.exists()) {
+          setForm({ ...DEFAULTS, ...snap.data() });
+        }
       } catch (e) {
-        console.error('HeroManager load error:', e);
+        console.error('HeroManager load:', e);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -41,261 +187,213 @@ export default function HeroManager() {
     return () => { cancelled = true; };
   }, []);
 
-  // ── Helpers ───────────────────────────────────────────────────────
-  const setField = (key, val) => setForm(f => ({ ...f, [key]: val }));
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
-  const addBadge = () => {
-    const v = badgeInput.trim();
-    if (!v || form.badges.includes(v)) return;
-    setField('badges', [...form.badges, v]);
-    setBadgeInput('');
+  /* Toggle icon */
+  const toggle = (key) => {
+    const cur = form.heroIcons || [];
+    set('heroIcons', cur.includes(key) ? cur.filter(k => k !== key) : [...cur, key]);
   };
 
-  const removeBadge = (b) => setField('badges', form.badges.filter(x => x !== b));
+  /* Remove from order */
+  const remove = (key) =>
+    set('heroIcons', (form.heroIcons || []).filter(k => k !== key));
 
-  // ── Upload imagen a Firebase Storage ──────────────────────────────
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    setStatus(null);
-    try {
-      const storage    = getStorage();
-      const storageRef = ref(storage, `hero/${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      setField('avatarUrl', url);
-      setStatus({ type: 'success', msg: 'Imagen subida correctamente ✓' });
-    } catch (err) {
-      console.error(err);
-      setStatus({ type: 'error', msg: 'Error al subir imagen: ' + err.message });
-    } finally {
-      setUploading(false);
-      e.target.value = '';
-    }
-  };
-
-  // ── Guardar con setDoc merge ───────────────────────────────────────
-  const handleSave = async () => {
-    if (!form.name.trim() || !form.title.trim()) {
-      setStatus({ type: 'error', msg: 'Nombre y título son obligatorios.' });
-      return;
-    }
+  /* Save */
+  const save = async () => {
     setSaving(true);
     setStatus(null);
     try {
       await setDoc(
         doc(db, 'hero', 'main'),
-        { ...form, updatedAt: serverTimestamp() },
+        {
+          nameWhite:   form.nameWhite.trim(),
+          nameBlue:    form.nameBlue.trim(),
+          roleLine:    form.roleLine.trim(),
+          description: form.description.trim(),
+          heroIcons:   form.heroIcons || [],
+          updatedAt:   serverTimestamp(),
+        },
         { merge: true }
       );
-      setStatus({ type: 'success', msg: 'Hero guardado correctamente ✓' });
-    } catch (err) {
-      console.error(err);
-      setStatus({ type: 'error', msg: 'Error al guardar: ' + err.message });
+      setStatus({ type: 'success', msg: '✓ Guardado correctamente' });
+    } catch (e) {
+      setStatus({ type: 'error', msg: 'Error: ' + e.message });
     } finally {
       setSaving(false);
     }
   };
 
-  // ── Loading ────────────────────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-blue mx-auto" />
-          <p className="mt-4 text-text-secondary text-sm">Cargando Hero…</p>
-        </div>
+  const filtered = search.trim()
+    ? ALL_ICONS.filter(k => getLabel(k).toLowerCase().includes(search.toLowerCase()))
+    : ALL_ICONS;
+
+  /* Loading */
+  if (loading) return (
+    <div style={{ display:'flex', justifyContent:'center', padding:'5rem', fontFamily:"'Inter',system-ui" }}>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ width:34, height:34, border:'3px solid rgba(255,255,255,.07)', borderTopColor:'#3b82f6', borderRadius:'50%', animation:'hm-spin .7s linear infinite', margin:'0 auto 12px' }}/>
+        <p style={{ color:'rgba(255,255,255,.3)', fontSize:'.82rem' }}>Cargando hero/main…</p>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="max-w-3xl">
+    <div style={{ maxWidth:740, fontFamily:"'Inter',system-ui,sans-serif", color:'#e2e8f0' }}>
 
-      {/* ── Header ── */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-white">Hero Section</h2>
-        <p className="text-text-secondary text-sm mt-1">
-          Documento único ·{' '}
-          <span className="font-mono text-accent-blue/70">hero/main</span>
+      {/* Header */}
+      <div style={{ marginBottom:'1.75rem' }}>
+        <h2 style={{ fontSize:'1.35rem', fontWeight:800, color:'#f1f5f9', margin:'0 0 4px' }}>
+          Hero Section
+        </h2>
+        <p style={{ fontSize:'.82rem', color:'rgba(255,255,255,.3)', margin:0 }}>
+          Documento <code style={{ color:'rgba(96,165,250,.7)', fontSize:'.78rem' }}>hero/main</code> en Firestore
         </p>
       </div>
 
-      {/* ── Identidad ── */}
-      <SectionTitle>Identidad</SectionTitle>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        <Field label="Nombre completo" required>
-          <Input
-            value={form.name}
-            onChange={e => setField('name', e.target.value)}
-            placeholder="Leonardo Daniel"
-          />
-        </Field>
+      {/* ── NOMBRE ─────────────────────────────────────────────── */}
+      <div className="hm-card">
+        <p className="hm-card-title">Nombre</p>
+        <p className="hm-hint">
+          El nombre se divide en dos partes: <strong style={{ color:'rgba(255,255,255,.55)' }}>parte blanca</strong> y{' '}
+          <strong style={{ background:'linear-gradient(90deg,#3b82f6,#60a5fa)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>parte azul</strong>.
+        </p>
 
-        <Field label="Título principal" required>
-          <Input
-            value={form.title}
-            onChange={e => setField('title', e.target.value)}
-            placeholder="Full Stack Developer"
-          />
-        </Field>
-
-        <Field label="Subtítulo">
-          <Input
-            value={form.subtitle}
-            onChange={e => setField('subtitle', e.target.value)}
-            placeholder="& Mobile Engineer"
-          />
-        </Field>
-
-        <Field label="URL del CV">
-          <Input
-            value={form.cv_url}
-            onChange={e => setField('cv_url', e.target.value)}
-            placeholder="https://drive.google.com/…"
-          />
-        </Field>
-
-        <Field label="Descripción" className="sm:col-span-2">
-          <textarea
-            value={form.description}
-            onChange={e => setField('description', e.target.value)}
-            placeholder="Breve descripción que aparece en el hero…"
-            rows={3}
-            className="w-full bg-white/5 border border-white/10 rounded-lg text-white text-sm
-                       placeholder-text-secondary/50 px-4 py-2.5 resize-y
-                       focus:outline-none focus:border-accent-blue/60 focus:ring-1 focus:ring-accent-blue/30
-                       transition-colors"
-          />
-        </Field>
-      </div>
-
-      <Divider />
-
-      {/* ── CTA ── */}
-      <SectionTitle>Botón CTA</SectionTitle>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        <Field label="Texto del botón">
-          <Input
-            value={form.ctaText}
-            onChange={e => setField('ctaText', e.target.value)}
-            placeholder="Ver Proyectos"
-          />
-        </Field>
-        <Field label="Enlace del botón">
-          <Input
-            value={form.ctaLink}
-            onChange={e => setField('ctaLink', e.target.value)}
-            placeholder="#proyectos"
-          />
-        </Field>
-      </div>
-
-      <Divider />
-
-      {/* ── Avatar ── */}
-      <SectionTitle>Avatar / Foto de perfil</SectionTitle>
-      <div className="flex items-start gap-6 flex-wrap mb-8">
         {/* Preview */}
-        <div className="w-20 h-20 rounded-full border border-white/10 bg-white/5
-                        flex items-center justify-center overflow-hidden flex-shrink-0 text-3xl">
-          {form.avatarUrl
-            ? <img src={form.avatarUrl} alt="avatar preview" className="w-full h-full object-cover" />
-            : '👤'}
+        <div className="hm-preview">
+          <span style={{ fontWeight:800, color:'#fff', fontSize:'1.05rem' }}>
+            {form.nameWhite || '…'}{' '}
+          </span>
+          <span style={{ fontWeight:800, fontSize:'1.05rem', background:'linear-gradient(90deg,#3b82f6,#60a5fa)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
+            {form.nameBlue || '…'}
+          </span>
         </div>
 
-        {/* Controls */}
-        <div className="flex-1 min-w-[220px] space-y-3">
+        <div className="hm-grid-2">
+          <div className="hm-field">
+            <label className="hm-label">Parte blanca</label>
+            <input className="hm-input" value={form.nameWhite} onChange={e => set('nameWhite', e.target.value)} placeholder="Leonardo Daniel" />
+          </div>
+          <div className="hm-field">
+            <label className="hm-label">Parte azul (gradiente)</label>
+            <input className="hm-input" value={form.nameBlue} onChange={e => set('nameBlue', e.target.value)} placeholder="Dominguez" />
+          </div>
+        </div>
+      </div>
+
+      {/* ── LÍNEA DE ROL ───────────────────────────────────────── */}
+      <div className="hm-card">
+        <p className="hm-card-title">Línea de rol</p>
+        <p className="hm-hint">
+          Se muestra como <code style={{ color:'rgba(96,165,250,.7)' }}>&lt; Frontend &amp; Mobile Dev · UX · QA /&gt;</code>
+        </p>
+
+        {/* Preview */}
+        <div className="hm-preview">
+          <span style={{ color:'rgba(255,255,255,.4)' }}>&lt; </span>
+          <span style={{ color:'#e2e8f0', fontWeight:600 }}>{form.roleLine || '…'}</span>
+          <span style={{ color:'rgba(255,255,255,.4)' }}> /&gt;</span>
+        </div>
+
+        <div className="hm-field">
+          <label className="hm-label">Texto</label>
           <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
+            className="hm-input"
+            value={form.roleLine}
+            onChange={e => set('roleLine', e.target.value)}
+            placeholder="Frontend & Mobile Dev · UX · QA"
           />
-          <button
-            onClick={() => fileRef.current?.click()}
-            disabled={uploading}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
-                       bg-accent-blue/10 hover:bg-accent-blue/20 border border-accent-blue/30
-                       text-accent-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {uploading ? <><Spinner /> Subiendo…</> : '📷 Subir imagen'}
-          </button>
-          <p className="text-xs text-text-secondary">PNG, JPG, WEBP · máx. 5 MB</p>
-          <Field label="O pegar URL directamente">
-            <Input
-              value={form.avatarUrl}
-              onChange={e => setField('avatarUrl', e.target.value)}
-              placeholder="https://…"
-            />
-          </Field>
         </div>
       </div>
 
-      <Divider />
-
-      {/* ── Badges ── */}
-      <SectionTitle>Badges de tecnologías</SectionTitle>
-      <div className="mb-8 space-y-3">
-        {/* Lista actual */}
-        <div className="flex flex-wrap gap-2 min-h-[32px]">
-          {form.badges.length === 0
-            ? <span className="text-sm text-text-secondary/50">Sin badges aún</span>
-            : form.badges.map(b => (
-              <span
-                key={b}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm
-                           bg-accent-blue/10 border border-accent-blue/25 text-accent-blue"
-              >
-                {b}
-                <button
-                  onClick={() => removeBadge(b)}
-                  className="text-text-secondary hover:text-red-400 transition-colors leading-none ml-0.5"
-                >
-                  ✕
-                </button>
-              </span>
-            ))}
-        </div>
-
-        {/* Input agregar */}
-        <div className="flex gap-2">
-          <Input
-            value={badgeInput}
-            onChange={e => setBadgeInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addBadge())}
-            placeholder="React, Flutter, Node.js… (Enter para agregar)"
+      {/* ── DESCRIPCIÓN ────────────────────────────────────────── */}
+      <div className="hm-card">
+        <p className="hm-card-title">Descripción</p>
+        <p className="hm-hint">
+          Usa <code style={{ color:'rgba(96,165,250,.7)' }}>**palabra**</code> para negrita.
+        </p>
+        <div className="hm-field">
+          <label className="hm-label">Párrafo</label>
+          <textarea
+            className="hm-textarea"
+            value={form.description}
+            onChange={e => set('description', e.target.value)}
+            placeholder="Apasionado por crear experiencias digitales…"
           />
-          <button
-            onClick={addBadge}
-            className="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap
-                       bg-accent-blue/10 hover:bg-accent-blue/20 border border-accent-blue/30
-                       text-accent-blue transition-colors"
-          >
-            + Agregar
-          </button>
         </div>
       </div>
 
-      {/* ── Status + Guardar ── */}
-      <div className="flex items-center justify-between flex-wrap gap-3 pt-2 border-t border-white/5">
-        <span className={`text-sm ${
-          status?.type === 'success' ? 'text-green-400' :
-          status?.type === 'error'   ? 'text-red-400'   : 'invisible'
-        }`}>
+      {/* ── ICONOS DEL GRID ────────────────────────────────────── */}
+      <div className="hm-card">
+        <p className="hm-card-title">
+          Iconos del grid &nbsp;·&nbsp;
+          <span style={{ color:'rgba(96,165,250,.7)' }}>{(form.heroIcons || []).length} seleccionados</span>
+        </p>
+        <p className="hm-hint">
+          Los iconos se muestran en el orden de selección. Haz clic para agregar o quitar.
+        </p>
+
+        {/* Orden actual */}
+        {(form.heroIcons || []).length > 0 && (
+          <div style={{ marginBottom:'1rem' }}>
+            <p style={{ color:'rgba(255,255,255,.28)', fontSize:'.68rem', fontWeight:600, textTransform:'uppercase', letterSpacing:'.07em', margin:'0 0 8px' }}>
+              Orden actual
+            </p>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+              {form.heroIcons.map((key, i) => {
+                const Ic = iconMap[key];
+                return (
+                  <span key={key} className="hm-sel-chip">
+                    <span className="num">{i + 1}</span>
+                    {Ic && <Ic size={12} />}
+                    {getLabel(key)}
+                    <button onClick={() => remove(key)}>✕</button>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Buscador */}
+        <input
+          className="hm-search"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Buscar: React, Java, Flutter, AWS…"
+          style={{ marginBottom:'.75rem' }}
+        />
+
+        {/* Todos los iconos disponibles */}
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+          {filtered.map(key => {
+            const Ic  = iconMap[key];
+            const sel = (form.heroIcons || []).includes(key);
+            return (
+              <button key={key} className={`hm-chip${sel ? ' on' : ''}`} onClick={() => toggle(key)}>
+                {Ic && <Ic size={13} />}
+                {getLabel(key)}
+                {sel && <span style={{ fontSize:'.62rem', opacity:.6 }}>✓</span>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── GUARDAR ────────────────────────────────────────────── */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12, paddingTop:4 }}>
+        <span style={{
+          fontSize:'.84rem',
+          color: status?.type === 'success' ? '#4ade80' : status?.type === 'error' ? '#f87171' : 'transparent',
+          minHeight: 20,
+        }}>
           {status?.msg || '·'}
         </span>
-
-        <button
-          onClick={handleSave}
-          disabled={saving || uploading}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold text-sm
-                     bg-accent-blue hover:bg-accent-blue/90 text-white
-                     transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {saving ? <><Spinner /> Guardando…</> : '💾 Guardar Hero'}
+        <button className="hm-save" onClick={save} disabled={saving}>
+          {saving
+            ? <><HmSpin /> Guardando…</>
+            : '💾 Guardar Hero'
+          }
         </button>
       </div>
 
@@ -303,51 +401,11 @@ export default function HeroManager() {
   );
 }
 
-// ── Componentes de UI reutilizables ───────────────────────────────────
-
-function SectionTitle({ children }) {
+function HmSpin() {
   return (
-    <h3 className="text-xs font-semibold uppercase tracking-widest text-text-secondary mb-4">
-      {children}
-    </h3>
-  );
-}
-
-function Field({ label, required, children, className = '' }) {
-  return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
-      <label className="text-xs font-medium text-text-secondary">
-        {label}
-        {required && <span className="text-red-400 ml-1">*</span>}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-function Input({ className = '', ...props }) {
-  return (
-    <input
-      {...props}
-      className={`w-full bg-white/5 border border-white/10 rounded-lg text-white text-sm
-                  placeholder-text-secondary/50 px-4 py-2.5
-                  focus:outline-none focus:border-accent-blue/60 focus:ring-1 focus:ring-accent-blue/30
-                  transition-colors ${className}`}
-    />
-  );
-}
-
-function Divider() {
-  return <hr className="border-white/5 mb-6 mt-2" />;
-}
-
-function Spinner() {
-  return (
-    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z
-           m2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+    <svg style={{ animation:'hm-spin .7s linear infinite', width:14, height:14, flexShrink:0 }} viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#fff" strokeWidth="3" strokeOpacity=".2"/>
+      <path d="M12 2a10 10 0 0110 10" stroke="#fff" strokeWidth="3" strokeLinecap="round"/>
     </svg>
   );
 }
