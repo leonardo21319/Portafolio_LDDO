@@ -9,28 +9,27 @@ import ProjectsManager from './admin/projects/ProjectsManager';
 import ProjectForm from './admin/projects/ProjectForm';
 import TechnologiesManager from './admin/technologies/TechnologiesManager';
 import TechnologyForm from './admin/technologies/TechnologyForm';
+import HeroManager from './admin/HeroManager';
 
 // Componente para proteger TODAS las rutas de admin
 const PrivateRoute = ({ children }) => {
   const { user, loading, isAuthorized } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-dark-primary">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue mx-auto" />
           <p className="mt-4 text-text-secondary">Cargando...</p>
         </div>
       </div>
     );
   }
-  
-  // ✅ VULNERABILIDAD 2 SOLUCIONADA: Si no hay usuario O no está autorizado, redirigir al login
+
   if (!user || !isAuthorized) {
     return <Navigate to="/admin/login" replace />;
   }
-  
-  // Usuario autorizado, mostrar el contenido
+
   return children;
 };
 
@@ -43,25 +42,32 @@ const AppRouter = () => {
       {/* Login de admin (público) */}
       <Route path="/admin/login" element={<AdminLogin />} />
 
-      {/* ✅ TODAS las rutas de admin están protegidas por PrivateRoute */}
+      {/* Todas las rutas de admin protegidas */}
       <Route path="/admin" element={
         <PrivateRoute>
           <AdminLayout />
         </PrivateRoute>
       }>
         <Route index element={<AdminDashboard />} />
-        <Route path="projects" element={<ProjectsManager />} />
-        <Route path="projects/new" element={<ProjectForm />} />
+
+        {/* Proyectos */}
+        <Route path="projects"          element={<ProjectsManager />} />
+        <Route path="projects/new"      element={<ProjectForm />} />
         <Route path="projects/edit/:id" element={<ProjectForm />} />
-        <Route path="technologies" element={<TechnologiesManager />} />
-        <Route path="technologies/new" element={<TechnologyForm />} />
+
+        {/* Tecnologías */}
+        <Route path="technologies"          element={<TechnologiesManager />} />
+        <Route path="technologies/new"      element={<TechnologyForm />} />
         <Route path="technologies/edit/:id" element={<TechnologyForm />} />
+
+        {/* Hero */}
+        <Route path="hero" element={<HeroManager />} />
       </Route>
 
-      {/* ✅ CUALQUIER otra ruta de admin que no esté listada también se protege */}
+      {/* Cualquier ruta de admin no listada → dashboard */}
       <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
 
-      {/* Ruta 404 - Redirige a inicio */}
+      {/* 404 → inicio */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
