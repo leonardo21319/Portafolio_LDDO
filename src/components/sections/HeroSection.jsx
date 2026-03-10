@@ -6,8 +6,8 @@ import '../../styles/hero.css';
 
 /* ── Fallback ─────────────────────────────────────────────────── */
 const FALLBACK = {
-  nameWhite:   'Leonardo Daniel',
-  nameBlue:    'Dominguez',
+  nameWhite:   'Leonardo',
+  nameBlue:    'Daniel',
   roleLine:    'Frontend & Mobile Dev · UX · QA',
   description: 'Apasionado por crear experiencias digitales que combinan **estética** y **funcionalidad**. Especializado en **React**, **Flutter** y **AWS**, con enfoque en calidad y detalle pixel a pixel.',
   heroIcons: [
@@ -136,7 +136,7 @@ export default function HeroSection() {
     document.getElementById(id.replace('#',''))?.scrollIntoView({ behavior:'smooth' });
 
   const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
+  /* Toma un fragmento HTML y devuelve solo los primeros n caracteres de texto, manteniendo las etiquetas intactas */
   const sliceHTML = (html, n) => {
     const div = document.createElement('div'); div.innerHTML = html;
     let vis=0, res='';
@@ -155,7 +155,7 @@ export default function HeroSection() {
     div.childNodes.forEach(proc);
     return res;
   };
-
+  /* Limpia y reescribe todo con efecto máquina de escribir */
   const typewriteAll = () => {
     clearTimeout(timerRef.current);
     if (!codeRef.current) return;
@@ -173,7 +173,7 @@ export default function HeroSection() {
       r.className='cl'+(l.active?' aline':'');
       codeRef.current.appendChild(r); rows.push(r);
     });
-    const SPEED=28;
+    const SPEED=26;
     const tick = () => {
       if (!codeRef.current || li >= IDE_LINES.length) return;
       const line=IDE_LINES[li], rl=line.raw.length;
@@ -270,7 +270,7 @@ export default function HeroSection() {
             <button className="btn-projects" onClick={() => scrollTo('proyectos')}>
               🚀 Ver Proyectos
             </button>
-            <button className="btn-certifications" onClick={() => scrollTo('certificaciones')}>
+            <button className="btn-certifications " onClick={() => scrollTo('certificaciones')}>
               ✔ Certificaciones
             </button>
           </div>
@@ -405,7 +405,7 @@ export default function HeroSection() {
       </div>
 
       {/* Scroll hint */}
-      <div className="scroll-hint" onClick={() => scrollTo('proyectos')}>
+      <div className="scroll-hint" onClick={() => scrollTo('about')}>
         <span className="sh-t">scroll</span>
         <div className="sh-a">↓</div>
       </div>
