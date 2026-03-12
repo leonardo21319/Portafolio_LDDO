@@ -204,11 +204,11 @@
   grid-template-columns: repeat(8, minmax(25px, 36px));
   grid-template-rows: repeat(2, minmax(25px, 36px));
   gap: .5rem;
-  justify-content: center;
+  justify-content: start;   /* FIX: alineado a la izquierda en desktop */
   opacity: 0;
   animation: fadeUp .7s 1.0s ease forwards;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0;                /* FIX: sin auto en desktop */
 }
 
 .ti {
