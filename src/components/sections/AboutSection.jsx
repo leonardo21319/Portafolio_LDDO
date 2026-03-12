@@ -24,12 +24,48 @@ const TERM_LINES = [
 ];
 
 const SOFT_SKILLS = [
-  { icon: '🧩', cls: 'si-blue', name: 'Resolución de Problemas', desc: 'Descompongo retos complejos en pasos claros.', delay: '.06s' },
-  { icon: '🎯', cls: 'si-red',  name: 'Atención al Detalle',    desc: 'Preciso en lógica de negocio y la cordialidad con el cliente.', delay: '.12s' },
-  { icon: '🤝', cls: 'si-cyan', name: 'Trabajo en Equipo',      desc: 'Comunicación clara, code reviews constructivos y colaboración ágil.', delay: '.18s' },
-  { icon: '⚡', cls: 'si-mix',  name: 'Adaptabilidad',           desc: 'Aprendo tecnologías nuevas de forma constante y me ajusto a cualquier stack.', delay: '.24s' },
-  { icon: '🗣️',cls: 'si-blue', name: 'Comunicación',            desc: 'Transmito ideas técnicas a perfiles no técnicos.', delay: '.30s' },
-  { icon: '🔁', cls: 'si-red',  name: 'Mentalidad Iterativa',   desc: 'Itero con feedback y mejoro constantemente.', delay: '.36s' },
+  { 
+    icon: '🚀', 
+    cls: 'si-blue', 
+    name: 'Proactividad', 
+    desc: 'Iniciativa para anticipar necesidades y proponer soluciones técnicas eficientes.', 
+    delay: '.06s' 
+  },
+  { 
+    icon: '🧠', 
+    cls: 'si-red', 
+    name: 'Pensamiento Crítico', 
+    desc: 'Análisis profundo para la resolución de problemas complejos y toma de decisiones.', 
+    delay: '.12s' 
+  },
+  { 
+    icon: '🤝', 
+    cls: 'si-cyan', 
+    name: 'Comunicación Asertiva', 
+    desc: 'Transmisión clara de ideas técnicas tanto a equipos como a perfiles no técnicos.', 
+    delay: '.18s' 
+  },
+  { 
+    icon: '⚡', 
+    cls: 'si-mix', 
+    name: 'Resiliencia y Adaptabilidad', 
+    desc: 'Capacidad de aprendizaje continuo y ajuste ágil a nuevos stacks tecnológicos.', 
+    delay: '.24s' 
+  },
+  { 
+    icon: '🎯', 
+    cls: 'si-blue', 
+    name: 'Compromiso y Disciplina', 
+    desc: 'Enfoque en la calidad del software y cumplimiento riguroso de objetivos.', 
+    delay: '.30s' 
+  },
+  { 
+    icon: '🌍', 
+    cls: 'si-red', 
+    name: 'Enfoque Humano y Empatía', 
+    desc: 'Desarrollo de software centrado en el usuario con una mentalidad colaborativa.', 
+    delay: '.36s' 
+  },
 ];
 
 export default function AboutSection() {
