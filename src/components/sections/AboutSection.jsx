@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useIntersection } from '../../hooks/useIntersection';
 import '../../styles/about.css';
+import miImagen from '../../assets/leo_foto.jpg';
 
 const TERM_LINES = [
   { delay: 0,    parts: [{ c:'t-prompt', t:'❯ ' }, { c:'t-cmd', t:'whoami' }] },
@@ -126,7 +127,7 @@ export default function AboutSection() {
                     <ellipse cx="50" cy="82" rx="28" ry="18" fill="rgba(0,123,255,.15)" stroke="rgba(0,123,255,.3)" strokeWidth="1.5"/>
                     <circle cx="50" cy="36" r="8" fill="rgba(255,255,255,.15)"/>
                   </svg>*/}
-                  <img src="src\assets\leo_foto.jpg" style={{width:'90%',height:'90%',objectFit:'cover',borderRadius:'14px'}} />
+                  <img src={miImagen} style={{width:'90%',height:'90%',objectFit:'cover',borderRadius:'14px'}} />
                 </div>
                 <div className="corner corner-tl" />
                 <div className="corner corner-tr" />
