@@ -14,10 +14,62 @@ const CAT_META = {
   'Base de datos': { icon: '🗄️', line: 'rgba(0,117,143,.5)' },
 };
 const CAT_ORDER = ['Frontend','Mobile','Backend','Cloud','Base de datos','Herramientas'];
+  
+  // ... importaciones anteriores
 
 export default function StackSection() {
+  const { techStack: firebaseTechs = [], loading } = useTechStack();
+
+  // --- DATOS DE PRUEBA (MOCK) ---
+  // Estos se combinarán con lo que venga de Firebase
+  const mockTechs = [
+    {
+      id: 'mock-flutter',
+      name: 'Flutter',
+      category: 'Mobile',
+      level: 'Intermedio', // 
+      color: '#02569B',
+      iconName: 'SiFlutter', // Asegúrate que tu iconMapper tenga este nombre
+      description: 'Desarrollo de aplicaciones multiplataforma con alto rendimiento.',
+      projects: ['Ixelo', 'Nutricom'] // [cite: 27, 28]
+    },
+    {
+      id: 'mock-react',
+      name: 'React.js',
+      category: 'Frontend',
+      level: 'Intermedio', // 
+      color: '#61DAFB',
+      iconName: 'SiReact',
+      description: 'Creación de interfaces de usuario dinámicas y reactivas.',
+      projects: ['SIGC'] // [cite: 30]
+    },
+    {
+      id: 'mock-aws',
+      name: 'AWS',
+      category: 'Cloud',
+      level: 'Básico', // 
+      color: '#FF9900',
+      iconName: 'FaAws',
+      description: 'Despliegue de infraestructura y servicios en la nube.',
+      projects: ['SIGC'] // [cite: 30]
+    },
+    {
+      id: 'mock-mysql',
+      name: 'MySQL',
+      category: 'Base de datos',
+      level: 'Intermedio', // 
+      color: '#4479A1',
+      iconName: 'SiMysql',
+      description: 'Gestión y optimización de bases de datos relacionales.',
+      projects: ['Bellamaps', 'Flipbook', 'Sistema de Gestión Escolar'] // [cite: 32, 33, 34]
+    }
+  ];
+
+  // Unimos ambos arreglos para la visualización
+  const technologies = [...firebaseTechs, ...mockTechs];
+
   // ✅ useTechStack devuelve { techStack }, lo renombramos
-  const { techStack: technologies = [], loading } = useTechStack();
+  //const { techStack: technologies = [], loading } = useTechStack();
   const [popup, setPopup]   = useState(null);
   const sectionRef          = useRef(null);
   const headersRef          = useRef([]);
