@@ -40,7 +40,7 @@ export const iconMap = {
 
 // Etiquetas legibles
 export const iconLabels = {
-  SiReact:'React',        SiFlutter:'Flutter',     FaAws:'AWS',
+  SiFlutter:'Flutter',    SiReact:'React',         FaAws:'AWS',
   SiFirebase:'Firebase',  TbBrandAzure:'Azure',    SiTypescript:'TypeScript',
   SiFigma:'Figma',        SiDocker:'Docker',       SiDart:'Dart',
   SiNodedotjs:'Node.js',  SiPython:'Python',       SiMysql:'MySQL',
