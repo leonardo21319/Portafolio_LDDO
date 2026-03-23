@@ -1,5 +1,6 @@
+// src/hooks/useTechStack.js
 import { useState, useEffect } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export const useTechStack = () => {
@@ -10,45 +11,34 @@ export const useTechStack = () => {
   useEffect(() => {
     const fetchTechStack = async () => {
       try {
-        // =============================================
-        // 📝 CÓDIGO DE DEPURACIÓN TEMPORAL (AGREGA ESTO)
-        // =============================================
-        console.log('🔍 VERIFICACIÓN COMPLETA DE FIREBASE:');
-        const todosLosDocs = await getDocs(collection(db, 'technologies'));
-        console.log('📊 TOTAL documentos en Firebase:', todosLosDocs.size);
-        todosLosDocs.forEach(doc => {
-          console.log('Documento:', doc.id, {
-            name: doc.data().name,
-            active: doc.data().active,
-            category: doc.data().category,
-            // Muestra todos los campos del documento
-            data: doc.data()
-          });
-        });
-        // =============================================
-        // FIN DEL CÓDIGO DE DEPURACIÓN
-        // =============================================
-
-        console.log('🔍 Fetching technologies con filtro active=true...');
-        
-        // 🔥 Filtrar SOLO las activas (active = true)
+        // Sin filtro active — muestra todos los documentos.
+        // Si en el futuro quieres filtrar, asegúrate de que cada doc
+        // tenga el campo active: true en Firestore antes de activarlo.
         const q = query(
           collection(db, 'technologies'),
-          where('active', '==', true)
+          orderBy('order', 'asc')
         );
-        
+
         const snapshot = await getDocs(q);
-        console.log('📦 Documentos activos encontrados:', snapshot.size);
-        
-        const data = snapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .sort((a, b) => Number(a.order ?? 99) - Number(b.order ?? 99));
-        
-        console.log(`✅ useTechStack: ${data.length} tecnología(s) activa(s) cargada(s)`);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        console.log(`✅ useTechStack: ${data.length} tecnología(s) cargada(s) desde Firebase`);
         setTechStack(data);
       } catch (err) {
-        console.error('❌ useTechStack error:', err.message);
-        setError(err.message);
+        // Si falla el orderBy (índice faltante), reintenta sin orden
+        console.warn('⚠️ useTechStack: orderBy falló, reintentando sin orden...', err.message);
+        try {
+          const snapshot = await getDocs(collection(db, 'technologies'));
+          const data = snapshot.docs
+            .map(doc => ({ id: doc.id, ...doc.data() }))
+            .sort((a, b) => Number(a.order ?? 99) - Number(b.order ?? 99));
+
+          console.log(`✅ useTechStack (fallback): ${data.length} tecnología(s) cargada(s)`);
+          setTechStack(data);
+        } catch (err2) {
+          console.error('❌ useTechStack error:', err2.message);
+          setError(err2.message);
+        }
       } finally {
         setLoading(false);
       }

@@ -188,7 +188,7 @@
 .about-divider {
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, rgba(0,123,255,.3), rgba(255,59,48,.18), transparent);
+  background: linear-gradient(90deg, rgba(23, 112, 206, 1), rgb(237, 81, 73));
   margin: 1.5rem 0;
 }
 
@@ -199,7 +199,7 @@
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(255,255,255,.32);
+  color: rgba(255, 255, 255, 0.468);
   margin-bottom: 1rem;
 }
 .soft-grid {
