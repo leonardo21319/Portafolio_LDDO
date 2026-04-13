@@ -5,6 +5,7 @@ import {
   SiPostman, SiJira, SiAngular, SiGithub, SiPhp, SiJavascript,
   SiHtml5, SiTailwindcss, SiVuedotjs, SiNextdotjs, SiKotlin,
   SiSwift, SiGitlab, SiLinux,
+  SiCplusplus, SiBootstrap, SiPostgresql, SiCisco, SiGoogle,
 } from 'react-icons/si';
 
 import { FaAws, FaCss3Alt, FaWindows, FaJava } from 'react-icons/fa';
@@ -36,6 +37,9 @@ export const iconMap = {
 
   // OS
   SiLinux, FaWindows,
+
+  // Adicionales del CV
+  SiCplusplus, SiBootstrap, SiPostgresql, SiCisco, SiGoogle,
 };
 
 // Etiquetas legibles
@@ -51,6 +55,8 @@ export const iconLabels = {
   SiPhp:'PHP',            SiLinux:'Linux',          FaWindows:'Windows',
   SiKotlin:'Kotlin',      SiSwift:'Swift',          SiGitlab:'GitLab',
   FaJava:'Java',          SiVuedotjs:'Vue.js',
+  SiCplusplus:'C/C++',    SiBootstrap:'Bootstrap', SiPostgresql:'PostgreSQL',
+  SiCisco:'Cisco',        SiGoogle:'Google',
 };
 
 export const getIconComponent = (iconName) => {

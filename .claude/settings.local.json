@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -f src/utils/techIcons.js src/components/ui/TechBadge.jsx \"src/components/sections/hero/DeskObjects.jsx\" src/styles/experiencia.css src/App.css src/debug-env.jsx src/debugAuth.jsx src/testFirebase.jsx src/verificar-env.js)",
+      "Bash(rm -rf src/admin/experiences)"
+    ]
+  }
+}

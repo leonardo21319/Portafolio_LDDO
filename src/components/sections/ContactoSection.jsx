@@ -1,6 +1,7 @@
 // src/components/sections/ContactoSection.jsx
 import { useEffect, useRef } from 'react';
 import { useIntersection } from '../../hooks/useIntersection';
+import { CHAT_MSGS as MSGS } from '../../data/portfolio';
 import '../../styles/contacto.css';
 
 const CONTACTS = [
@@ -67,13 +68,6 @@ const CONTACTS = [
       </svg>
     ),
   },
-];
-
-const MSGS = [
-  { side: 'left',  avatar: '👋', text: '¡Hola! Vi tu portfolio y me pareció increíble...' },
-  { side: 'right', avatar: '😄', text: '¡Gracias! ¿En qué puedo ayudarte?' },
-  { side: 'left',  avatar: '👋', text: 'Tengo un proyecto en mente y creo que eres la persona indicada.' },
-  { side: 'right', avatar: '😄', text: '¡Con gusto! Cuéntame más, estoy disponible ahora mismo 🚀' },
 ];
 
 export default function ContactoSection() {

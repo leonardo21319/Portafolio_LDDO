@@ -1,24 +1,10 @@
 // src/components/sections/HeroSection.jsx
-import { useRef } from 'react';
 import { useHero } from '../../hooks/useHero';
-import { useTechPopIn } from '../../hooks/useTechPopIn';
-import { getIconComponent } from '../../utils/iconMapper';
+import { getIconComponent, getLabel } from '../../utils/iconMapper';
 import MonitorScene from './hero/MonitorScene';
 import '../../styles/hero.css';
 
-/* ── Fallback ─────────────────────────────────────────────────── */
-const FALLBACK = {
-  nameWhite:   'Leonardo',
-  nameBlue:    'Daniel',
-  roleLine:    'Frontend & Mobile Dev · UX · QA',
-  description: 'Apasionado por crear experiencias digitales que combinan **estética** y **funcionalidad**. Especializado en **React**, **Flutter** y **AWS**, con enfoque en calidad y detalle pixel a pixel.',
-  heroIcons: [
-    'SiFlutter','SiReact','FaAws','SiFirebase',
-    'TbBrandAzure','SiTypescript','SiFigma','SiDocker',
-    'SiDart','SiNodedotjs','SiPython','SiMysql',
-    'TbBrandVscode','SiPostman','SiJira','SiGit',
-  ],
-};
+import { HERO_FALLBACK as FALLBACK } from '../../data/portfolio';
 
 /* ── Componentes Multicolores Personalizados ─────── */
 const CustomFigma = ({ size }) => (
@@ -73,14 +59,6 @@ const ICON_COLORS = {
 };
 const DEF_COLOR = { color:'#FFFFFF', ic:'rgba(255,255,255,.4)', ig:'rgba(255,255,255,.1)' };
 
-/* ── Float timing (16 entradas, cíclico) ─────────────────────── */
-const FLOATS = [
-  {dur:'3.4s',del:'0s'    },{dur:'3.8s',del:'.25s' },{dur:'3.2s',del:'.5s'  },{dur:'4.1s',del:'.75s' },
-  {dur:'3.6s',del:'1s'    },{dur:'3.3s',del:'1.25s'},{dur:'3.5s',del:'1.5s' },{dur:'3.9s',del:'1.75s'},
-  {dur:'3.7s',del:'2s'    },{dur:'3.6s',del:'2.25s'},{dur:'4.2s',del:'2.5s' },{dur:'3.4s',del:'2.75s'},
-  {dur:'3.3s',del:'3s'    },{dur:'4.0s',del:'3.25s'},{dur:'3.8s',del:'3.5s' },{dur:'3.6s',del:'3.75s'},
-];
-
 /* ── Helpers de render ────────────────────────────────────────── */
 
 /** Convierte **texto** → <strong>texto</strong> */
@@ -110,10 +88,6 @@ const renderRole = line => {
 /* ── Componente principal ─────────────────────────────────────── */
 export default function HeroSection() {
   const { hero, loading } = useHero();
-  const techGridRef       = useRef(null);
-
-  /* Pop-in escalonado de iconos */
-  useTechPopIn(techGridRef);
 
   /* Merge Firebase + fallback */
   const d = {
@@ -169,33 +143,17 @@ export default function HeroSection() {
             </button>
           </div>
 
-          {/* Icon grid */}
-          <div className="tech-grid" ref={techGridRef}>
-            {d.heroIcons.map((iconName, i) => {
-              // 1. Permite que la variable cambie
+          {/* Stack pills */}
+          <div className="hero-stack">
+            {d.heroIcons.map((iconName) => {
               let Ic = getIconComponent(iconName);
-              
-              // 2. Intercepta Figma y Python
               if (iconName === 'SiFigma') Ic = CustomFigma;
               if (iconName === 'SiPython') Ic = CustomPython;
-
-              const anim   = FLOATS[i % FLOATS.length];
               const colors = ICON_COLORS[iconName] || DEF_COLOR;
               return (
-                <div
-                  key={iconName + i}
-                  className="ti"
-                  title={iconName.replace(/^(Si|Fa|Tb)(?:Brand)?/, '')}
-                  style={{
-                    '--dur': anim.dur,
-                    '--del': anim.del,
-                    '--ic':  colors.ic, // El brillo de fondo sigue funcionando
-                    '--ig':  colors.ig,
-                  }}
-                >
-                  <div className="ti-icon">
-                    <Ic size={22} color={colors.color} />
-                  </div>
+                <div key={iconName} className="hs-pill" title={getLabel(iconName)}>
+                  <Ic size={12} color={colors.color} />
+                  <span>{getLabel(iconName)}</span>
                 </div>
               );
             })}

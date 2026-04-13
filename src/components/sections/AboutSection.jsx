@@ -5,68 +5,7 @@ import { useIntersection } from '../../hooks/useIntersection';
 import '../../styles/about.css';
 import miImagen from '../../assets/leo_foto.jpg';
 
-const TERM_LINES = [
-  { delay: 0,    parts: [{ c:'t-prompt', t:'❯ ' }, { c:'t-cmd', t:'whoami' }] },
-  { delay: 550,  parts: [{ c:'t-blue',  t:'Leonardo Daniel  ' }, { c:'t-dim', t:'// dev & ux' }] },
-  { delay: 1050, parts: [{ c:'t-prompt', t:'❯ ' }, { c:'t-cmd', t:'cat stack.json' }] },
-  { delay: 1650, parts: [{ c:'t-ok', t:'✓ ' }, { c:'t-dim', t:'Frontend  ' }, { c:'t-blue', t:' React · JavaScript' }] },
-  { delay: 2000, parts: [{ c:'t-ok', t:'✓ ' }, { c:'t-dim', t:'Mobile    ' }, { c:'t-blue', t:' Flutter' }] },
-  { delay: 2350, parts: [{ c:'t-ok', t:'✓ ' }, { c:'t-dim', t:'Cloud     ' }, { c:'t-info', t:' AWS · Azure' }] },
-  { delay: 2700, parts: [{ c:'t-ok', t:'✓ ' }, { c:'t-dim', t:'Design    ' }, { c:'t-red',  t:' Figma' }] },
-  { delay: 3050, parts: [{ c:'t-ok', t:'✓ ' }, { c:'t-dim', t:'Test        ' }, { c:'t-blue', t:' Postman · Jest' }] },
-  { delay: 3400, parts: [{ c:'t-ok', t:'✓ ' }, { c:'t-dim', t:'DB        ' }, { c:'t-info', t:' MySQL · Firestore' }] },
-  { delay: 3800, parts: [{ c:'t-prompt', t:'❯ ' }, { c:'t-cmd', t:'git log --oneline -2' }] },
-  { delay: 4450, parts: [{ c:'t-info', t:'f2c903a ' }, { c:'t-dim', t:'feat: pixel perfect ✦' }] },
-  { delay: 4750, parts: [{ c:'t-info', t:'a1b8e71 ' }, { c:'t-dim', t:'fix: mobile layout 📱' }] },
-  { delay: 5150, parts: [{ c:'t-prompt', t:'❯ ' }, { c:'t-cmd', t:'flutter build apk --release' }] },
-  { delay: 6000, parts: [{ c:'t-ok', t:'✓ ' }, { c:'t-blue', t:'Build success  ' }, { c:'t-dim', t:'21.14s' }] },
-  { delay: 6500, parts: [{ c:'t-prompt', t:'❯ ' }, { c:'t-cursor', t:'' }] },
-];
-
-const SOFT_SKILLS = [
-  { 
-    icon: '🚀', 
-    cls: 'si-blue', 
-    name: 'Proactividad', 
-    desc: 'Iniciativa para anticipar necesidades y proponer soluciones técnicas eficientes.', 
-    delay: '.06s' 
-  },
-  { 
-    icon: '🧠', 
-    cls: 'si-red', 
-    name: 'Pensamiento Crítico', 
-    desc: 'Análisis profundo para la resolución de problemas complejos y toma de decisiones.', 
-    delay: '.12s' 
-  },
-  { 
-    icon: '🤝', 
-    cls: 'si-cyan', 
-    name: 'Comunicación Asertiva', 
-    desc: 'Transmisión clara de ideas técnicas tanto a equipos como a perfiles no técnicos.', 
-    delay: '.18s' 
-  },
-  { 
-    icon: '⚡', 
-    cls: 'si-mix', 
-    name: 'Resiliencia y Adaptabilidad', 
-    desc: 'Capacidad de aprendizaje continuo y ajuste ágil a nuevos stacks tecnológicos.', 
-    delay: '.24s' 
-  },
-  { 
-    icon: '🎯', 
-    cls: 'si-blue', 
-    name: 'Compromiso y Disciplina', 
-    desc: 'Enfoque en la calidad del software y cumplimiento riguroso de objetivos.', 
-    delay: '.30s' 
-  },
-  { 
-    icon: '🌍', 
-    cls: 'si-red', 
-    name: 'Enfoque Humano y Empatía', 
-    desc: 'Desarrollo de software centrado en el usuario con una mentalidad colaborativa.', 
-    delay: '.36s' 
-  },
-];
+import { TERM_LINES, LANGUAGES, SOFT_SKILLS } from '../../data/portfolio';
 
 export default function AboutSection() {
   const sectionRef    = useIntersection(['.section-label', '.section-title']);
@@ -207,6 +146,22 @@ export default function AboutSection() {
               <span className="hlr">detalle visual</span> que marca la diferencia.
             </p>
           
+            {/* Idiomas */}
+            <div className="soft-label" style={{ marginTop: '1.4rem' }}>// idiomas</div>
+            <div style={{ display:'flex', gap:'.6rem', marginBottom:'1.2rem', flexWrap:'wrap' }}>
+              {LANGUAGES.map(({ flag, lang, level }) => (
+                <div key={lang} style={{
+                  display:'flex', alignItems:'center', gap:'.5rem',
+                  background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)',
+                  borderRadius:'10px', padding:'.35rem .9rem',
+                }}>
+                  <span style={{ fontSize:'1rem' }}>{flag}</span>
+                  <span style={{ fontSize:'.75rem', fontWeight:700, color:'rgba(255,255,255,.8)' }}>{lang}</span>
+                  <span style={{ fontSize:'.62rem', fontFamily:'var(--mono)', color:'rgba(255,255,255,.35)' }}>{level}</span>
+                </div>
+              ))}
+            </div>
+
             <div className="about-divider" />
             <div className="soft-label">// habilidades_blandas</div>
 

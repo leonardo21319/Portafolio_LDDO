@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { db } from '../../config/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { useIntersection } from '../../hooks/useIntersection';
-import '../../styles/experiencia.css';
 
 const DEFAULT_COLORS = [
   { color: 'rgba(0,212,255,.85)',  bg: 'linear-gradient(135deg,#001828,#001018)' },
